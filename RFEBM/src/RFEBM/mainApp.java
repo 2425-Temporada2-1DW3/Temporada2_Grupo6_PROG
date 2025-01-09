@@ -129,6 +129,10 @@ public class mainApp  extends JFrame {
 			setTitle("Menú usuario");
 		} if (inicioApp.rol==2) {
 			setTitle("Menú administrador");
+		} if (inicioApp.rol==3) {
+			setTitle("Menú entrenador"); // solo acceso a clase equipos
+		} if (inicioApp.rol==4) {
+			setTitle("Menú arbitro");
 		}
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 900, 500);
@@ -168,6 +172,8 @@ public class mainApp  extends JFrame {
 	
 		btnLogout = new JButton("Cerrar Sesión");
 		btnLogout.addActionListener(new ActionListener() {
+		
+			
 			public void actionPerformed(ActionEvent e) {
 				jornadaSeleccionada = 0;
 				int respuesta = JOptionPane.showConfirmDialog(null, "¿Está seguro que desea cerrar sesión?", "Cerrar sesión", JOptionPane.YES_NO_OPTION, JOptionPane.INFORMATION_MESSAGE);
@@ -180,7 +186,7 @@ public class mainApp  extends JFrame {
 		panel1.add(btnLogout, BorderLayout.EAST);
 	
 		btnAplicarCambios = new JButton("Aplicar Cambios");
-		if (inicioApp.rol==1) {
+		if (inicioApp.rol==1||inicioApp.rol==3) {
 			btnAplicarCambios.setEnabled(false);
 		}
 		btnAplicarCambios.addActionListener(new ActionListener() {
@@ -317,11 +323,11 @@ public class mainApp  extends JFrame {
 			EquipoVisGol1.addKeyListener(golesfilter);
 			EquipoVisGol1.setColumns(3);
 		
-		if (inicioApp.rol==1) {
+		if (inicioApp.rol==1 || inicioApp.rol==3) {
 			EquipoLocGol1.setEditable(false);
 			EquipoLocGol1.setEnabled(false);
 		}
-		if (inicioApp.rol==1) {
+		if (inicioApp.rol==1 ||inicioApp.rol==3) {
 			EquipoVisGol1.setEditable(false);
 			EquipoVisGol1.setEnabled(false);
 		}
@@ -354,11 +360,11 @@ public class mainApp  extends JFrame {
 							EquipoVisGol2.setColumns(3);
 							EquipoVisGol2.addKeyListener(golesfilter);
 			EquipoLocGol2.addKeyListener(golesfilter);
-			if (inicioApp.rol==1) {
+			if (inicioApp.rol==1 || inicioApp.rol==3) {
 				EquipoLocGol2.setEditable(false);
 				EquipoLocGol2.setEnabled(false);
 			}
-			if (inicioApp.rol==1) {
+			if (inicioApp.rol==1 || inicioApp.rol==3) {
 				EquipoVisGol2.setEditable(false);
 				EquipoVisGol2.setEnabled(false);
 			}
@@ -396,11 +402,11 @@ public class mainApp  extends JFrame {
 							EquipoVisGol3.setColumns(3);
 							EquipoVisGol3.addKeyListener(golesfilter);
 			EquipoLocGol3.addKeyListener(golesfilter);
-			if (inicioApp.rol==1) {
+			if (inicioApp.rol==1 || inicioApp.rol==3) {
 				EquipoLocGol3.setEditable(false);
 				EquipoLocGol3.setEnabled(false);
 			}
-			if (inicioApp.rol==1) {
+			if (inicioApp.rol==1 || inicioApp.rol==3) {
 				EquipoVisGol3.setEditable(false);
 				EquipoVisGol3.setEnabled(false);
 			}
