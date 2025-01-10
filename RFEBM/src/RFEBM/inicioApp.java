@@ -25,7 +25,7 @@ public class inicioApp extends JFrame implements ActionListener {
 	private JPanel contentPane, panel, panel_1, panel_2, panel_3, panel_4, panel_5;
 	private JTextField leerUsuario;
 	private JPasswordField leerContra;
-	private JLabel lblLogo, lblUsuario, lblTexto;
+	private JLabel lblLogo, lblUsuario, lblTexto, lblContrasena;
 	private JButton btnAceptar;
 	public static int rol = 0;
 	
@@ -38,7 +38,12 @@ public class inicioApp extends JFrame implements ActionListener {
 		
 		String admincorrecto = "admin";
 		String contrasenaadmin = "5678";
-
+		
+		String entrenadorcorrecto = "entrenador"; 
+		String contrasenaentrenador = "2345";
+		
+		String arbitrocorrecto = "arbitro";
+		String contrasenaarbitro = "4321";
 	/**
 	 * Launch the application.
 	 */
@@ -101,7 +106,7 @@ public class inicioApp extends JFrame implements ActionListener {
 		panel_4 = new JPanel();
 		panel_3.add(panel_4, BorderLayout.NORTH);
 		
-		JLabel lblContrasena = new JLabel("Contraseña");
+		lblContrasena = new JLabel("Contraseña");
 		lblContrasena.setFont(new Font("Tahoma", Font.PLAIN, 15));
 		panel_4.add(lblContrasena);
 		
@@ -137,6 +142,16 @@ public class inicioApp extends JFrame implements ActionListener {
 	     } else if (usuario.equals(admincorrecto) && contrasena.equals(contrasenaadmin)) {
 	    	 JOptionPane.showMessageDialog(null, "Bienvenido administrador", "Bienvenido a la aplicación", JOptionPane.INFORMATION_MESSAGE);
 	    	 rol= 2;
+	    	 new mainApp().setVisible(true);
+	    	 dispose();
+	     } else if (usuario.equals(entrenadorcorrecto) && contrasena.equals(contrasenaentrenador)) {
+	    	 JOptionPane.showMessageDialog(null, "Bienvenido entrenador", "Bienvenido a la aplicación", JOptionPane.INFORMATION_MESSAGE);
+	    	 rol= 3;
+	    	 new mainApp().setVisible(true);
+	    	 dispose();
+	     } else if (usuario.equals(arbitrocorrecto) && contrasena.equals(contrasenaarbitro)) {
+	    	 JOptionPane.showMessageDialog(null, "Bienvenido arbitro", "Bienvenido a la aplicación", JOptionPane.INFORMATION_MESSAGE);
+	    	 rol= 4;
 	    	 new mainApp().setVisible(true);
 	    	 dispose();
 	    	 //En caso de que no se haya introducido ni nombre de usuario ni contraseña
