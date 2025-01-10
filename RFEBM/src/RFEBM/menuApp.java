@@ -9,11 +9,14 @@ import java.awt.BorderLayout;
 import javax.swing.JTextField;
 import java.awt.Font;
 import java.awt.GridLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.FlowLayout;
 import javax.swing.JButton;
 import javax.swing.SwingConstants;
 import java.awt.CardLayout;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.ImageIcon;
 
 public class menuApp extends JFrame {
@@ -21,7 +24,6 @@ public class menuApp extends JFrame {
 	private static final long serialVersionUID = 1L;
 	private JPanel contentPane;
 	private JPanel panel_1;
-	private JButton btnLogout;
 	private JPanel panel_2;
 	private JPanel panel_3;
 	private JPanel panel_4;
@@ -33,6 +35,7 @@ public class menuApp extends JFrame {
 	private JLabel lblNewLabel;
 	private JPanel panel_6;
 	private JLabel lblNewLabel_1;
+	private JButton btnLogout;
 
 	/**
 	 * Launch the application.
@@ -43,6 +46,7 @@ public class menuApp extends JFrame {
 				try {
 					menuApp frame = new menuApp();
 					frame.setVisible(true);
+					frame.setResizable(false);
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -50,7 +54,7 @@ public class menuApp extends JFrame {
 		});
 	}
 
-	/**
+	/** 
 	 * Create the frame.
 	 */
 	public menuApp() {
@@ -91,6 +95,19 @@ public class menuApp extends JFrame {
 		
 		btnLogout = new JButton("Cerrar sesion");
 		panel_1.add(btnLogout);
+	btnLogout.addActionListener(new ActionListener() {
+		
+			
+			public void actionPerformed(ActionEvent e) {
+				int respuesta = JOptionPane.showConfirmDialog(null, "¿Está seguro que desea cerrar sesión?", "Cerrar sesión", JOptionPane.YES_NO_OPTION, JOptionPane.INFORMATION_MESSAGE);
+				if (respuesta == JOptionPane.YES_OPTION) {
+						new inicioApp().setVisible(true);
+				dispose();
+				}
+			}
+		});
+
+		
 		
 		panel_2 = new JPanel();
 		FlowLayout flowLayout = (FlowLayout) panel_2.getLayout();
@@ -109,6 +126,17 @@ public class menuApp extends JFrame {
 		
 		btnClasificaciones = new JButton("Clasificaiones");
 		panel_4.add(btnClasificaciones);
+		btnClasificaciones.addActionListener(new ActionListener() {
+			
+			
+			public void actionPerformed(ActionEvent e) {
+				int respuesta = JOptionPane.showConfirmDialog(null, "¿Está seguro que desea ir a clasificaciones?", "Clasificacion", JOptionPane.YES_NO_OPTION, JOptionPane.INFORMATION_MESSAGE);
+				if (respuesta == JOptionPane.YES_OPTION) {
+						new clasificacionApp().setVisible(true);
+				dispose();
+				}
+			}
+		});
 		
 		btnequipos = new JButton("Plantillas");
 		panel_4.add(btnequipos);

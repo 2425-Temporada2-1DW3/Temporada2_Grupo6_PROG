@@ -53,6 +53,7 @@ public class inicioApp extends JFrame implements ActionListener {
 				try {
 					inicioApp frame = new inicioApp();
 					frame.setVisible(true);
+					frame.setResizable(false);
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -136,23 +137,25 @@ public class inicioApp extends JFrame implements ActionListener {
 	     if (usuario.equals(usuariocorrecto) && contrasena.equals(contrasenausuario)) {
 	    	 JOptionPane.showMessageDialog(null, "Bienvenido usuario", "Bienvenido a la aplicación", JOptionPane.INFORMATION_MESSAGE);
 	    	 rol = 1;
-	    	 new mainApp().setVisible(true);
+	    	 new clasificacionApp().setVisible(true);
 	    	 dispose();
 	    	//Comprueba si esta intentando entrar como administrador
 	     } else if (usuario.equals(admincorrecto) && contrasena.equals(contrasenaadmin)) {
 	    	 JOptionPane.showMessageDialog(null, "Bienvenido administrador", "Bienvenido a la aplicación", JOptionPane.INFORMATION_MESSAGE);
 	    	 rol= 2;
-	    	 new mainApp().setVisible(true);
+	    	 new clasificacionApp().setVisible(true);
 	    	 dispose();
+	    	 //comprueba si el ususario es entrenador
 	     } else if (usuario.equals(entrenadorcorrecto) && contrasena.equals(contrasenaentrenador)) {
 	    	 JOptionPane.showMessageDialog(null, "Bienvenido entrenador", "Bienvenido a la aplicación", JOptionPane.INFORMATION_MESSAGE);
 	    	 rol= 3;
-	    	 new mainApp().setVisible(true);
+	    	 new clasificacionApp().setVisible(true);
 	    	 dispose();
+	    	 //comprueba si el usuario es arbitro
 	     } else if (usuario.equals(arbitrocorrecto) && contrasena.equals(contrasenaarbitro)) {
 	    	 JOptionPane.showMessageDialog(null, "Bienvenido arbitro", "Bienvenido a la aplicación", JOptionPane.INFORMATION_MESSAGE);
 	    	 rol= 4;
-	    	 new mainApp().setVisible(true);
+	    	 new clasificacionApp().setVisible(true);
 	    	 dispose();
 	    	 //En caso de que no se haya introducido ni nombre de usuario ni contraseña
 	     }else if(usuario.equals("") && contrasena.equals("")){
