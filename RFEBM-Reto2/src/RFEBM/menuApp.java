@@ -19,7 +19,7 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.ImageIcon;
 
-public class menuApp extends JFrame {
+public class menuApp extends JFrame implements ActionListener {
 
 	private static final long serialVersionUID = 1L;
 	private JPanel contentPane;
@@ -29,7 +29,6 @@ public class menuApp extends JFrame {
 	private JPanel panel_4;
 	private JButton btnequipos;
 	private JButton btnClasificaciones;
-	private JButton btnModificaciones;
 	private JLabel lblmenu;
 	private JPanel panel_5;
 	private JLabel lblNewLabel;
@@ -139,10 +138,20 @@ public class menuApp extends JFrame {
 		});
 		
 		btnequipos = new JButton("Plantillas");
+		btnequipos.addActionListener(this);
 		panel_4.add(btnequipos);
+	}
+
+	@Override
+	public void actionPerformed(ActionEvent ae) {
+		Object o = ae.getSource();
+		if(o== btnequipos) {
+			new equipoApp().setVisible(true);
+			dispose();
+		}
 		
-		btnModificaciones = new JButton("Modificaciones");
-		panel_4.add(btnModificaciones);
+		
+		
 	}
 
 }

@@ -22,6 +22,7 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import javax.swing.JTable;
 import javax.swing.JScrollPane;
+import javax.swing.DefaultComboBoxModel;
  
 
 	
@@ -103,6 +104,8 @@ public class clasificacionApp  extends JFrame {
 	private static JTextField EquipoLocGol1; static JTextField EquipoLocGol2; static JTextField EquipoLocGol3;
 	private static JTextField EquipoVisGol1; static JTextField EquipoVisGol2; static JTextField EquipoVisGol3;
 	private JLabel VS1; JLabel VS2; JLabel VS3;
+ private JPanel panel_15;
+ private JComboBox<?> CBTemporadas;
 
 	
 	
@@ -165,6 +168,13 @@ public class clasificacionApp  extends JFrame {
 		lblNewLabel_2 = new JLabel("");
 		lblNewLabel_2.setIcon(new ImageIcon(clasificacionApp.class.getResource("/resources/logo.png")));
 		panel_11.add(lblNewLabel_2);
+		
+		panel_15 = new JPanel();
+		panel.add(panel_15, BorderLayout.CENTER);
+		
+		CBTemporadas = new JComboBox();
+		CBTemporadas.setModel(new DefaultComboBoxModel(new String[] {"Temporada 2024-2025", "Temporada 2025-2026"}));
+		panel_15.add(CBTemporadas);
 	
 		panel1 = new JPanel();
 		contentPane.add(panel1, BorderLayout.SOUTH);
