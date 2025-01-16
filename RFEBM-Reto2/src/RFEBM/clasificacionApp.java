@@ -597,10 +597,10 @@ public class clasificacionApp extends JFrame {
         try {Double.parseDouble(str);      return true; }
         catch (NumberFormatException e)  { return false;}
     }
-	final static String FILE_NAME = "datos.csv";
+	final static String Temporada = "datos.csv";
 
     public static void saveData(String[][] jornadasLoc, String[][] jornadasVis, String[][] jornadasGolLoc, String[][] jornadasGolVis,String[][] tableData) throws IOException {
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter(FILE_NAME))) {
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(Temporada))) {
             for (int i = 0; i < jornadasLoc.length; i++) {
                 for (int j = 0; j < jornadasLoc[i].length; j++) {
                     writer.write(jornadasLoc[i][j] + "," + jornadasVis[i][j] + "," + jornadasGolLoc[i][j] + "," + jornadasGolVis[i][j]);
@@ -611,7 +611,7 @@ public class clasificacionApp extends JFrame {
     }
 
     public static void loadData(String[][] jornadasLoc, String[][] jornadasVis, String[][] jornadasGolLoc, String[][] jornadasGolVis,String[][] tableData) throws IOException {
-        try (BufferedReader reader = new BufferedReader(new FileReader(FILE_NAME))) {
+        try (BufferedReader reader = new BufferedReader(new FileReader(Temporada))) {
             String line;
             int i = 0, j = 0;
             while ((line = reader.readLine()) != null) {

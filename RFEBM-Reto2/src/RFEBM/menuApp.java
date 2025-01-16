@@ -35,6 +35,7 @@ public class menuApp extends JFrame implements ActionListener {
 	private JPanel panel_6;
 	private JLabel lblNewLabel_1;
 	private JButton btnLogout;
+	private JButton btnGestion;
 
 	/**
 	 * Launch the application.
@@ -140,6 +141,10 @@ public class menuApp extends JFrame implements ActionListener {
 		btnequipos = new JButton("Plantillas");
 		btnequipos.addActionListener(this);
 		panel_4.add(btnequipos);
+		
+		btnGestion = new JButton("Gestion");
+		btnGestion.addActionListener(this);
+		panel_4.add(btnGestion);
 	}
 
 	@Override
@@ -149,9 +154,15 @@ public class menuApp extends JFrame implements ActionListener {
 			new equipoApp().setVisible(true);
 			dispose();
 		}
+		if(o==btnGestion) {
+			
+		}
 		
 		
 		
 	}
 
 }
+
+
+
