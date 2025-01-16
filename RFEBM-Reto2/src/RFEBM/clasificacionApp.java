@@ -38,56 +38,56 @@ public class clasificacionApp extends JFrame {
 	 */
 	private static final long serialVersionUID = -4093081654081064634L;
 
-	
-	//Crear arrays con las jornadas y los goles
-	public static String[][] jornadasLoc = {
-		{"Barcelona", "Madrid", "Murcia"},
-		{"Cáceres", "Sevilla", "Bilbao"},
-		{"Barcelona", "Cáceres", "Bilbao"},
-		{"Murcia", "Madrid", "Sevilla"},
-		{"Cáceres", "Madrid", "Sevilla"},
-		{"Bilbao", "Barcelona", "Murcia"},
-		{"Barcelona", "Murcia", "Sevilla"},
-		{"Bilbao", "Madrid", "Cáceres"},
-		{"Barcelona", "Madrid", "Murcia"},
-		{"Sevilla", "Bilbao", "Cáceres"}
-	};
-	public static String[][] jornadasGolLoc = {
-		{"0", "0", "0"},
-		{"20", "15", "31"},
-		{"20", "10", "28"},
-		{"18", "24", "20"},
-		{"22", "14", "30"},
-		{"28", "24", "31"},
-		{"12", "35", "17"},
-		{"24", "10", "31"},
-		{"12", "19", "30"},
-		{"14", "6",  "20"}
-	};
-	public static String[][] jornadasVis = {
-	    {"Cáceres", "Sevilla", "Bilbao"},
-	    {"Barcelona", "Madrid", "Murcia"},
-	    {"Murcia", "Madrid", "Sevilla"},
-	    {"Barcelona", "Cáceres", "Bilbao"},
-	    {"Bilbao", "Barcelona", "Murcia"},
-	    {"Cáceres", "Madrid", "Sevilla"},
-	    {"Bilbao", "Madrid", "Cáceres"},
-	    {"Barcelona", "Murcia", "Sevilla"},
-	    {"Sevilla", "Bilbao", "Cáceres"},
-	    {"Barcelona", "Madrid", "Murcia"}
-	};
-	public static String[][] jornadasGolVis = {
-		{"0", "0", "0"},
-		{"19", "12", "33"},
-		{"35", "8",  "29"},
-		{"16", "24", "22"},
-		{"21", "39", "35"},
-		{"32", "20", "30"},
-		{"10", "37", "15"},
-		{"25", "6",  "34"},
-		{"11", "18", "31"},
-		{"13", "4",  "23"}
-	};
+	public static void cargarTemporada2024() {
+	    jornadasLoc = new String[][] {
+	        {"Barcelona", "Madrid", "Murcia"},
+	        {"Cáceres", "Sevilla", "Bilbao"},
+	        {"Barcelona", "Cáceres", "Bilbao"},
+	        {"Murcia", "Madrid", "Sevilla"},
+	        {"Cáceres", "Madrid", "Sevilla"},
+	        {"Bilbao", "Barcelona", "Murcia"},
+	        {"Barcelona", "Murcia", "Sevilla"},
+	        {"Bilbao", "Madrid", "Cáceres"},
+	        {"Barcelona", "Madrid", "Murcia"},
+	        {"Sevilla", "Bilbao", "Cáceres"}
+	    };
+	    jornadasVis = new String[][] {
+	        {"Cáceres", "Sevilla", "Bilbao"},
+	        {"Barcelona", "Madrid", "Murcia"},
+	        {"Murcia", "Madrid", "Sevilla"},
+	        {"Barcelona", "Cáceres", "Bilbao"},
+	        {"Bilbao", "Barcelona", "Murcia"},
+	        {"Cáceres", "Madrid", "Sevilla"},
+	        {"Bilbao", "Madrid", "Cáceres"},
+	        {"Barcelona", "Murcia", "Sevilla"},
+	        {"Sevilla", "Bilbao", "Cáceres"},
+	        {"Barcelona", "Madrid", "Murcia"}
+	    };
+	    jornadasGolLoc = new String[][] {
+	        {"0", "0", "0"},
+	        {"20", "15", "31"},
+	        {"20", "10", "28"},
+	        {"18", "24", "20"},
+	        {"22", "14", "30"},
+	        {"28", "24", "31"},
+	        {"12", "35", "17"},
+	        {"24", "10", "31"},
+	        {"12", "19", "30"},
+	        {"14", "6",  "20"}
+	    };
+	    jornadasGolVis = new String[][] {
+	        {"0", "0", "0"},
+	        {"19", "12", "33"},
+	        {"35", "8",  "29"},
+	        {"16", "24", "22"},
+	        {"21", "39", "35"},
+	        {"32", "20", "30"},
+	        {"10", "37", "15"},
+	        {"25", "6",  "34"},
+	        {"11", "18", "31"},
+	        {"13", "4",  "23"}
+	    };
+	}
 	//Crear array con los datos de la tabla
 	public static String[] columnNames = {"Club", "Pts", "PJ", "PG","PE","PP","GF","GC","DG"};
     public static String[][] tableData = {
@@ -99,7 +99,7 @@ public class clasificacionApp extends JFrame {
     		{"Sevilla"  ,"0","0","0","0","0","0","0","0"}
 
     };
-
+    final static String TEMPORADA_ACTUAL = "Temporada2024-2025";
 	static int jornadaSeleccionada = 0;
 	private JPanel contentPane;
 	private JLabel txtClasif; 
@@ -140,7 +140,9 @@ public class clasificacionApp extends JFrame {
 		if (inicioApp.rol==1) {
 			setTitle("Menú usuario");
 		} if (inicioApp.rol==2) {
-			setTitle("Menú administrador");
+			setTitle("Menú administrador"+ TEMPORADA_ACTUAL);
+			cargarTemporada2024(); // Carga la nueva temporada
+		    // Resto del constructor
 		} if (inicioApp.rol==3) {
 			setTitle("Menú entrenador"); // solo acceso a clase equipos
 		} if (inicioApp.rol==4) {
@@ -597,6 +599,7 @@ public class clasificacionApp extends JFrame {
         try {Double.parseDouble(str);      return true; }
         catch (NumberFormatException e)  { return false;}
     }
+  
 	final static String Temporada = "datos.csv";
 
     public static void saveData(String[][] jornadasLoc, String[][] jornadasVis, String[][] jornadasGolLoc, String[][] jornadasGolVis,String[][] tableData) throws IOException {
