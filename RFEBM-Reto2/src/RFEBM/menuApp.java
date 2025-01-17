@@ -11,6 +11,7 @@ import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.IOException;
 import java.awt.FlowLayout;
 import javax.swing.JButton;
 import javax.swing.SwingConstants;
@@ -132,7 +133,12 @@ public class menuApp extends JFrame implements ActionListener {
 			public void actionPerformed(ActionEvent e) {
 				int respuesta = JOptionPane.showConfirmDialog(null, "¿Está seguro que desea ir a clasificaciones?", "Clasificacion", JOptionPane.YES_NO_OPTION, JOptionPane.INFORMATION_MESSAGE);
 				if (respuesta == JOptionPane.YES_OPTION) {
-						new clasificacionApp().setVisible(true);
+						try {
+							new clasificacionApp().setVisible(true);
+						} catch (IOException e1) {
+							// TODO Auto-generated catch block
+							e1.printStackTrace();
+						}
 				dispose();
 				}
 			}
