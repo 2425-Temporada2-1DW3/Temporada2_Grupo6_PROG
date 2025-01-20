@@ -2,22 +2,25 @@ package RFEBM;
 
 import java.awt.EventQueue;
 
-
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 import java.awt.BorderLayout;
+import javax.swing.JTextField;
 import java.awt.Font;
+import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.IOException;
 import java.awt.FlowLayout;
 import javax.swing.JButton;
 import javax.swing.SwingConstants;
+import java.awt.CardLayout;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.ImageIcon;
 
-public class menuApp extends JFrame {
+public class menuApp extends JFrame implements ActionListener {
 
 	private static final long serialVersionUID = 1L;
 	private JPanel contentPane;
@@ -27,13 +30,13 @@ public class menuApp extends JFrame {
 	private JPanel panel_4;
 	private JButton btnequipos;
 	private JButton btnClasificaciones;
-	private JButton btnModificaciones;
 	private JLabel lblmenu;
 	private JPanel panel_5;
 	private JLabel lblNewLabel;
 	private JPanel panel_6;
 	private JLabel lblNewLabel_1;
 	private JButton btnLogout;
+	private JButton btnGestion;
 
 	/**
 	 * Launch the application.
@@ -68,6 +71,7 @@ public class menuApp extends JFrame {
 		contentPane.add(panel, BorderLayout.NORTH);
 		
 		panel_5 = new JPanel();
+		FlowLayout flowLayout_3 = (FlowLayout) panel_5.getLayout();
 		panel.add(panel_5);
 		
 		lblNewLabel = new JLabel("");
@@ -129,17 +133,42 @@ public class menuApp extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				int respuesta = JOptionPane.showConfirmDialog(null, "¿Está seguro que desea ir a clasificaciones?", "Clasificacion", JOptionPane.YES_NO_OPTION, JOptionPane.INFORMATION_MESSAGE);
 				if (respuesta == JOptionPane.YES_OPTION) {
-						new clasificacionApp().setVisible(true);
+						try {
+							new clasificacionApp().setVisible(true);
+						} catch (IOException e1) {
+							// TODO Auto-generated catch block
+							e1.printStackTrace();
+						}
 				dispose();
 				}
 			}
 		});
 		
 		btnequipos = new JButton("Plantillas");
+		btnequipos.addActionListener(this);
 		panel_4.add(btnequipos);
 		
-		btnModificaciones = new JButton("Modificaciones");
-		panel_4.add(btnModificaciones);
+		btnGestion = new JButton("Gestion");
+		btnGestion.addActionListener(this);
+		panel_4.add(btnGestion);
+	}
+
+	@Override
+	public void actionPerformed(ActionEvent ae) {
+		Object o = ae.getSource();
+		if(o== btnequipos) {
+			new equipoApp().setVisible(true);
+			dispose();
+		}
+		if(o==btnGestion) {
+			
+		}
+		
+		
+		
 	}
 
 }
+
+
+

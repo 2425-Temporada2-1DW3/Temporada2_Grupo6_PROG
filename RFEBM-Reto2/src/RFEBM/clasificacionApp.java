@@ -20,77 +20,85 @@ import java.awt.FlowLayout;
 import javax.swing.JTextField;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+
 import javax.swing.JTable;
 import javax.swing.JScrollPane;
- 
 
-	
+public class clasificacionApp extends JFrame {
+    private static final long serialVersionUID = -4093081654081064634L;
 
-public class clasificacionApp  extends JFrame {
-	
-	//Crear arrays con las jornadas y los goles
-	public static String[][] jornadasLoc = {
-		{"Barcelona", "Madrid", "Murcia"},
-		{"Cáceres", "Sevilla", "Bilbao"},
-		{"Barcelona", "Cáceres", "Bilbao"},
-		{"Murcia", "Madrid", "Sevilla"},
-		{"Cáceres", "Madrid", "Sevilla"},
-		{"Bilbao", "Barcelona", "Murcia"},
-		{"Barcelona", "Murcia", "Sevilla"},
-		{"Bilbao", "Madrid", "Cáceres"},
-		{"Barcelona", "Madrid", "Murcia"},
-		{"Sevilla", "Bilbao", "Cáceres"}
-	};
-	public static String[][] jornadasGolLoc = {
-		{"0", "0", "0"},
-		{"20", "15", "31"},
-		{"20", "10", "28"},
-		{"18", "24", "20"},
-		{"22", "14", "30"},
-		{"28", "24", "31"},
-		{"12", "35", "17"},
-		{"24", "10", "31"},
-		{"12", "19", "30"},
-		{"14", "6",  "20"}
-	};
-	public static String[][] jornadasVis = {
-	    {"Cáceres", "Sevilla", "Bilbao"},
-	    {"Barcelona", "Madrid", "Murcia"},
-	    {"Murcia", "Madrid", "Sevilla"},
-	    {"Barcelona", "Cáceres", "Bilbao"},
-	    {"Bilbao", "Barcelona", "Murcia"},
-	    {"Cáceres", "Madrid", "Sevilla"},
-	    {"Bilbao", "Madrid", "Cáceres"},
-	    {"Barcelona", "Murcia", "Sevilla"},
-	    {"Sevilla", "Bilbao", "Cáceres"},
-	    {"Barcelona", "Madrid", "Murcia"}
-	};
-	public static String[][] jornadasGolVis = {
-		{"0", "0", "0"},
-		{"19", "12", "33"},
-		{"35", "8",  "29"},
-		{"16", "24", "22"},
-		{"21", "39", "35"},
-		{"32", "20", "30"},
-		{"10", "37", "15"},
-		{"25", "6",  "34"},
-		{"11", "18", "31"},
-		{"13", "4",  "23"}
-	};
-	//Crear array con los datos de la tabla
-	public static String[] columnNames = {"Club", "Pts", "PJ", "PG","PE","PP","GF","GC","DG"};
-    public static String[][] tableData = {
-    		{"Madrid"   ,"0","0","0","0","0","0","0","0"},
-    		{"Cáceres"  ,"0","0","0","0","0","0","0","0"},
-    		{"Bilbao"   ,"0","0","0","0","0","0","0","0"},
-    		{"Barcelona","0","0","0","0","0","0","0","0"},
-    		{"Murcia"   ,"0","0","0","0","0","0","0","0"},
-    		{"Sevilla"  ,"0","0","0","0","0","0","0","0"}
-
+    // Declarar arrays para las jornadas y los goles
+    public static String[][] jornadasLoc = {
+        {"Barcelona", "Madrid", "Murcia"},
+        {"Cáceres", "Sevilla", "Bilbao"},
+        {"Barcelona", "Cáceres", "Bilbao"},
+        {"Murcia", "Madrid", "Sevilla"},
+        {"Cáceres", "Madrid", "Sevilla"},
+        {"Bilbao", "Barcelona", "Murcia"},
+        {"Barcelona", "Murcia", "Sevilla"},
+        {"Bilbao", "Madrid", "Cáceres"},
+        {"Barcelona", "Madrid", "Murcia"},
+        {"Sevilla", "Bilbao", "Cáceres"}
     };
 
+    public static String[][] jornadasGolLoc = {
+        {"0", "0", "0"},
+        {"20", "15", "31"},
+        {"20", "10", "28"},
+        {"18", "24", "20"},
+        {"22", "14", "30"},
+        {"28", "24", "31"},
+        {"12", "35", "17"},
+        {"24", "10", "31"},
+        {"12", "19", "30"},
+        {"14", "6", "20"}
+    };
+
+    public static String[][] jornadasVis = {
+        {"Cáceres", "Sevilla", "Bilbao"},
+        {"Barcelona", "Madrid", "Murcia"},
+        {"Murcia", "Madrid", "Sevilla"},
+        {"Barcelona", "Cáceres", "Bilbao"},
+        {"Bilbao", "Barcelona", "Murcia"},
+        {"Cáceres", "Madrid", "Sevilla"},
+        {"Bilbao", "Madrid", "Cáceres"},
+        {"Barcelona", "Murcia", "Sevilla"},
+        {"Sevilla", "Bilbao", "Cáceres"},
+        {"Barcelona", "Madrid", "Murcia"}
+    };
+
+    public static String[][] jornadasGolVis = {
+        {"0", "0", "0"},
+        {"19", "12", "33"},
+        {"35", "8", "29"},
+        {"16", "24", "22"},
+        {"21", "39", "35"},
+        {"32", "20", "30"},
+        {"10", "37", "15"},
+        {"25", "6", "34"},
+        {"11", "18", "31"},
+        {"13", "4", "23"}
+    };
+
+    // Agregar datos de la tabla
+    public static String[] columnNames = {"Club", "Pts", "PJ", "PG", "PE", "PP", "GF", "GC", "DG"};
+    public static String[][] tableData = {
+        {"Madrid", "0", "0", "0", "0", "0", "0", "0", "0"},
+        {"Cáceres", "0", "0", "0", "0", "0", "0", "0", "0"},
+        {"Bilbao", "0", "0", "0", "0", "0", "0", "0", "0"},
+        {"Barcelona", "0", "0", "0", "0", "0", "0", "0", "0"},
+        {"Murcia", "0", "0", "0", "0", "0", "0", "0", "0"},
+        {"Sevilla", "0", "0", "0", "0", "0", "0", "0", "0"}
+    };
+
+    // Temporada actual
+    final static String TEMPORADA_ACTUAL = "Temporada2024-2025";
 	static int jornadaSeleccionada = 0;
-	private static final long serialVersionUID = 1L;
 	private JPanel contentPane;
 	private JLabel txtClasif; 
 	private JPanel panel; JPanel panel1; JPanel panel4; JPanel panel5; JPanel panel_1; JPanel panel_2; JPanel panel_3; JPanel panel_4; JPanel panel_5; JPanel panel_6; JPanel panel_7; JPanel panel_8; JPanel panel_9; JPanel panel_10; JPanel panel_11; JPanel panel_12; JPanel panel_13; JPanel panel_14;
@@ -103,6 +111,8 @@ public class clasificacionApp  extends JFrame {
 	private static JTextField EquipoLocGol1; static JTextField EquipoLocGol2; static JTextField EquipoLocGol3;
 	private static JTextField EquipoVisGol1; static JTextField EquipoVisGol2; static JTextField EquipoVisGol3;
 	private JLabel VS1; JLabel VS2; JLabel VS3;
+ private JPanel panel_15;
+ 
 
 	
 	
@@ -110,25 +120,28 @@ public class clasificacionApp  extends JFrame {
 	 * Launch the application.
 	 */
 
-	public static void main(String[] args) {
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				try {
-				clasificacionApp frame = new clasificacionApp();
-					frame.setVisible(true);
-					frame.setResizable(false);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		});
+ public static void main(String[] args) {
+	    EventQueue.invokeLater(new Runnable() {
+	        public void run() {
+	            try {
+	                clasificacionApp frame = new clasificacionApp();
+	                frame.setVisible(true);
+	                frame.setResizable(false);
+	            } catch (Exception e) {
+	                e.printStackTrace();
+	            }
+	        }
+	    });
 	}
 
-	public clasificacionApp() {
+	public clasificacionApp() throws IOException {
+		setTitle("Clasificación - " + TEMPORADA_ACTUAL);
+        // Continuar con la configuración de la interfaz
 		if (inicioApp.rol==1) {
 			setTitle("Menú usuario");
 		} if (inicioApp.rol==2) {
 			setTitle("Menú administrador");
+		    // Resto del constructor
 		} if (inicioApp.rol==3) {
 			setTitle("Menú entrenador"); // solo acceso a clase equipos
 		} if (inicioApp.rol==4) {
@@ -141,6 +154,8 @@ public class clasificacionApp  extends JFrame {
 		golesfilter golesfilter = new golesfilter();
 		setContentPane(contentPane);
 		contentPane.setLayout(new BorderLayout(0, 0));
+		
+		clasificacionApp.loadData(TEMPORADA_ACTUAL);
 	
 		panel = new JPanel();
 		contentPane.add(panel, BorderLayout.NORTH);
@@ -165,6 +180,11 @@ public class clasificacionApp  extends JFrame {
 		lblNewLabel_2 = new JLabel("");
 		lblNewLabel_2.setIcon(new ImageIcon(clasificacionApp.class.getResource("/resources/logo.png")));
 		panel_11.add(lblNewLabel_2);
+		
+		panel_15 = new JPanel();
+		panel.add(panel_15, BorderLayout.CENTER);
+		
+		
 	
 		panel1 = new JPanel();
 		contentPane.add(panel1, BorderLayout.SOUTH);
@@ -193,16 +213,26 @@ public class clasificacionApp  extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				lblTextoCambios.setText("INFO : Cambios aplicados");
 				limpiarValores();
+				  if (jornadaSeleccionada < jornadasGolLoc.length && jornadaSeleccionada < jornadasGolVis.length) {
 				jornadasGolLoc[jornadaSeleccionada][0] = EquipoLocGol1.getText();
 				jornadasGolLoc[jornadaSeleccionada][1] = EquipoLocGol2.getText();
 				jornadasGolLoc[jornadaSeleccionada][2] = EquipoLocGol3.getText();
 				jornadasGolVis[jornadaSeleccionada][0] = EquipoVisGol1.getText();
 				jornadasGolVis[jornadaSeleccionada][1] = EquipoVisGol2.getText();
 				jornadasGolVis[jornadaSeleccionada][2] = EquipoVisGol3.getText();
+				  } else {
+			            lblTextoCambios.setText("ERROR: Jornada seleccionada fuera de los límites.");
+			            return; // Evita procesar datos si hay un error
+			        }
 				updateTable();// Calcula Tabla Al Pulsar Boton
 
-				
-
+				  // Guardar datos en archivo
+		        try {
+		        	clasificacionApp.saveData(jornadasLoc, jornadasVis, jornadasGolLoc, jornadasGolVis, tableData);
+		        } catch (IOException ex) {
+		            lblTextoCambios.setText("ERROR: No se pudieron guardar los cambios.");
+		            ex.printStackTrace();
+		        }  
 			}
 		});
 		panel1.add(btnAplicarCambios, BorderLayout.WEST);
@@ -242,7 +272,7 @@ public class clasificacionApp  extends JFrame {
 		panel_12 = new JPanel();
 		panel_2.add(panel_12, BorderLayout.NORTH);
 		
-			JornadaTxt = new JLabel("Seleccione jornada");
+			JornadaTxt = new JLabel("Seleccione jornada"+ TEMPORADA_ACTUAL);
 			panel_12.add(JornadaTxt);
 			JornadaTxt.setFont(new Font("Arial", Font.PLAIN, 13));
 		
@@ -422,12 +452,21 @@ public class clasificacionApp  extends JFrame {
 		scrollPane.setViewportView(table);
 		table.setRowHeight(30);
 		
+		try {
+			clasificacionApp.loadData(jornadasLoc, jornadasVis, jornadasGolLoc, jornadasGolVis, tableData);
+	    } catch (IOException ex) {
+	        System.out.println("INFO: No se encontraron datos previos, iniciando con valores predeterminados.");
+	    }
 		// Datos Por Defecto
 		updateTable(); // Calcula Tabla Al iniciar
 		cargarDatosJornada(); // Carga Datos Jornada 1
 		lblTextoCambios.setText("INFO : Mostrando Jornada " + (jornadaSeleccionada + 1));
 		
 
+	}
+	private static void loadData(String temporadaActual) {
+		
+		
 	}
 	class golesfilter extends KeyAdapter {
 		@Override
@@ -444,16 +483,16 @@ public class clasificacionApp  extends JFrame {
 	}
 	public static void updateTable() {
 		
-		// Resetea Valores De tableData
-        for (int i = 0; i < tableData.length; i++) {
-            for (int j = 1; j < tableData[i].length; j++) { 
-                tableData[i][j] = "0";
+		  // Resetea valores de tableData
+	    for (int i = 0; i < tableData.length; i++) {
+	        for (int j = 1; j < tableData[i].length; j++) { 
+	            tableData[i][j] = "0";
             }
         }
 	
         // Calcula Quien Gana y cuantos puntos tiene
-		for (int i = 0; i <= 9; ++i) {
-			for (int j = 0; j <= 2; ++j) {
+	    for (int i = 0; i < jornadasLoc.length; ++i) {
+	        for (int j = 0; j < jornadasLoc[i].length; ++j) {
 				if ((jornadasGolLoc[i][j]).equals("") || (jornadasGolVis[i][j]).equals("") ) {
 					updateTableData(jornadasLoc[i][j],0,0,0,0,0,0,0);
 					updateTableData(jornadasVis[i][j],0,0,0,0,0,0,0);
@@ -501,20 +540,23 @@ public class clasificacionApp  extends JFrame {
 	public static void updateTableData(String equipo, int Pts , int PJ ,   int PG , int PE,   int PP,   int GF,    int GC ) {
 		//							   NOMBRE EQUIPO  PUNTOS    P JUGADOS  P GANA   P EMPATE  P PIERDE  GOL FAVOR  GOL CONTRA 
 		
-        for (int j = 0; j < 6; ++j) {
-        	if (tableData[j][0].equals(equipo)) {
-        		tableData[j][1] = Integer.toString(Pts+ Integer.parseInt(tableData[j][1]));
-        		tableData[j][2] = Integer.toString(PJ + Integer.parseInt(tableData[j][2]));
-        		tableData[j][3] = Integer.toString(PG + Integer.parseInt(tableData[j][3]));
-        		tableData[j][4] = Integer.toString(PE + Integer.parseInt(tableData[j][4]));
-        		tableData[j][5] = Integer.toString(PP + Integer.parseInt(tableData[j][5]));
-        		tableData[j][6] = Integer.toString(GF + Integer.parseInt(tableData[j][6]));
-        		tableData[j][7] = Integer.toString(GC + Integer.parseInt(tableData[j][7]));
-        		tableData[j][8] = Integer.toString((GF-GC) + Integer.parseInt(tableData[j][8]));;
-
-        		
-        	}
-        }
+		for (int j = 0; j < tableData.length; ++j) {
+	        if (tableData[j][0].equals(equipo)) {
+	            // Validación para evitar errores al sumar valores
+	            try {
+	                tableData[j][1] = Integer.toString(Pts + Integer.parseInt(tableData[j][1]));
+	                tableData[j][2] = Integer.toString(PJ + Integer.parseInt(tableData[j][2]));
+	                tableData[j][3] = Integer.toString(PG + Integer.parseInt(tableData[j][3]));
+	                tableData[j][4] = Integer.toString(PE + Integer.parseInt(tableData[j][4]));
+	                tableData[j][5] = Integer.toString(PP + Integer.parseInt(tableData[j][5]));
+	                tableData[j][6] = Integer.toString(GF + Integer.parseInt(tableData[j][6]));
+	                tableData[j][7] = Integer.toString(GC + Integer.parseInt(tableData[j][7]));
+	                tableData[j][8] = Integer.toString((GF - GC) + Integer.parseInt(tableData[j][8]));
+	            } catch (NumberFormatException ex) {
+	                System.out.println("ERROR: Datos corruptos en la tabla.");
+	            }
+	        }
+	    }
 	}
 	public static void cargarDatosJornada() { // Pone Los Valores Apropiados en Los lblTexto y Jtextfields
 		EquipoLoc1.setText(jornadasLoc[jornadaSeleccionada][0]);
@@ -556,4 +598,64 @@ public class clasificacionApp  extends JFrame {
         try {Double.parseDouble(str);      return true; }
         catch (NumberFormatException e)  { return false;}
     }
+  
+	final static String Temporada = "datos.csv";
+
+    public static void saveData(String[][] jornadasLoc, String[][] jornadasVis, String[][] jornadasGolLoc, String[][] jornadasGolVis,String[][] tableData) throws IOException {
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(Temporada))) {
+            for (int i = 0; i < jornadasLoc.length; i++) {
+                for (int j = 0; j < jornadasLoc[i].length; j++) {
+                    writer.write(jornadasLoc[i][j] + "," + jornadasVis[i][j] + "," + jornadasGolLoc[i][j] + "," + jornadasGolVis[i][j]);
+                    writer.newLine();
+                }
+            }
+        }
+    }
+
+    public static void loadData(String[][] jornadasLoc, String[][] jornadasVis, 
+    							String[][] jornadasGolLoc, String[][] jornadasGolVis, 
+    							String[][] tableData) throws IOException {
+    	try (BufferedReader reader = new BufferedReader(new FileReader(Temporada))) {
+    		String line;
+    		int i = 0, j = 0;
+
+			while ((line = reader.readLine()) != null) {
+				String[] parts = line.split(",");
+
+				// Validación del tamaño de parts para asegurarse de que contiene al menos 4 elementos
+				if (parts.length >= 4) {
+					// Cargar datos en las matrices correspondientes
+					jornadasLoc[i][j] = parts[0];
+					jornadasVis[i][j] = parts[1];
+					jornadasGolLoc[i][j] = parts[2];
+					jornadasGolVis[i][j] = parts[3];
+
+					// Si hay más de 4 columnas en el archivo, intenta almacenar en tableData
+					if (parts.length > 4 && j < tableData[i].length) {
+					    tableData[i][j] = parts[4]; // Asumir que el CSV tiene información adicional para la tabla
+					}
+				} else {
+					// Si la línea no tiene suficientes datos, se ignora
+					System.out.println("Línea incompleta en archivo CSV, omitiendo: " + line);
+				}
+				j++;
+				if (j == jornadasLoc[i].length) {
+					i++;
+					j = 0;
+				}
+				if (i >= jornadasLoc.length) {
+					break; // Evitar acceder fuera de los límites de la matriz
+				}
+			}
+		} catch (IOException e) {
+			// Manejo de excepciones si ocurre un error al leer el archivo
+			System.err.println("Error al leer el archivo de datos: " + e.getMessage());
+			throw e; // Vuelve a lanzar la excepción para manejarla más arriba si es necesario
+		}
+    }
 }
+
+
+
+
+
