@@ -1,63 +1,91 @@
 package Classes;
 
-import java.util.Objects;
+import java.io.Serializable;
 
-public class TemporadaApp extends EquipoApp {
-int año;
-String campeon;
-String participantes;
-//constructor pos defecto
-TemporadaApp(){
-	año = 2024;
-	campeon = "";
-	participantes = "";
-}
-//Getters y Setters
-public int getAño() {
-	return año;
-}
+public class TemporadaApp implements Serializable{
+ 
+	private static final long serialVersionUID = 1L;
+	private String nombre;
+    private añoTemporadaApp añoTemporada;
+	private String campeon;
+    private EstadoTemporada estado;  // Nuevo campo para controlar el estado de la temporada
 
-public void setAño(int año) {
-	this.año = año;
-}
+    // Constructor
+    public TemporadaApp(String nombre, añoTemporadaApp añoTemporada) {
+        this.nombre = nombre;
+        this.añoTemporada = añoTemporada;
+        this.campeon = null; // Al principio no hay campeón
+        this.estado = EstadoTemporada.Sin_Iniciar; // Inicialmente la temporada no está iniciada
+    }
 
-public String getCampeon() {
-	return campeon;
-}
+    // Método para obtener información de la temporada
+    public String obtenerInformacion() {
+        return "Temporada: " + nombre + " | Fecha: " + añoTemporada.obtenerFormatoTemporada() + 
+               " | Estado: " + estado.toString() + 
+               (estado == EstadoTemporada.Finalizada ? " | Campeón: " + campeon : "");
+    }
 
-public void setCampeon(String campeon) {
-	this.campeon = campeon;
-}
+    // Método para iniciar la temporada
+    public void iniciarTemporada() {
+        if (estado == EstadoTemporada.Sin_Iniciar) {
+            this.estado = EstadoTemporada.Iniciada;
+        } else {
+            System.out.println("La temporada ya ha sido iniciada o finalizada.");
+        }
+    }
 
-public String getParticipantes() {
-	return participantes;
-}
+    // Método para finalizar la temporada y asignar un campeón
+    public void finalizarTemporada(String campeon) {
+        if (estado == EstadoTemporada.Iniciada) {
+            this.campeon = campeon;
+            this.estado = EstadoTemporada.Finalizada;
+        } else {
+            System.out.println("La temporada debe estar iniciada para finalizarla.");
+        }
+    }
 
-public void setParticipantes(String participantes) {
-	this.participantes = participantes;
-}
-//toString
-@Override
-public String toString() {
-	return "TemporadaApp [año=" + año + ", campeon=" + campeon + ", participantes=" + participantes + "]";
-}
-//hashCode
-@Override
-public int hashCode() {
-	return Objects.hash(año, campeon, participantes);
-}
-//equals
-@Override
-public boolean equals(Object obj) {
-	if (this == obj)
-		return true;
-	if (obj == null)
-		return false;
-	if (getClass() != obj.getClass())
-		return false;
-	TemporadaApp other = (TemporadaApp) obj;
-	return año == other.año && Objects.equals(campeon, other.campeon)
-			&& Objects.equals(participantes, other.participantes);
-}
+    // Getters y setters
+    public String getNombre() {
+        return nombre;
+    }
 
+    public void setNombre(String nombre) {
+        this.nombre = nombre;
+    }
+
+    public añoTemporadaApp getAñoTemporada() {
+        return añoTemporada;
+    }
+
+    public void setAñoTemporada(añoTemporadaApp añoTemporada) {
+        this.añoTemporada = añoTemporada;
+    }
+
+    public String getCampeon() {
+        return campeon;
+    }
+
+    public void setCampeon(String campeon) {
+        if (estado != EstadoTemporada.Finalizada) {
+            throw new IllegalStateException("El campeón solo puede asignarse cuando la temporada está finalizada.");
+        }
+        this.campeon = campeon;
+    }
+
+    public EstadoTemporada getEstado() {
+        return estado;
+    }
+
+    public void setEstado(EstadoTemporada estado) {
+        this.estado = estado;
+    }
+    @Override
+	public String toString() {
+    	if (campeon == null) {
+    		return  nombre +" "+ estado +" "+añoTemporada;
+	}
+    	else {
+    		return  nombre + ", campeon=" + campeon + " "+ estado +" "+añoTemporada;	
+    	}
+}
 }

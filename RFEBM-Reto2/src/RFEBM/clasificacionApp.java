@@ -612,37 +612,49 @@ public class clasificacionApp extends JFrame {
         }
     }
 
-    public static void loadData(String[][] jornadasLoc, String[][] jornadasVis, String[][] jornadasGolLoc, String[][] jornadasGolVis,String[][] tableData) throws IOException {
-        try (BufferedReader reader = new BufferedReader(new FileReader(Temporada))) {
-            String line;
-            int i = 0, j = 0;
-            while ((line = reader.readLine()) != null) {
-                String[] parts = line.split(",");
-                
-               // Validación del tamaño de parts
-                if (parts.length >= 4) { // Asegúrate de que al menos hay suficientes columnas
-                jornadasLoc[i][j] = parts[0];
-                jornadasVis[i][j] = parts[1];
-                jornadasGolLoc[i][j] = parts[2];
-                jornadasGolVis[i][j] = parts[3];
-                // Validación opcional para tableData (si hay columnas adicionales)
-                if (parts.length > 4 && j < tableData[i].length) {
-                    tableData[i][j] = parts[4];
-                }
-            } else {
-                System.out.println("Línea incompleta en archivo CSV, omitiendo: " + line);
-            }
-            
-            j++;
-            if (j == jornadasLoc[i].length) {
-                i++;
-                j = 0;
-            }
-            if (i >= jornadasLoc.length) break; // Evita acceder fuera de los límites del arreglo
-        }
+    public static void loadData(String[][] jornadasLoc, String[][] jornadasVis, 
+    							String[][] jornadasGolLoc, String[][] jornadasGolVis, 
+    							String[][] tableData) throws IOException {
+    	try (BufferedReader reader = new BufferedReader(new FileReader(Temporada))) {
+    		String line;
+    		int i = 0, j = 0;
+
+			while ((line = reader.readLine()) != null) {
+				String[] parts = line.split(",");
+
+				// Validación del tamaño de parts para asegurarse de que contiene al menos 4 elementos
+				if (parts.length >= 4) {
+					// Cargar datos en las matrices correspondientes
+					jornadasLoc[i][j] = parts[0];
+					jornadasVis[i][j] = parts[1];
+					jornadasGolLoc[i][j] = parts[2];
+					jornadasGolVis[i][j] = parts[3];
+
+					// Si hay más de 4 columnas en el archivo, intenta almacenar en tableData
+					if (parts.length > 4 && j < tableData[i].length) {
+					    tableData[i][j] = parts[4]; // Asumir que el CSV tiene información adicional para la tabla
+					}
+				} else {
+					// Si la línea no tiene suficientes datos, se ignora
+					System.out.println("Línea incompleta en archivo CSV, omitiendo: " + line);
+				}
+				j++;
+				if (j == jornadasLoc[i].length) {
+					i++;
+					j = 0;
+				}
+				if (i >= jornadasLoc.length) {
+					break; // Evitar acceder fuera de los límites de la matriz
+				}
+			}
+		} catch (IOException e) {
+			// Manejo de excepciones si ocurre un error al leer el archivo
+			System.err.println("Error al leer el archivo de datos: " + e.getMessage());
+			throw e; // Vuelve a lanzar la excepción para manejarla más arriba si es necesario
+		}
     }
 }
-}
+
 
 
 
