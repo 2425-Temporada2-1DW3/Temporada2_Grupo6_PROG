@@ -265,6 +265,26 @@ public class temporadasApp extends JFrame implements ActionListener,WindowListen
 		lstTemporadas.setModel(dlm);
 		JScrollPane scrollPane = new JScrollPane(lstTemporadas);
 		panel_4.add(scrollPane, BorderLayout.CENTER);
+		lstTemporadas.addListSelectionListener(e -> {
+		    if (!e.getValueIsAdjusting()) { // Verificamos que la selección haya terminado
+		        int[] seleccion = lstTemporadas.getSelectedIndices();
+		        if (seleccion.length > 1) {
+		        	txtAñoinicio.setText("");
+		        	txtAñofinal.setText("");
+		        	txtNombre.setText("");
+		        }
+		        else if (seleccion.length == 1){
+		            // Obtener el objeto TemporadaApp de la lista
+		            TemporadaApp temporadaSeleccionada = dlm.get(seleccion[0]);
+
+		            // Poner los datos en los campos de texto
+		            txtNombre.setText(temporadaSeleccionada.getNombre());
+		            txtAñoinicio.setText(String.valueOf(temporadaSeleccionada.getAñoTemporada().getAñoInicio()));
+		            txtAñofinal.setText(String.valueOf(temporadaSeleccionada.getAñoTemporada().getAñoFinal()));
+		        }
+		    }
+		});
+		
 	}
 	
 	private int calcularTotalTemporadas() {
@@ -278,25 +298,37 @@ public class temporadasApp extends JFrame implements ActionListener,WindowListen
 
 	if (o == btnGuardar){
 		 String nombre = txtNombre.getText();
-         String añoInicioP = txtAñoinicio.getText();
-         String añoFinP = txtAñofinal.getText(); 
-         
-         
-         
-         if(añoInicioP.isEmpty() || añoFinP.isEmpty() || nombre.isEmpty() ) {
-        	JOptionPane.showMessageDialog(this, "Los campos de texto no pueden estar vacios", "Error", JOptionPane.ERROR_MESSAGE);
-     		return; 
-         } else {
-         int añoInicio = Integer.parseInt(añoInicioP);
-         int añoFin = Integer.parseInt(añoFinP);
-         
-         // Crear la instancia de AñoTemporadaApp y Temporada
-         añoTemporadaApp añoTemporada = new añoTemporadaApp(añoInicio, añoFin);
-         TemporadaApp temporada = new TemporadaApp(nombre, añoTemporada);
-         dlm.addElement(temporada);
-         cambiodatos = true;
-         }
-	}
+		    // Obtén los valores de año de inicio y fin de los campos de texto
+		    int añoInicio = Integer.parseInt(txtAñoinicio.getText());
+		    int añoFin = Integer.parseInt(txtAñofinal.getText());
+
+		    // Crear la nueva temporada con los valores obtenidos
+		    if (añoInicio < añoFin) {
+		    	
+		    }
+		    añoTemporadaApp nuevaTemporada = new añoTemporadaApp(añoInicio, añoFin);
+
+		    // Verificar si ya existe una temporada con los mismos años
+		    for (int i = 0; i < dlm.size(); i++) {
+		        TemporadaApp temporadaExistente = dlm.get(i);
+		        
+		        // Obtener el objeto AñoTemporadaApp de la temporada existente
+		        añoTemporadaApp temporadaAñosExistente = temporadaExistente.getAñoTemporada();
+		        
+		        // Compara usando el método equals
+		        if (nuevaTemporada.equals(temporadaAñosExistente)) {
+		            JOptionPane.showMessageDialog(this, "Ya existe una temporada con el mismo año de inicio y fin.", "Error", JOptionPane.ERROR_MESSAGE);
+		            return;  // Salir del método sin añadir la nueva temporada
+		        }
+		    }
+
+		    // Si no hay conflicto, añadir la nueva temporada a la lista
+		     añoTemporadaApp añoTemporada = new añoTemporadaApp(añoInicio, añoFin);
+	         TemporadaApp temporada = new TemporadaApp(nombre, añoTemporada);
+	         dlm.addElement(temporada);
+	         cambiodatos = true;
+		    JOptionPane.showMessageDialog(this, "La temporada ha sido añadida correctamente.", "Éxito", JOptionPane.INFORMATION_MESSAGE);
+		}
 	if (o == btnBorrar){
 		boolean ElementoBorrado = false;
 		int[]Seleccionados = lstTemporadas.getSelectedIndices();
@@ -311,6 +343,46 @@ public class temporadasApp extends JFrame implements ActionListener,WindowListen
 		}
 		lblTotalElementosValor.setText("" + calcularTotalTemporadas());
 		}
+	if (o == btnModificar) {
+		if (o == btnModificar) {
+		    int seleccion = lstTemporadas.getSelectedIndex();
+		    if (seleccion == -1) {
+		        JOptionPane.showMessageDialog(this, "Por favor, selecciona una temporada para modificar.", "Error", JOptionPane.ERROR_MESSAGE);
+		        return;
+		    }
+
+		    // Obtener los valores de los campos de texto
+		    String nuevoNombre = txtNombre.getText();
+		    String nuevoAñoInicioStr = txtAñoinicio.getText();
+		    String nuevoAñoFinStr = txtAñofinal.getText();
+
+		    // Validar que los campos no estén vacíos
+		    if (nuevoNombre.isEmpty() || nuevoAñoInicioStr.isEmpty() || nuevoAñoFinStr.isEmpty()) {
+		        JOptionPane.showMessageDialog(this, "Los campos no pueden estar vacíos.", "Error", JOptionPane.ERROR_MESSAGE);
+		        return;
+		    }
+
+		    try {
+		        int nuevoAñoInicio = Integer.parseInt(nuevoAñoInicioStr);
+		        int nuevoAñoFin = Integer.parseInt(nuevoAñoFinStr);
+
+		        // Obtener la temporada seleccionada
+		        TemporadaApp temporadaSeleccionada = dlm.get(seleccion);
+		        // Crear un nuevo objeto añoTemporadaApp con los nuevos valores
+		        añoTemporadaApp nuevoAñoTemporada = new añoTemporadaApp(nuevoAñoInicio, nuevoAñoFin);
+		        // Actualizar los valores en el objeto TemporadaApp
+		        temporadaSeleccionada.setNombre(nuevoNombre);
+		        temporadaSeleccionada.setAñoTemporada(nuevoAñoTemporada);
+
+		        // Actualizar la lista
+		        dlm.set(seleccion, temporadaSeleccionada);
+
+		        JOptionPane.showMessageDialog(this, "Temporada modificada correctamente.", "Éxito", JOptionPane.INFORMATION_MESSAGE);
+		    } catch (NumberFormatException ex) {
+		        JOptionPane.showMessageDialog(this, "Los campos de año deben ser números válidos.", "Error", JOptionPane.ERROR_MESSAGE);
+		    }
+		}
+	}
 	
 	if (o == btnVolver){
 		int respuesta = JOptionPane.showConfirmDialog(
@@ -320,10 +392,12 @@ public class temporadasApp extends JFrame implements ActionListener,WindowListen
                 JOptionPane.YES_NO_CANCEL_OPTION);
 		if (respuesta == JOptionPane.YES_OPTION) {
 			 guardarDatos();
-			 System.exit(0);
+			 new GestionApp().setVisible(true);
+				dispose();
 		}
 		if (respuesta == JOptionPane.NO_OPTION) {
-			 System.exit(0);
+			 new GestionApp().setVisible(true);
+			 dispose();
 		}
 	}
 	
@@ -341,15 +415,43 @@ public class temporadasApp extends JFrame implements ActionListener,WindowListen
 	        if (dlm.get(i).getEstado() == EstadoTemporada.Iniciada) {
 	            JOptionPane.showMessageDialog(this, "Ya existe una temporada iniciada. Finaliza la temporada actual antes de iniciar una nueva.", "Error", JOptionPane.ERROR_MESSAGE);
 	            return;
+	        }else if (dlm.get(i).getEstado() == EstadoTemporada.Finalizada) {
+	        	JOptionPane.showMessageDialog(this, "La temporada se encuentra finalizada.", "Error", JOptionPane.ERROR_MESSAGE);
+	            return;
 	        }
 	    }
 		
 		 switch (estadoActual) {
-	        case Sin_Iniciar:
-	            temporadaSeleccionada.setEstado(EstadoTemporada.Iniciada); 
-	            dlm.set(seleccion, temporadaSeleccionada);                
-	            JOptionPane.showMessageDialog(this, "La temporada ha sido iniciada.", "Éxito", JOptionPane.INFORMATION_MESSAGE);
+		 case Sin_Iniciar:
+	            // Primer mensaje de confirmación
+	            int respuesta1 = JOptionPane.showConfirmDialog(
+	                this,
+	                "¿Estás seguro de que deseas iniciar esta temporada?",
+	                "Confirmación",
+	                JOptionPane.YES_NO_OPTION
+	            );
+
+	            if (respuesta1 == JOptionPane.YES_OPTION) {
+	                // Segunda confirmación
+	                int respuesta2 = JOptionPane.showConfirmDialog(
+	                    this,
+	                    "¡Atención! Al iniciar la temporada, no podrás deshacer esta acción. ¿Estás absolutamente seguro?",
+	                    "Confirmación Final",
+	                    JOptionPane.YES_NO_OPTION
+	                );
+
+	                if (respuesta2 == JOptionPane.YES_OPTION) {
+	                    temporadaSeleccionada.setEstado(EstadoTemporada.Iniciada); 
+	                    dlm.set(seleccion, temporadaSeleccionada);                
+	                    JOptionPane.showMessageDialog(this, "La temporada ha sido iniciada.", "Éxito", JOptionPane.INFORMATION_MESSAGE);
+	                } else {
+	                    JOptionPane.showMessageDialog(this, "La temporada no ha sido iniciada.", "Cancelado", JOptionPane.INFORMATION_MESSAGE);
+	                }
+	            } else {
+	                JOptionPane.showMessageDialog(this, "La temporada no ha sido iniciada.", "Cancelado", JOptionPane.INFORMATION_MESSAGE);
+	            }
 	            break;
+
 
 	        case Iniciada:
 	        case Finalizada:
@@ -359,6 +461,60 @@ public class temporadasApp extends JFrame implements ActionListener,WindowListen
 	        default:
 	            JOptionPane.showMessageDialog(this, "Estado desconocido para la temporada seleccionada.", "Error", JOptionPane.ERROR_MESSAGE);
 	            break;
+	    }
+	}
+	if (o == btnFinalizar) {
+	    int seleccion = lstTemporadas.getSelectedIndex();
+	    if (seleccion == -1) {
+	        JOptionPane.showMessageDialog(this, "Por favor, selecciona una temporada.", "Error", JOptionPane.ERROR_MESSAGE);
+	        return;
+	    }
+
+	    TemporadaApp temporadaSeleccionada = dlm.get(seleccion);
+	    EstadoTemporada estadoActual = temporadaSeleccionada.getEstado();
+
+	    // Verificar si la temporada está en estado Finalizada
+	    if (estadoActual == EstadoTemporada.Finalizada) {
+	        JOptionPane.showMessageDialog(this, "La temporada ya está finalizada.", "Error", JOptionPane.ERROR_MESSAGE);
+	        return;
+	    }
+
+	    // Verificar si la temporada está en estado Sin Iniciar
+	    if (estadoActual == EstadoTemporada.Sin_Iniciar) {
+	        JOptionPane.showMessageDialog(this, "Para poder finalizar la temporada, debe estar iniciada.", "Error", JOptionPane.ERROR_MESSAGE);
+	        return;
+	    }
+
+	    // Si está en estado Iniciada, pedir confirmación
+	    if (estadoActual == EstadoTemporada.Iniciada) {
+	        // Primer mensaje de confirmación
+	        int respuesta1 = JOptionPane.showConfirmDialog(
+	            this,
+	            "¿Estás seguro de que deseas finalizar esta temporada?",
+	            "Confirmación",
+	            JOptionPane.YES_NO_OPTION
+	        );
+
+	        if (respuesta1 == JOptionPane.YES_OPTION) {
+	            // Segunda confirmación
+	            int respuesta2 = JOptionPane.showConfirmDialog(
+	                this,
+	                "¡Atención! Al finalizar la temporada, no podrás deshacer esta acción. ¿Estás absolutamente seguro?",
+	                "Confirmación Final",
+	                JOptionPane.YES_NO_OPTION
+	            );
+
+	            if (respuesta2 == JOptionPane.YES_OPTION) {
+	                // Cambiar el estado a Finalizada
+	                temporadaSeleccionada.setEstado(EstadoTemporada.Finalizada);
+	                dlm.set(seleccion, temporadaSeleccionada);                
+	                JOptionPane.showMessageDialog(this, "La temporada ha sido finalizada.", "Éxito", JOptionPane.INFORMATION_MESSAGE);
+	            } else {
+	                JOptionPane.showMessageDialog(this, "La temporada no ha sido finalizada.", "Cancelado", JOptionPane.INFORMATION_MESSAGE);
+	            }
+	        } else {
+	            JOptionPane.showMessageDialog(this, "La temporada no ha sido finalizada.", "Cancelado", JOptionPane.INFORMATION_MESSAGE);
+	        }
 	    }
 	}
 }
@@ -382,7 +538,6 @@ public class temporadasApp extends JFrame implements ActionListener,WindowListen
 
 	@Override
 	public void windowClosing(WindowEvent e) {
-		// TODO Auto-generated method stub
 		if (cambiodatos) {
 			int respuesta = JOptionPane.showConfirmDialog(
                     frame, 
@@ -444,7 +599,6 @@ public class temporadasApp extends JFrame implements ActionListener,WindowListen
 				 } catch (IOException ae) {
 				     JOptionPane.showMessageDialog(this, "Error en el guardado de datos:" + ae.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
 				 }
-			 System.exit(0);
 	}
 
 	

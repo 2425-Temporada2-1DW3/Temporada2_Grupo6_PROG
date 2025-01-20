@@ -1,11 +1,11 @@
 package Classes;
 
 import java.io.Serializable;
+import java.util.Objects;
 
-public class añoTemporadaApp implements Serializable{
- 
-	private static final long serialVersionUID = 1L;
-	private int añoInicio;
+public class añoTemporadaApp implements Serializable {
+    private static final long serialVersionUID = 1L;
+    private int añoInicio;
     private int añoFinal;
 
     // Constructor
@@ -45,9 +45,23 @@ public class añoTemporadaApp implements Serializable{
         this.añoFinal = añoFinal;
     }
 
-	@Override
-	public String toString() {
-		return + añoInicio + "-" + añoFinal;
-	}
-    
+    @Override
+    public String toString() {
+        return añoInicio + "-" + añoFinal;
+    }
+
+    // Sobrecarga de equals para comparar instancias de AñoTemporadaApp
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        añoTemporadaApp that = (añoTemporadaApp) o;
+        return añoInicio == that.añoInicio && añoFinal == that.añoFinal;
+    }
+
+    // Sobrecarga de hashCode para asegurar una correcta comparación de objetos
+    @Override
+    public int hashCode() {
+        return Objects.hash(añoInicio, añoFinal);
+    }
 }

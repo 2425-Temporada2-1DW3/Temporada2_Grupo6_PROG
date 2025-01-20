@@ -2,6 +2,8 @@ package RFEBM;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableCellRenderer;
+
 import java.awt.*;
 import java.io.*;
 import java.time.LocalDate;
@@ -171,6 +173,7 @@ public class GEquipoApp extends JFrame {
         JTextField posicionField = new JTextField();
         JComboBox<String> equipoBox = new JComboBox<>(EQUIPOS);
         JTextField fotoField = new JTextField();
+        jugadoresTable.getColumnModel().getColumn(6).setCellRenderer(new ImageRenderer());
 
         dialog.add(new JLabel("Nombre:"));
         dialog.add(nombreField);
@@ -234,4 +237,21 @@ public class GEquipoApp extends JFrame {
 
         dialog.setVisible(true);
     }
+    class ImageRenderer extends JLabel implements TableCellRenderer {
+        /**
+		 * 
+		 */
+		private static final long serialVersionUID = 1L;
+
+		@Override
+        public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
+            if (value instanceof String) {
+                String imagePath = (String) value;
+                ImageIcon imageIcon = new ImageIcon(getClass().getResource(imagePath));
+                Image image = imageIcon.getImage().getScaledInstance(50, 50, Image.SCALE_SMOOTH); // Escalar la imagen si es necesario
+                setIcon(new ImageIcon(image));
+            }
+            return this;
+        }
+}
 }
