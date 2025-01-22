@@ -46,7 +46,7 @@ public class equipoApp extends JFrame {
 		contentPane.add(panel, BorderLayout.NORTH);
 		
 		JLabel lblNewLabel = new JLabel("New label");
-		lblNewLabel.setIcon(new ImageIcon(equipoApp.class.getResource("/resources/logo.png")));
+		lblNewLabel.setIcon(new ImageIcon(equipoApp.class.getResource("/images/logos/logo.png")));
 		panel.add(lblNewLabel);
 	}
 	

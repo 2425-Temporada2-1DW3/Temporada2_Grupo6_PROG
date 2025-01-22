@@ -77,7 +77,7 @@ public class menuApp extends JFrame implements ActionListener {
 		lblNewLabel = new JLabel("");
 		panel_5.add(lblNewLabel);
 		lblNewLabel.setHorizontalAlignment(SwingConstants.CENTER);
-		lblNewLabel.setIcon(new ImageIcon(menuApp.class.getResource("/resources/logo.png")));
+		lblNewLabel.setIcon(new ImageIcon(menuApp.class.getResource("/images/logos/logo.png")));
 		
 		lblmenu = new JLabel("MENU");
 		lblmenu.setFont(new Font("Tahoma", Font.PLAIN, 20));
@@ -87,7 +87,7 @@ public class menuApp extends JFrame implements ActionListener {
 		panel.add(panel_6);
 		
 		lblNewLabel_1 = new JLabel("");
-		lblNewLabel_1.setIcon(new ImageIcon(menuApp.class.getResource("/resources/logo.png")));
+		lblNewLabel_1.setIcon(new ImageIcon(menuApp.class.getResource("/images/logos/logo.png")));
 		panel_6.add(lblNewLabel_1);
 		
 		panel_1 = new JPanel();

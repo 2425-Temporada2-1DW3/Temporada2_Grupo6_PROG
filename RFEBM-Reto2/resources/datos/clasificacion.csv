@@ -1,6 +1,6 @@
-Barcelona,Cáceres,4,6
-Madrid,Sevilla,2,7
-Murcia,Bilbao,4,5
+Barcelona,Cáceres,0,1
+Madrid,Sevilla,0,0
+Murcia,Bilbao,0,0
 Cáceres,Barcelona,20,19
 Sevilla,Madrid,15,12
 Bilbao,Murcia,31,33
@@ -25,6 +25,6 @@ Cáceres,Sevilla,31,34
 Barcelona,Sevilla,12,11
 Madrid,Bilbao,19,18
 Murcia,Cáceres,30,31
-Sevilla,Barcelona,14,99
+Sevilla,Barcelona,14,13
 Bilbao,Madrid,6,4
 Cáceres,Murcia,20,23

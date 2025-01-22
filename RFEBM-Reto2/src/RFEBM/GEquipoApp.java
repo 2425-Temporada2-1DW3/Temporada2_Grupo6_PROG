@@ -1,9 +1,8 @@
 package RFEBM;
 
 import javax.swing.*;
+import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
-import javax.swing.table.TableCellRenderer;
-
 import java.awt.*;
 import java.io.*;
 import java.time.LocalDate;
@@ -14,7 +13,8 @@ import java.util.List;
 
 public class GEquipoApp extends JFrame {
     private static final long serialVersionUID = 1L;
-    private static final String InfoJugador = "jugadores.csv";
+    private static final String INFO_JUGADOR = "resources/datos/jugadores.csv";
+    private static final String IMAGE_DIR = "resources/images/jugadores";
     private JTable jugadoresTable;
     private DefaultTableModel tableModel;
 
@@ -43,6 +43,7 @@ public class GEquipoApp extends JFrame {
                 "Nombre", "Apellido", "DNI", "Edad", "Posición", "Equipo", "Foto"
         }, 0);
         jugadoresTable = new JTable(tableModel);
+        jugadoresTable.getColumnModel().getColumn(6).setCellRenderer(new ImageRenderer());
         JScrollPane scrollPane = new JScrollPane(jugadoresTable);
         panel.add(scrollPane, BorderLayout.CENTER);
 
@@ -71,37 +72,39 @@ public class GEquipoApp extends JFrame {
         deleteButton.addActionListener(e -> eliminarJugador());
     }
 
-    private void cargarJugadores() {
-        tableModel.setRowCount(0);
-        try (BufferedReader br = new BufferedReader(new FileReader(InfoJugador))) {
-            String linea;
-            while ((linea = br.readLine()) != null) {
-                String[] datos = linea.split(",");
-                if (datos.length >= 6) {
-                    String nombre = datos[0].trim();
-                    String apellido = datos[1].trim();
-                    String dni = datos[2].trim();
-                    String edadOFecha = datos[3].trim();
-                    String posicion = datos[4].trim();
-                    String equipo = datos[5].trim();
-                    String foto = datos.length >= 7 ? datos[6].trim() : "";
 
-                    String edad;
-                    if (esNumero(edadOFecha)) {
-                        edad = edadOFecha;
-                    } else {
-                        edad = calcularEdad(edadOFecha);
-                    }
+private void cargarJugadores() {
+    tableModel.setRowCount(0);
+    try {
+        // Usamos el método leerJugadores para obtener la lista de jugadores
+        List<String[]> jugadores = leerJugadores();
+        for (String[] datos : jugadores) {
+            if (datos.length >= 6) {
+                String nombre = datos[0].trim();
+                String apellido = datos[1].trim();
+                String dni = datos[2].trim();
+                String edadOFecha = datos[3].trim();
+                String posicion = datos[4].trim();
+                String equipo = datos[5].trim();
+                String foto = datos.length >= 7 ? datos[6].trim() : "";
 
-                    tableModel.addRow(new Object[]{nombre, apellido, dni, edad, posicion, equipo, foto});
+                String edad;
+                if (esNumero(edadOFecha)) {
+                    edad = edadOFecha;
                 } else {
-                    System.err.println("Línea ignorada por formato incorrecto: " + linea);
+                    edad = calcularEdad(edadOFecha);
                 }
+
+                // Añadimos la fila al tableModel
+                tableModel.addRow(new Object[]{nombre, apellido, dni, edad, posicion, equipo, foto});
+            } else {
+                System.err.println("Línea ignorada por formato incorrecto: " + String.join(",", datos));
             }
-        } catch (IOException e) {
-            JOptionPane.showMessageDialog(this, "Error al cargar los jugadores: " + e.getMessage());
         }
+    } catch (IOException e) {
+        JOptionPane.showMessageDialog(this, "Error al cargar los jugadores: " + e.getMessage());
     }
+}
 
     private void eliminarJugador() {
         int selectedRow = jugadoresTable.getSelectedRow();
@@ -134,7 +137,8 @@ public class GEquipoApp extends JFrame {
 
     private List<String[]> leerJugadores() throws IOException {
         List<String[]> jugadores = new ArrayList<>();
-        try (BufferedReader br = new BufferedReader(new FileReader(InfoJugador))) {
+        File file = new File("resources/datos/jugadores.csv"); // Ruta relativa desde el directorio base del proyecto
+        try (BufferedReader br = new BufferedReader(new FileReader(file))) {
             String linea;
             while ((linea = br.readLine()) != null) {
                 jugadores.add(linea.split(","));
@@ -144,7 +148,7 @@ public class GEquipoApp extends JFrame {
     }
 
     private void escribirJugadores(List<String[]> jugadores) throws IOException {
-        try (BufferedWriter bw = new BufferedWriter(new FileWriter(InfoJugador))) {
+        try (BufferedWriter bw = new BufferedWriter(new FileWriter(INFO_JUGADOR))) {
             for (String[] jugador : jugadores) {
                 bw.write(String.join(",", jugador));
                 bw.newLine();
@@ -173,8 +177,29 @@ public class GEquipoApp extends JFrame {
         JTextField posicionField = new JTextField();
         JComboBox<String> equipoBox = new JComboBox<>(EQUIPOS);
         JTextField fotoField = new JTextField();
-        jugadoresTable.getColumnModel().getColumn(6).setCellRenderer(new ImageRenderer());
 
+        JButton browseButton = new JButton("Examinar...");
+        browseButton.addActionListener(e -> {
+            JFileChooser fileChooser = new JFileChooser(new File(IMAGE_DIR));
+            fileChooser.setDialogTitle("Seleccionar Imagen");
+            fileChooser.setFileFilter(new javax.swing.filechooser.FileNameExtensionFilter(
+                    "Archivos de Imagen (jpg, png, gif)", "jpg", "png", "gif"));
+
+            int result = fileChooser.showOpenDialog(dialog);
+            if (result == JFileChooser.APPROVE_OPTION) {
+                File selectedFile = fileChooser.getSelectedFile();
+                
+                // Obtener el nombre del equipo y la ruta de la imagen
+                String equipo = (String) equipoBox.getSelectedItem();  // Nombre del equipo (ej: Barcelona)
+                String imageFileName = selectedFile.getName(); // Nombre de la imagen (ej: jugador1.png)
+                
+                // Construir la ruta relativa de la imagen
+                String relativePath = "images/jugadores/" + equipo + "/" + imageFileName;
+
+                // Establecer la ruta relativa en el campo de texto
+                fotoField.setText(relativePath);
+            }
+        });
         dialog.add(new JLabel("Nombre:"));
         dialog.add(nombreField);
         dialog.add(new JLabel("Apellido:"));
@@ -189,6 +214,7 @@ public class GEquipoApp extends JFrame {
         dialog.add(equipoBox);
         dialog.add(new JLabel("Foto:"));
         dialog.add(fotoField);
+        dialog.add(browseButton);
 
         JButton saveButton = new JButton("Guardar");
         dialog.add(saveButton);
@@ -237,21 +263,27 @@ public class GEquipoApp extends JFrame {
 
         dialog.setVisible(true);
     }
-    class ImageRenderer extends JLabel implements TableCellRenderer {
-        /**
-		 * 
-		 */
-		private static final long serialVersionUID = 1L;
 
-		@Override
+    class ImageRenderer extends DefaultTableCellRenderer {
+        private static final long serialVersionUID = 1L;
+
+        @Override
         public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
             if (value instanceof String) {
-                String imagePath = (String) value;
-                ImageIcon imageIcon = new ImageIcon(getClass().getResource(imagePath));
-                Image image = imageIcon.getImage().getScaledInstance(50, 50, Image.SCALE_SMOOTH); // Escalar la imagen si es necesario
-                setIcon(new ImageIcon(image));
+                String imagePath = (String) value; // Ruta relativa de la imagen, por ejemplo: "images/jugadores/Barcelona/jugador1.png"
+                String fullPath = "resources/" + imagePath; // Ruta completa a la imagen en el proyecto
+
+                File imageFile = new File(fullPath);
+                if (imageFile.exists()) {
+                    ImageIcon imageIcon = new ImageIcon(fullPath);
+                    Image image = imageIcon.getImage().getScaledInstance(50, 50, Image.SCALE_SMOOTH);
+                    setIcon(new ImageIcon(image));
+                } else {
+                    setText("No disponible");
+                    setIcon(null);
+                }
             }
             return this;
         }
-}
+    }
 }

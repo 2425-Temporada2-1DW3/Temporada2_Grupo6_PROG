@@ -43,7 +43,7 @@ public class GestionApp extends JFrame implements ActionListener {
         
         // Crear la etiqueta con la imagen
         lblNewLabel = new JLabel("");
-        lblNewLabel.setIcon(new ImageIcon(GestionApp.class.getResource("/resources/logo.png")));
+        lblNewLabel.setIcon(new ImageIcon(GestionApp.class.getResource("/images/logos/logo.png")));
         lblNewLabel.setFont(new Font("Tahoma", Font.PLAIN, 16));
         lblNewLabel.setHorizontalAlignment(SwingConstants.CENTER);
         getContentPane().add(lblNewLabel, BorderLayout.NORTH);

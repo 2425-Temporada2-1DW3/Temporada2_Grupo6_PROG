@@ -128,7 +128,7 @@ public class temporadasApp extends JFrame implements ActionListener,WindowListen
 		
 		lblNewLabel_1 = new JLabel("");
 		panel_18.add(lblNewLabel_1);
-		lblNewLabel_1.setIcon(new ImageIcon(GestionApp.class.getResource("/resources/logo.png")));
+		lblNewLabel_1.setIcon(new ImageIcon(GestionApp.class.getResource("/images/logos/logo.png")));
 		lblNewLabel_1.setFont(new Font("Tahoma", Font.PLAIN, 16));
 		lblNewLabel_1.setHorizontalAlignment(SwingConstants.CENTER);
 		
@@ -145,7 +145,7 @@ public class temporadasApp extends JFrame implements ActionListener,WindowListen
 		btnModificar.addActionListener(this);
 		
 		lblNewLabel_6 = new JLabel("");
-		lblNewLabel_6.setIcon(new ImageIcon(temporadasApp.class.getResource("/resources/logo.png")));
+		lblNewLabel_6.setIcon(new ImageIcon(temporadasApp.class.getResource("/images/logos/logo.png")));
 		lblNewLabel_6.setHorizontalAlignment(SwingConstants.CENTER);
 		lblNewLabel_6.setFont(new Font("Tahoma", Font.PLAIN, 16));
 		panel_18.add(lblNewLabel_6);
@@ -588,7 +588,7 @@ public class temporadasApp extends JFrame implements ActionListener,WindowListen
 	
 	//CARGAR LISTA POR ELEMENTOS //
 	private void guardarDatos() {
-		 try (FileOutputStream fos = new FileOutputStream("temporadas.ser");
+		 try (FileOutputStream fos = new FileOutputStream("resources/datos/temporadas.ser");
 			  ObjectOutputStream oos = new ObjectOutputStream(fos)) {
 			 
 			 for(int i = 0; i < dlm.size(); i++) {
@@ -603,7 +603,7 @@ public class temporadasApp extends JFrame implements ActionListener,WindowListen
 
 	
 	private void cargarDatos() throws IOException {
-		 try (FileInputStream fis = new FileInputStream("temporadas.ser");
+		 try (FileInputStream fis = new FileInputStream("resources/datos/temporadas.ser");
 				  ObjectInputStream ois = new ObjectInputStream(fis)) {
 			 TemporadaApp valor = null;
 			 while (fis.available() > 0) {

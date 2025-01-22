@@ -1,9 +1,9 @@
-Lamin,Jamal,12345678A,,Delantero,Barcelona,resources/logo.png
-Lionel,Pepsi,87654321B,28,Defensa,Barcelona,""
-Karim,Abad,11223344C,29,Mediocampista,Barcelona,""
-Malek,Salomon,22334455D,26,Portero,Barcelona,""
+Lamin,Jamal,12345678A,,Delantero,Barcelona,images/jugadores/Barcelona/Jugador1.1.png
+Lionel,Pepsi,87654321B,,Defensa,Barcelona,gengar.png
+Karim,Abad,11223344C,,Mediocampista,Barcelona,sevilla id=4.png
+Malek,Salomon,22334455D,,Portero,Barcelona,murcia id=5.png
 Daim,Benitez,33445566E,25,Defensa,Barcelona,""
-Vadhir,Granadino,44556677F,29,Delantero,Barcelona,""
+Vadhir,Granadino,44556677F,,Delantero,Barcelona,gengar.png
 Jalel,Alaoui,55667788G,31,Delantero,Barcelona,""
 Paco,Rabales,66778899H,28,Mediocampista,Barcelona,""
 Mohammed,Arduino,77889900I,26,Defensa,Barcelona,""

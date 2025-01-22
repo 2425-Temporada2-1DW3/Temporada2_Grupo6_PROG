@@ -178,7 +178,7 @@ public class clasificacionApp extends JFrame {
 		panel.add(panel_11, BorderLayout.WEST);
 	
 		lblNewLabel_2 = new JLabel("");
-		lblNewLabel_2.setIcon(new ImageIcon(clasificacionApp.class.getResource("/resources/logo.png")));
+		lblNewLabel_2.setIcon(new ImageIcon(clasificacionApp.class.getResource("/images/logos/logo.png")));
 		panel_11.add(lblNewLabel_2);
 		
 		panel_15 = new JPanel();
@@ -265,6 +265,7 @@ public class clasificacionApp extends JFrame {
 					}
 				cargarDatosJornada(); // Carga Datos Jornada
 				lblTextoCambios.setText("INFO : Jornada " + (jornadaSeleccionada + 1) + " Seleccionada");
+				loadShields();
 			}
 		});
 		panel_2.add(JornadaDesplegable, BorderLayout.CENTER);
@@ -285,7 +286,7 @@ public class clasificacionApp extends JFrame {
 				JornadaDesplegable.setSelectedIndex(jornadaSeleccionada);
 				cargarDatosJornada();
 				lblTextoCambios.setText("INFO : Jornada " + (jornadaSeleccionada + 1) + " Seleccionada");
-				
+				loadShields();
 			}
 		});
 		panel_2.add(btnAtras, BorderLayout.WEST);
@@ -297,6 +298,7 @@ public class clasificacionApp extends JFrame {
 				JornadaDesplegable.setSelectedIndex(jornadaSeleccionada);
 				cargarDatosJornada();
 				lblTextoCambios.setText("INFO : Jornada " + (jornadaSeleccionada + 1) + " Seleccionada");
+				loadShields();
 			}
 		});
 		panel_2.add(btnAlante, BorderLayout.EAST);
@@ -330,6 +332,9 @@ public class clasificacionApp extends JFrame {
 		panel_7 = new JPanel();
 		panel_8.add(panel_7, BorderLayout.NORTH);
 		panel_7.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
+			
+			lblEquipoLoc1 = new JLabel("");
+			panel_7.add(lblEquipoLoc1);
 		
 			EquipoLocGol1 = new JTextField();
 			panel_7.add(EquipoLocGol1);
@@ -352,6 +357,9 @@ public class clasificacionApp extends JFrame {
 			panel_7.add(EquipoVisGol1);
 			EquipoVisGol1.addKeyListener(golesfilter);
 			EquipoVisGol1.setColumns(3);
+			
+			lblEquipoVis1 = new JLabel("");
+			panel_7.add(lblEquipoVis1);
 		
 		if (inicioApp.rol==1 || inicioApp.rol==3) {
 			EquipoLocGol1.setEditable(false);
@@ -368,6 +376,9 @@ public class clasificacionApp extends JFrame {
 		panel_10 = new JPanel();
 		panel_9.add(panel_10, BorderLayout.NORTH);
 		panel_10.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
+			
+			lblEquipoLoc2 = new JLabel("");
+			panel_10.add(lblEquipoLoc2);
 		
 			EquipoLocGol2 = new JTextField();
 			panel_10.add(EquipoLocGol2);
@@ -388,6 +399,9 @@ public class clasificacionApp extends JFrame {
 							EquipoVisGol2 = new JTextField();
 							panel_10.add(EquipoVisGol2);
 							EquipoVisGol2.setColumns(3);
+							
+							lblEquipoVis2 = new JLabel("");
+							panel_10.add(lblEquipoVis2);
 							EquipoVisGol2.addKeyListener(golesfilter);
 			EquipoLocGol2.addKeyListener(golesfilter);
 			if (inicioApp.rol==1 || inicioApp.rol==3) {
@@ -410,6 +424,9 @@ public class clasificacionApp extends JFrame {
 		
 		panel_14 = new JPanel();
 		panel_13.add(panel_14, BorderLayout.NORTH);
+			
+			lblEquipoLoc3 = new JLabel("");
+			panel_14.add(lblEquipoLoc3);
 		
 			EquipoLocGol3 = new JTextField();
 			panel_14.add(EquipoLocGol3);
@@ -430,6 +447,9 @@ public class clasificacionApp extends JFrame {
 							EquipoVisGol3 = new JTextField();
 							panel_14.add(EquipoVisGol3);
 							EquipoVisGol3.setColumns(3);
+							
+							lblEquipoVis3 = new JLabel("");
+							panel_14.add(lblEquipoVis3);
 							EquipoVisGol3.addKeyListener(golesfilter);
 			EquipoLocGol3.addKeyListener(golesfilter);
 			if (inicioApp.rol==1 || inicioApp.rol==3) {
@@ -461,6 +481,7 @@ public class clasificacionApp extends JFrame {
 		updateTable(); // Calcula Tabla Al iniciar
 		cargarDatosJornada(); // Carga Datos Jornada 1
 		lblTextoCambios.setText("INFO : Mostrando Jornada " + (jornadaSeleccionada + 1));
+		loadShields();
 		
 
 	}
@@ -599,7 +620,13 @@ public class clasificacionApp extends JFrame {
         catch (NumberFormatException e)  { return false;}
     }
   
-	final static String Temporada = "datos.csv";
+	final static String Temporada = "resources/datos/clasificacion.csv";
+	private JLabel lblEquipoLoc1;
+	private JLabel lblEquipoVis1;
+	private JLabel lblEquipoLoc2;
+	private JLabel lblEquipoVis2;
+	private JLabel lblEquipoLoc3;
+	private JLabel lblEquipoVis3;
 
     public static void saveData(String[][] jornadasLoc, String[][] jornadasVis, String[][] jornadasGolLoc, String[][] jornadasGolVis,String[][] tableData) throws IOException {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(Temporada))) {
@@ -611,7 +638,15 @@ public class clasificacionApp extends JFrame {
             }
         }
     }
-
+    
+    public void loadShields() {
+    	lblEquipoLoc1.setIcon(new ImageIcon(clasificacionApp.class.getResource("/images/logos/"+EquipoLoc1.getText()+"Mini.png")));
+    	lblEquipoLoc2.setIcon(new ImageIcon(clasificacionApp.class.getResource("/images/logos/"+EquipoLoc2.getText()+"Mini.png")));
+    	lblEquipoLoc3.setIcon(new ImageIcon(clasificacionApp.class.getResource("/images/logos/"+EquipoLoc3.getText()+"Mini.png")));
+    	lblEquipoVis1.setIcon(new ImageIcon(clasificacionApp.class.getResource("/images/logos/"+EquipoVis1.getText()+"Mini.png")));
+    	lblEquipoVis2.setIcon(new ImageIcon(clasificacionApp.class.getResource("/images/logos/"+EquipoVis2.getText()+"Mini.png")));
+    	lblEquipoVis3.setIcon(new ImageIcon(clasificacionApp.class.getResource("/images/logos/"+EquipoVis3.getText()+"Mini.png")));
+    }
     public static void loadData(String[][] jornadasLoc, String[][] jornadasVis, 
     							String[][] jornadasGolLoc, String[][] jornadasGolVis, 
     							String[][] tableData) throws IOException {
@@ -654,8 +689,3 @@ public class clasificacionApp extends JFrame {
 		}
     }
 }
-
-
-
-
-

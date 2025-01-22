@@ -80,7 +80,7 @@ public class inicioApp extends JFrame implements ActionListener {
 		
 		lblLogo = new JLabel("");
 		lblLogo.setHorizontalAlignment(SwingConstants.CENTER);
-		lblLogo.setIcon(new ImageIcon(inicioApp.class.getResource("/resources/logo.png")));
+		lblLogo.setIcon(new ImageIcon(inicioApp.class.getResource("/images/logos/logo.png")));
 		panel.add(lblLogo, BorderLayout.CENTER);
 		
 		panel_1 = new JPanel();
