@@ -36,7 +36,7 @@ public class inicioApp extends JFrame implements ActionListener {
 	private JPasswordField leerContra;
 	private JLabel lblLogo, lblUsuario, lblTexto, lblContrasena;
 	private JButton btnAceptar;
-	static RolApp rolUsuario;
+	static RolApp rolUsuario = RolApp.Usuario;
 	
 	
 	public static void main(String[] args) {

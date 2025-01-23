@@ -194,7 +194,7 @@ public class temporadasApp extends JFrame implements ActionListener,WindowListen
 		panel_26.add(lblTotalElementosValor, BorderLayout.CENTER);
 		
 		btnVolver = new JButton("Volver");
-		panel_12.add(btnVolver, BorderLayout.WEST);
+		panel_26.add(btnVolver, BorderLayout.EAST);
 		btnVolver.addActionListener(this);
 		
 		panel_28 = new JPanel();
