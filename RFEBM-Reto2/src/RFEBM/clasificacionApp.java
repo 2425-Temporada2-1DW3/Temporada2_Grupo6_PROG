@@ -1,6 +1,7 @@
 package RFEBM;
 
 import java.awt.BorderLayout;
+
 import java.awt.EventQueue;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -8,9 +9,9 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableModel;
 
 import Classes.RolApp;
+import Classes.TemporadaApp;
 
 import javax.swing.JLabel;
-import javax.swing.JOptionPane;
 
 import java.awt.Font;
 import javax.swing.JButton;
@@ -25,9 +26,12 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
+import java.io.EOFException;
+import java.io.FileInputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.ObjectInputStream;
 
 import javax.swing.JTable;
 import javax.swing.JScrollPane;
@@ -105,8 +109,7 @@ public class clasificacionApp extends JFrame {
 	private JPanel contentPane;
 	private JLabel txtClasif; 
 	private JPanel panel; JPanel panel1; JPanel panel4; JPanel panel5; JPanel panel_1; JPanel panel_2; JPanel panel_3; JPanel panel_4; JPanel panel_5; JPanel panel_6; JPanel panel_7; JPanel panel_8; JPanel panel_9; JPanel panel_10; JPanel panel_11; JPanel panel_12; JPanel panel_13; JPanel panel_14;
-	private JButton btnAplicarCambios; JButton btnVolver; JButton btnAtras; JButton btnAlante;
-	private JLabel JornadaTxt; JLabel lblNewLabel_1; JLabel lblNewLabel_2; static JLabel lblTextoCambios; JScrollPane scrollPane;
+	private JButton btnAplicarCambios; JButton btnVolver; JButton btnAtras; JButton btnAlante;JLabel lblNewLabel_1; JLabel lblNewLabel_2; static JLabel lblTextoCambios; JScrollPane scrollPane;
 	private JComboBox <String> JornadaDesplegable;
 	private static JTable table;
 	private static JLabel EquipoLoc1; static JLabel EquipoLoc2; static JLabel EquipoLoc3;
@@ -115,7 +118,7 @@ public class clasificacionApp extends JFrame {
 	private static JTextField EquipoVisGol1; static JTextField EquipoVisGol2; static JTextField EquipoVisGol3;
 	private JLabel VS1; JLabel VS2; JLabel VS3;
  private JPanel panel_15;
- 
+ JComboBox<String> comboTemporada;
 
 	
 	
@@ -177,6 +180,14 @@ public class clasificacionApp extends JFrame {
 		
 		panel_15 = new JPanel();
 		panel.add(panel_15, BorderLayout.CENTER);
+			panel_15.setLayout(new BorderLayout(0, 0));
+			
+			panel_16 = new JPanel();
+			panel_15.add(panel_16, BorderLayout.SOUTH);
+			
+			 comboTemporada = new JComboBox<>();
+			  panel_16.add(comboTemporada);
+		        cargarTemporadasDesdeArchivo();
 		
 		
 	
@@ -261,10 +272,6 @@ public class clasificacionApp extends JFrame {
 		
 		panel_12 = new JPanel();
 		panel_2.add(panel_12, BorderLayout.NORTH);
-		
-			JornadaTxt = new JLabel("Seleccione jornada"+ TEMPORADA_ACTUAL);
-			panel_12.add(JornadaTxt);
-			JornadaTxt.setFont(new Font("Arial", Font.PLAIN, 13));
 		
 		btnAtras = new JButton("🡨");
 		btnAtras.setVisible(false);
@@ -591,6 +598,7 @@ public class clasificacionApp extends JFrame {
 	private JLabel lblEquipoVis2;
 	private JLabel lblEquipoLoc3;
 	private JLabel lblEquipoVis3;
+	private JPanel panel_16;
 
     public static void saveData(String[][] jornadasLoc, String[][] jornadasVis, String[][] jornadasGolLoc, String[][] jornadasGolVis,String[][] tableData) throws IOException {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(Temporada))) {
@@ -681,5 +689,22 @@ public class clasificacionApp extends JFrame {
 			System.err.println("Error al leer el archivo de datos: " + e.getMessage());
 			throw e; // Vuelve a lanzar la excepción para manejarla más arriba si es necesario
 		}
+    }
+    private void cargarTemporadasDesdeArchivo() {
+        try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream("resources/datos/temporadas.ser"))) {
+
+            comboTemporada.removeAllItems();
+            
+            TemporadaApp temporada;
+            
+            while ((temporada = (TemporadaApp) ois.readObject()) != null) {
+                // Agregamos solo el nombre al ComboBox
+                comboTemporada.addItem(temporada.getNombre());
+            }
+        } catch (EOFException e) {
+            return;
+        } catch (IOException | ClassNotFoundException e) {
+            e.printStackTrace();
+        }
     }
 }
