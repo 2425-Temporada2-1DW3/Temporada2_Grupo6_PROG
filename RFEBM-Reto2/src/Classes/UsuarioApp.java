@@ -1,7 +1,10 @@
 package Classes;
 
-public class UsuarioApp {
-    private String nombreUsuario;
+import java.io.Serializable;
+
+public class UsuarioApp implements Serializable{
+	private static final long serialVersionUID = 1L;
+	private String nombreUsuario;
     private String contraseña;
     private RolApp rol;
 
@@ -37,6 +40,6 @@ public class UsuarioApp {
 
     @Override
 	public String toString() {
-		return "UsuarioApp [nombreUsuario=" + nombreUsuario + ", contraseña=" + contraseña + ", rol=" + rol + "]";
+		return nombreUsuario +"  "+ contraseña +"  "+ rol;
 	}
 }

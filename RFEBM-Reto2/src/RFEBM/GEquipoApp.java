@@ -31,6 +31,8 @@ public class GEquipoApp extends JFrame {
         });
     }
 
+    private List<String[]> jugadoresEliminados = new ArrayList<>();
+    
     public GEquipoApp() {
         setTitle("Gestión de Equipos y Jugadores");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -51,11 +53,14 @@ public class GEquipoApp extends JFrame {
         JButton addButton = new JButton("Añadir Jugador");
         JButton editButton = new JButton("Editar Jugador");
         JButton deleteButton = new JButton("Eliminar Jugador");
+        JButton freeAgentsButton = new JButton("Agentes Libres");
         buttonPanel.add(addButton);
         buttonPanel.add(editButton);
         buttonPanel.add(deleteButton);
-        panel.add(buttonPanel, BorderLayout.SOUTH);
-
+        buttonPanel.add(freeAgentsButton);
+        panel.add(buttonPanel, BorderLayout.SOUTH);    
+                
+        
         cargarJugadores();
 
         addButton.addActionListener(e -> abrirFormularioJugador(null));
@@ -70,7 +75,12 @@ public class GEquipoApp extends JFrame {
         });
 
         deleteButton.addActionListener(e -> eliminarJugador());
+                
+        freeAgentsButton.addActionListener(e -> mostrarVentanaEliminados());
+
     }
+    
+    	
 
 
 private void cargarJugadores() {
@@ -107,24 +117,37 @@ private void cargarJugadores() {
 }
 
     private void eliminarJugador() {
-        int selectedRow = jugadoresTable.getSelectedRow();
-        if (selectedRow >= 0) {
-            int confirm = JOptionPane.showConfirmDialog(this, "¿Estás seguro de que deseas eliminar este jugador?", "Confirmar Eliminación", JOptionPane.YES_NO_OPTION);
+    	int[] selectedRows = jugadoresTable.getSelectedRows(); // Obtener todas las filas seleccionadas
+        if (selectedRows.length > 0) {
+            int confirm = JOptionPane.showConfirmDialog(
+                this,
+                "¿Estás seguro de que deseas eliminar los jugadores seleccionados?",
+                "Confirmar Eliminación",
+                JOptionPane.YES_NO_OPTION
+            );
+
             if (confirm == JOptionPane.YES_OPTION) {
                 try {
                     List<String[]> jugadores = leerJugadores();
-                    jugadores.remove(selectedRow);
-                    escribirJugadores(jugadores);
 
-                    cargarJugadores();
+                    // Agregar los jugadores eliminados a la lista de eliminados
+                    for (int i = selectedRows.length - 1; i >= 0; i--) {
+                        jugadoresEliminados.add(jugadores.get(selectedRows[i]));
+                        jugadores.remove(selectedRows[i]); // Eliminar de la lista principal
+                    }
+
+                    escribirJugadores(jugadores); // Guardar los cambios
+                    cargarJugadores(); // Recargar la tabla principal
+                    JOptionPane.showMessageDialog(this, "Jugadores eliminados correctamente.");
                 } catch (IOException e) {
-                    JOptionPane.showMessageDialog(this, "Error al eliminar el jugador: " + e.getMessage());
+                    JOptionPane.showMessageDialog(this, "Error al eliminar los jugadores: " + e.getMessage());
                 }
             }
         } else {
-            JOptionPane.showMessageDialog(this, "Por favor, selecciona un jugador para eliminar.");
+            JOptionPane.showMessageDialog(this, "Por favor, selecciona uno o más jugadores para eliminar.");
         }
     }
+    
 
     private boolean esNumero(String str) {
         try {
@@ -168,7 +191,7 @@ private void cargarJugadores() {
     private void abrirFormularioJugador(Integer rowIndex) {
         JDialog dialog = new JDialog(this, "Formulario de Jugador", true);
         dialog.setSize(400, 400);
-        dialog.setLayout(new GridLayout(8, 2));
+        dialog.getContentPane().setLayout(new GridLayout(8, 2));
 
         JTextField nombreField = new JTextField();
         JTextField apellidoField = new JTextField();
@@ -200,24 +223,24 @@ private void cargarJugadores() {
                 fotoField.setText(relativePath);
             }
         });
-        dialog.add(new JLabel("Nombre:"));
-        dialog.add(nombreField);
-        dialog.add(new JLabel("Apellido:"));
-        dialog.add(apellidoField);
-        dialog.add(new JLabel("DNI:"));
-        dialog.add(dniField);
-        dialog.add(new JLabel("Edad:"));
-        dialog.add(fechaNacField);
-        dialog.add(new JLabel("Posición:"));
-        dialog.add(posicionField);
-        dialog.add(new JLabel("Equipo:"));
-        dialog.add(equipoBox);
-        dialog.add(new JLabel("Foto:"));
-        dialog.add(fotoField);
-        dialog.add(browseButton);
+        dialog.getContentPane().add(new JLabel("Nombre:"));
+        dialog.getContentPane().add(nombreField);
+        dialog.getContentPane().add(new JLabel("Apellido:"));
+        dialog.getContentPane().add(apellidoField);
+        dialog.getContentPane().add(new JLabel("DNI:"));
+        dialog.getContentPane().add(dniField);
+        dialog.getContentPane().add(new JLabel("Edad:"));
+        dialog.getContentPane().add(fechaNacField);
+        dialog.getContentPane().add(new JLabel("Posición:"));
+        dialog.getContentPane().add(posicionField);
+        dialog.getContentPane().add(new JLabel("Equipo:"));
+        dialog.getContentPane().add(equipoBox);
+        dialog.getContentPane().add(new JLabel("Foto:"));
+        dialog.getContentPane().add(fotoField);
+        dialog.getContentPane().add(browseButton);
 
         JButton saveButton = new JButton("Guardar");
-        dialog.add(saveButton);
+        dialog.getContentPane().add(saveButton);
 
         if (rowIndex != null) {
             for (int i = 0; i < jugadoresTable.getColumnCount(); i++) {
@@ -286,4 +309,94 @@ private void cargarJugadores() {
             return this;
         }
     }
+    
+    
+    // wawawawawa
+    
+ // Método para mostrar la ventana de jugadores eliminados
+    private void mostrarVentanaEliminados() {
+        JDialog dialog = new JDialog(this, "Agentes Libres", true);
+        dialog.setSize(600, 400);
+        dialog.setLayout(new BorderLayout());
+
+        // Tabla para mostrar los jugadores eliminados
+        DefaultTableModel eliminadosTableModel = new DefaultTableModel(
+            new String[]{"Nombre", "Apellido", "DNI", "Edad", "Posición", "Equipo"}, 0);
+        JTable eliminadosTable = new JTable(eliminadosTableModel);
+
+        // Llenar la tabla con los jugadores eliminados
+        for (String[] jugador : jugadoresEliminados) {
+            eliminadosTableModel.addRow(jugador);
+        }
+
+        JScrollPane scrollPane = new JScrollPane(eliminadosTable);
+        dialog.add(scrollPane, BorderLayout.CENTER);
+
+        // Panel inferior para botones
+        JPanel buttonPanel = new JPanel();
+
+        // Botón para eliminar permanentemente
+        JButton eliminarPermanentementeButton = new JButton("Eliminar Permanentemente");
+        eliminarPermanentementeButton.addActionListener(e -> {
+            int[] selectedRows = eliminadosTable.getSelectedRows();
+            if (selectedRows.length > 0) {
+                int confirm = JOptionPane.showConfirmDialog(
+                    dialog,
+                    "¿Estás seguro de que deseas eliminar permanentemente los jugadores seleccionados?",
+                    "Confirmar Eliminación Permanente",
+                    JOptionPane.YES_NO_OPTION
+                );
+
+                if (confirm == JOptionPane.YES_OPTION) {
+                    for (int i = selectedRows.length - 1; i >= 0; i--) {
+                        jugadoresEliminados.remove(selectedRows[i]); // Eliminar de la lista
+                        eliminadosTableModel.removeRow(selectedRows[i]); // Actualizar la tabla
+                    }
+                    JOptionPane.showMessageDialog(dialog, "Jugadores eliminados permanentemente.");
+                }
+            } else {
+                JOptionPane.showMessageDialog(dialog, "Por favor, selecciona uno o más jugadores para eliminar permanentemente.");
+            }
+        });
+        
+       
+    
+        // Botón para añadir jugadores de vuelta al panel principal
+        JButton añadirJugadorButton = new JButton("Añadir Jugador");
+        añadirJugadorButton.addActionListener(e -> {
+            int[] selectedRows = eliminadosTable.getSelectedRows();
+            if (selectedRows.length > 0) {
+                for (int i = selectedRows.length - 1; i >= 0; i--) {
+                    String[] jugador = jugadoresEliminados.get(selectedRows[i]);
+                    jugadoresEliminados.remove(selectedRows[i]); // Eliminar de la lista de eliminados
+                    eliminadosTableModel.removeRow(selectedRows[i]); // Actualizar la tabla de eliminados
+
+                    // Añadir al modelo principal
+                    tableModel.addRow(jugador);
+
+                    // Añadir de vuelta al archivo
+                    try {
+                        List<String[]> jugadores = leerJugadores();
+                        jugadores.add(jugador);
+                        escribirJugadores(jugadores);
+                    } catch (IOException ex) {
+                        JOptionPane.showMessageDialog(this, "Error al añadir el jugador: " + ex.getMessage());
+                    }
+                }
+                JOptionPane.showMessageDialog(dialog, "Jugadores añadidos correctamente.");
+            } else {
+                JOptionPane.showMessageDialog(dialog, "Por favor, selecciona uno o más jugadores para añadir.");
+            }
+        });
+        
+     // Añadir botones al panel
+        buttonPanel.add(añadirJugadorButton);
+        buttonPanel.add(eliminarPermanentementeButton);
+        dialog.add(buttonPanel, BorderLayout.SOUTH);
+
+        dialog.setVisible(true);
+    
+    }
+    
+    
 }
