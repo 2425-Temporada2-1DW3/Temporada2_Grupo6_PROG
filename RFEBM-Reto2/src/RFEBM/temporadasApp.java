@@ -521,7 +521,6 @@ public class temporadasApp extends JFrame implements ActionListener,WindowListen
 
 	@Override
 	public void windowOpened(WindowEvent e) {
-		// TODO Auto-generated method stub
 		try {
 			cargarDatos();
 			
@@ -530,7 +529,6 @@ public class temporadasApp extends JFrame implements ActionListener,WindowListen
 				
 			}
 		} catch (IOException e1) {
-			// TODO Auto-generated catch block
 			
 		}
 	}
@@ -618,4 +616,5 @@ public class temporadasApp extends JFrame implements ActionListener,WindowListen
 		        System.err.println("Error cargando datos: " + e.getMessage());
 		    }
 		}
+	
 }
