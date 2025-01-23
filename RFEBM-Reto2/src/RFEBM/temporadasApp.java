@@ -586,17 +586,19 @@ public class temporadasApp extends JFrame implements ActionListener,WindowListen
 	
 	//CARGAR LISTA POR ELEMENTOS //
 	private void guardarDatos() {
-		 try (FileOutputStream fos = new FileOutputStream("resources/datos/temporadas.ser");
-			  ObjectOutputStream oos = new ObjectOutputStream(fos)) {
-			 
-			 for(int i = 0; i < dlm.size(); i++) {
-				 TemporadaApp r = dlm.get(i);
-				 oos.writeObject(r); 
-			 }
-				     JOptionPane.showMessageDialog(this, "Temporadas guardadas en " + "temporadas.ser", "Finalizado", JOptionPane.INFORMATION_MESSAGE);
-				 } catch (IOException ae) {
-				     JOptionPane.showMessageDialog(this, "Error en el guardado de datos:" + ae.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-				 }
+	    try (FileOutputStream fos = new FileOutputStream("resources/datos/temporadas.ser");
+	         ObjectOutputStream oos = new ObjectOutputStream(fos)) {
+
+	        // Guardar todas las temporadas completas (el objeto completo)
+	        for (int i = 0; i < dlm.size(); i++) {
+	            TemporadaApp t = dlm.get(i);
+	            oos.writeObject(t); // Guardamos el objeto completo
+	        }
+
+	        JOptionPane.showMessageDialog(this, "Temporadas guardadas en " + "temporadas.ser", "Finalizado", JOptionPane.INFORMATION_MESSAGE);
+	    } catch (IOException ae) {
+	        JOptionPane.showMessageDialog(this, "Error en el guardado de datos:" + ae.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+	    }
 	}
 
 	

@@ -3,6 +3,9 @@ package RFEBM;
 import javax.swing.*;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
+
+import Classes.TemporadaApp;
+
 import java.awt.*;
 import java.io.*;
 import java.time.LocalDate;
@@ -19,6 +22,7 @@ public class GEquipoApp extends JFrame {
     private static final String IMAGE_DIR = "resources/images/jugadores";
     private JTable jugadoresTable;
     private DefaultTableModel tableModel;
+    JComboBox<String> comboTemporada;
 
     private static final String[] EQUIPOS = {"Barcelona", "Cáceres", "Madrid", "Sevilla", "Murcia", "Bilbao"};
 
@@ -73,6 +77,12 @@ public class GEquipoApp extends JFrame {
         
         JPanel panel_3 = new JPanel();
         panel_2.add(panel_3, BorderLayout.CENTER);
+        
+        comboTemporada = new JComboBox<>();
+        panel_3.add(comboTemporada);
+        cargarTemporadasDesdeArchivo();
+        
+        
         JButton freeAgentsButton = new JButton("Agentes Libres");
         panel_3.add(freeAgentsButton);
         
@@ -420,7 +430,23 @@ private void cargarJugadores() {
 
         dialog.setVisible(true);
     
+        
     }
-    
-    
+    private void cargarTemporadasDesdeArchivo() {
+        try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream("resources/datos/temporadas.ser"))) {
+
+            comboTemporada.removeAllItems();
+            
+            TemporadaApp temporada;
+            
+            while ((temporada = (TemporadaApp) ois.readObject()) != null) {
+                // Agregamos solo el nombre al ComboBox
+                comboTemporada.addItem(temporada.getNombre());
+            }
+        } catch (EOFException e) {
+            return;
+        } catch (IOException | ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+    }
 }
