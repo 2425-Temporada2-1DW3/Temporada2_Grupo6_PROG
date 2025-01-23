@@ -3,9 +3,14 @@ package RFEBM;
 import java.awt.EventQueue;
 
 
+
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
+
+import Classes.RolApp;
+import Classes.UsuarioApp;
+
 import java.awt.BorderLayout;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -17,6 +22,10 @@ import java.awt.FlowLayout;
 import javax.swing.JPasswordField;
 import javax.swing.JButton;
 import java.awt.event.ActionListener;
+import java.io.EOFException;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
 import java.awt.event.ActionEvent;
 
 public class inicioApp extends JFrame implements ActionListener {
@@ -27,26 +36,9 @@ public class inicioApp extends JFrame implements ActionListener {
 	private JPasswordField leerContra;
 	private JLabel lblLogo, lblUsuario, lblTexto, lblContrasena;
 	private JButton btnAceptar;
-	public static int rol = 0;
+	static RolApp rolUsuario = RolApp.Usuario;
 	
 	
-	
-	
-	//Definir usuarios y contraseñas
-		String usuariocorrecto = "user";
-		String contrasenausuario = "1234";
-		
-		String admincorrecto = "admin";
-		String contrasenaadmin = "5678";
-		
-		String entrenadorcorrecto = "entrenador"; 
-		String contrasenaentrenador = "2345";
-		
-		String arbitrocorrecto = "arbitro";
-		String contrasenaarbitro = "4321";
-	/**
-	 * Launch the application.
-	 */
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
@@ -80,7 +72,7 @@ public class inicioApp extends JFrame implements ActionListener {
 		
 		lblLogo = new JLabel("");
 		lblLogo.setHorizontalAlignment(SwingConstants.CENTER);
-		lblLogo.setIcon(new ImageIcon(inicioApp.class.getResource("/resources/logo.png")));
+		lblLogo.setIcon(new ImageIcon(inicioApp.class.getResource("/images/logos/logo.png")));
 		panel.add(lblLogo, BorderLayout.CENTER);
 		
 		panel_1 = new JPanel();
@@ -130,50 +122,58 @@ public class inicioApp extends JFrame implements ActionListener {
 	}
 	
 	public void actionPerformed(ActionEvent e) {
-		//Leer usuario y contraseña
-		 String usuario = leerUsuario.getText();
-	     String contrasena = new String(leerContra.getPassword());
-	      //Comprueba si esta intentando entrar como usuario
-	     if (usuario.equals(usuariocorrecto) && contrasena.equals(contrasenausuario)) {
-	    	 JOptionPane.showMessageDialog(null, "Bienvenido usuario", "Bienvenido a la aplicación", JOptionPane.INFORMATION_MESSAGE);
-	    	 rol = 1;
-	    	 new menuApp().setVisible(true);
-	    	 dispose();
-	    	//Comprueba si esta intentando entrar como administrador
-	     } else if (usuario.equals(admincorrecto) && contrasena.equals(contrasenaadmin)) {
-	    	 JOptionPane.showMessageDialog(null, "Bienvenido administrador", "Bienvenido a la aplicación", JOptionPane.INFORMATION_MESSAGE);
-	    	 rol= 2;
-	    	 new menuApp().setVisible(true);
-	    	 dispose();
-	    	 //comprueba si el ususario es entrenador
-	     } else if (usuario.equals(entrenadorcorrecto) && contrasena.equals(contrasenaentrenador)) {
-	    	 JOptionPane.showMessageDialog(null, "Bienvenido entrenador", "Bienvenido a la aplicación", JOptionPane.INFORMATION_MESSAGE);
-	    	 rol= 3;
-	    	 new menuApp().setVisible(true);
-	    	 dispose();
-	    	 //comprueba si el usuario es arbitro
-	     } else if (usuario.equals(arbitrocorrecto) && contrasena.equals(contrasenaarbitro)) {
-	    	 JOptionPane.showMessageDialog(null, "Bienvenido arbitro", "Bienvenido a la aplicación", JOptionPane.INFORMATION_MESSAGE);
-	    	 rol= 4;
-	    	 new menuApp().setVisible(true);
-	    	 dispose();
-	    	 //En caso de que no se haya introducido ni nombre de usuario ni contraseña
-	     }else if(usuario.equals("") && contrasena.equals("")){
-	    	 lblTexto.setText("Introduzca usuario y contraseña");
-	    	 //En caso de que no se haya introducido nombre de usuario
-	     }else if(usuario.equals("")){
-	    	 lblTexto.setText("Introduzca usuario");
-	    	 //En caso de que no se haya introducido contraseña
-	     }else if(contrasena.equals("")){
-	    	 lblTexto.setText("Introduzca contraseña");
-	    	 // En caso de que cualquiera de las 2 opciones sean incorrectas
-	     }else {
-	    	 lblTexto.setText("Usuario o contraseña incorrectos");
-	     }
+	    String usuario = leerUsuario.getText();
+	    String contrasena = new String(leerContra.getPassword());
+
+	    // Cargar los usuarios desde el archivo .ser uno por uno
+	    boolean usuarioValido = false;
+
+	    try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream("resources/datos/usuarios.ser"))) {
+	        UsuarioApp u;
+	        while (true) {
+	            try {
+	                u = (UsuarioApp) ois.readObject();
+	                // Verificar si el usuario y la contraseña coinciden
+	                if (u.getNombreUsuario().equals(usuario) && u.getContraseña().equals(contrasena)) {
+	                    usuarioValido = true;
+	                    rolUsuario = u.getRol(); // Establecer el rol basado en el índice del enum
+	                    JOptionPane.showMessageDialog(null, "Bienvenido " + u.getRol(), "Bienvenido a la aplicación", JOptionPane.INFORMATION_MESSAGE);
+	                    new menuApp().setVisible(true);
+	                    dispose();
+	                    break;
+	                }
+	            } catch (EOFException e1) {
+	                // Fin del archivo
+	                break;
+	            }
+	        }
+	    } catch (IOException | ClassNotFoundException ex) {
+	        ex.printStackTrace();
+	    }
+
+	    // Si el usuario no es válido, mostrar un mensaje
+	    if (!usuarioValido) {
+	        lblTexto.setText("Usuario o contraseña incorrectos");
+	    }
 	}
 	
 	
-
-    
-    
+	public class UsuariosCargar {
+		 public static void cargarUsuariosDesdeArchivo(String archivo) {
+		        try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(archivo))) {
+		            UsuarioApp usuario;
+		            while (true) {
+		                try {
+		                    usuario = (UsuarioApp) ois.readObject();
+		                    // Procesar el usuario (por ejemplo, agregarlo a una lista)
+		                    System.out.println("Cargando usuario: " + usuario);
+		                } catch (EOFException e) {
+		                    break;
+		                }
+		            }
+		        } catch (IOException | ClassNotFoundException e) {
+		            e.printStackTrace();
+		        }
+		    }
+	}
 }
