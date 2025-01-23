@@ -45,6 +45,7 @@ public class GUsuarioApp extends JFrame implements ActionListener,WindowListener
     private DefaultListModel<UsuarioApp> userModel;
     boolean cambiodatos;
     static temporadasApp frame;
+    private JPanel panel_35;
 
     /**
      * Launch the application.
@@ -239,20 +240,24 @@ public class GUsuarioApp extends JFrame implements ActionListener,WindowListener
         panel_27.add(panel_31, BorderLayout.SOUTH);
         panel_31.setLayout(new BorderLayout(0, 0));
 
-        panel_32 = new JPanel();
-        panel_31.add(panel_32, BorderLayout.WEST);
-
         panel_33 = new JPanel();
         panel_31.add(panel_33, BorderLayout.CENTER);
         panel_33.setLayout(new BorderLayout(0, 0));
 
-        btnVolver = new JButton("Volver");
-        panel_33.add(btnVolver, BorderLayout.WEST);
-        btnVolver.addActionListener(this);
-
 
         panel_34 = new JPanel();
         panel_33.add(panel_34, BorderLayout.NORTH);
+        
+                panel_32 = new JPanel();
+                panel_33.add(panel_32, BorderLayout.EAST);
+                
+                panel_35 = new JPanel();
+                panel_33.add(panel_35, BorderLayout.CENTER);
+                panel_35.setLayout(new BorderLayout(0, 0));
+                
+                        btnVolver = new JButton("Volver");
+                        panel_35.add(btnVolver, BorderLayout.EAST);
+                        btnVolver.addActionListener(this);
     }
     public void actionPerformed(ActionEvent e) {
     	Object o = e.getSource();

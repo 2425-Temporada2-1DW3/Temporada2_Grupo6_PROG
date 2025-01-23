@@ -10,6 +10,8 @@ import java.time.Period;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
 
 public class GEquipoApp extends JFrame {
     private static final long serialVersionUID = 1L;
@@ -50,33 +52,55 @@ public class GEquipoApp extends JFrame {
         panel.add(scrollPane, BorderLayout.CENTER);
 
         JPanel buttonPanel = new JPanel();
-        JButton addButton = new JButton("Añadir Jugador");
-        JButton editButton = new JButton("Editar Jugador");
-        JButton deleteButton = new JButton("Eliminar Jugador");
-        JButton freeAgentsButton = new JButton("Agentes Libres");
-        buttonPanel.add(addButton);
-        buttonPanel.add(editButton);
-        buttonPanel.add(deleteButton);
-        buttonPanel.add(freeAgentsButton);
+        buttonPanel.setLayout(new BorderLayout(0, 0));
         panel.add(buttonPanel, BorderLayout.SOUTH);    
+        
+        JPanel panel_1 = new JPanel();
+        buttonPanel.add(panel_1, BorderLayout.EAST);
+        
+        JPanel panel_2 = new JPanel();
+        buttonPanel.add(panel_2, BorderLayout.CENTER);
+        panel_2.setLayout(new BorderLayout(0, 0));
+        
+        JButton btnVolver = new JButton("Volver");
+        btnVolver.addActionListener(new ActionListener() {
+        	public void actionPerformed(ActionEvent e) {
+        	            new GestionApp().setVisible(true);
+        	            dispose();
+        	}
+        });
+        panel_2.add(btnVolver, BorderLayout.EAST);
+        
+        JPanel panel_3 = new JPanel();
+        panel_2.add(panel_3, BorderLayout.CENTER);
+        JButton freeAgentsButton = new JButton("Agentes Libres");
+        panel_3.add(freeAgentsButton);
+        
+        freeAgentsButton.addActionListener(e -> mostrarVentanaEliminados());
+        JButton editButton = new JButton("Editar Jugador");
+        panel_3.add(editButton);
+        JButton deleteButton = new JButton("Eliminar Jugador");
+        panel_3.add(deleteButton);
+        
+        JPanel panel_4 = new JPanel();
+        panel_2.add(panel_4, BorderLayout.SOUTH);
+        
+        JPanel panel_5 = new JPanel();
+        panel_2.add(panel_5, BorderLayout.NORTH);
+        
+                deleteButton.addActionListener(e -> eliminarJugador());
+        
+                editButton.addActionListener(e -> {
+                    int selectedRow = jugadoresTable.getSelectedRow();
+                    if (selectedRow >= 0) {
+                        abrirFormularioJugador(selectedRow);
+                    } else {
+                        JOptionPane.showMessageDialog(this, "Por favor, selecciona un jugador para editar.");
+                    }
+                });
                 
         
         cargarJugadores();
-
-        addButton.addActionListener(e -> abrirFormularioJugador(null));
-
-        editButton.addActionListener(e -> {
-            int selectedRow = jugadoresTable.getSelectedRow();
-            if (selectedRow >= 0) {
-                abrirFormularioJugador(selectedRow);
-            } else {
-                JOptionPane.showMessageDialog(this, "Por favor, selecciona un jugador para editar.");
-            }
-        });
-
-        deleteButton.addActionListener(e -> eliminarJugador());
-                
-        freeAgentsButton.addActionListener(e -> mostrarVentanaEliminados());
 
     }
     
@@ -212,9 +236,9 @@ private void cargarJugadores() {
             if (result == JFileChooser.APPROVE_OPTION) {
                 File selectedFile = fileChooser.getSelectedFile();
                 
-                // Obtener el nombre del equipo y la ruta de la imagen
-                String equipo = (String) equipoBox.getSelectedItem();  // Nombre del equipo (ej: Barcelona)
-                String imageFileName = selectedFile.getName(); // Nombre de la imagen (ej: jugador1.png)
+              
+                String equipo = (String) equipoBox.getSelectedItem(); 
+                String imageFileName = selectedFile.getName();
                 
                 // Construir la ruta relativa de la imagen
                 String relativePath = "images/jugadores/" + equipo + "/" + imageFileName;
@@ -302,7 +326,7 @@ private void cargarJugadores() {
                     Image image = imageIcon.getImage().getScaledInstance(50, 50, Image.SCALE_SMOOTH);
                     setIcon(new ImageIcon(image));
                 } else {
-                    setText("No disponible");
+                   
                     setIcon(null);
                 }
             }
@@ -317,7 +341,7 @@ private void cargarJugadores() {
     private void mostrarVentanaEliminados() {
         JDialog dialog = new JDialog(this, "Agentes Libres", true);
         dialog.setSize(600, 400);
-        dialog.setLayout(new BorderLayout());
+        dialog.getContentPane().setLayout(new BorderLayout());
 
         // Tabla para mostrar los jugadores eliminados
         DefaultTableModel eliminadosTableModel = new DefaultTableModel(
@@ -330,7 +354,7 @@ private void cargarJugadores() {
         }
 
         JScrollPane scrollPane = new JScrollPane(eliminadosTable);
-        dialog.add(scrollPane, BorderLayout.CENTER);
+        dialog.getContentPane().add(scrollPane, BorderLayout.CENTER);
 
         // Panel inferior para botones
         JPanel buttonPanel = new JPanel();
@@ -392,7 +416,7 @@ private void cargarJugadores() {
      // Añadir botones al panel
         buttonPanel.add(añadirJugadorButton);
         buttonPanel.add(eliminarPermanentementeButton);
-        dialog.add(buttonPanel, BorderLayout.SOUTH);
+        dialog.getContentPane().add(buttonPanel, BorderLayout.SOUTH);
 
         dialog.setVisible(true);
     

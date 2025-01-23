@@ -6,6 +6,9 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableModel;
+
+import Classes.RolApp;
+
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 
@@ -102,7 +105,7 @@ public class clasificacionApp extends JFrame {
 	private JPanel contentPane;
 	private JLabel txtClasif; 
 	private JPanel panel; JPanel panel1; JPanel panel4; JPanel panel5; JPanel panel_1; JPanel panel_2; JPanel panel_3; JPanel panel_4; JPanel panel_5; JPanel panel_6; JPanel panel_7; JPanel panel_8; JPanel panel_9; JPanel panel_10; JPanel panel_11; JPanel panel_12; JPanel panel_13; JPanel panel_14;
-	private JButton btnAplicarCambios; JButton btnLogout; JButton btnAtras; JButton btnAlante;
+	private JButton btnAplicarCambios; JButton btnVolver; JButton btnAtras; JButton btnAlante;
 	private JLabel JornadaTxt; JLabel lblNewLabel_1; JLabel lblNewLabel_2; static JLabel lblTextoCambios; JScrollPane scrollPane;
 	private JComboBox <String> JornadaDesplegable;
 	private static JTable table;
@@ -137,16 +140,7 @@ public class clasificacionApp extends JFrame {
 	public clasificacionApp() throws IOException {
 		setTitle("Clasificación - " + TEMPORADA_ACTUAL);
         // Continuar con la configuración de la interfaz
-		if (inicioApp.rol==1) {
-			setTitle("Menú usuario");
-		} if (inicioApp.rol==2) {
-			setTitle("Menú administrador");
-		    // Resto del constructor
-		} if (inicioApp.rol==3) {
-			setTitle("Menú entrenador"); // solo acceso a clase equipos
-		} if (inicioApp.rol==4) {
-			setTitle("Menú arbitro");
-		}
+		
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 900, 500);
 		contentPane = new JPanel();
@@ -190,25 +184,20 @@ public class clasificacionApp extends JFrame {
 		contentPane.add(panel1, BorderLayout.SOUTH);
 		panel1.setLayout(new BorderLayout(0, 0));
 	
-		btnLogout = new JButton("Cerrar Sesión");
-		btnLogout.addActionListener(new ActionListener() {
+		btnVolver = new JButton("Volver");
+		btnVolver.addActionListener(new ActionListener() {
 		
 			
 			public void actionPerformed(ActionEvent e) {
 				jornadaSeleccionada = 0;
-				int respuesta = JOptionPane.showConfirmDialog(null, "¿Está seguro que desea cerrar sesión?", "Cerrar sesión", JOptionPane.YES_NO_OPTION, JOptionPane.INFORMATION_MESSAGE);
-				if (respuesta == JOptionPane.YES_OPTION) {
-						new inicioApp().setVisible(true);
+				new menuApp().setVisible(true);
 				dispose();
 				}
-			}
 		});
-		panel1.add(btnLogout, BorderLayout.EAST);
+		panel1.add(btnVolver, BorderLayout.EAST);
 	
 		btnAplicarCambios = new JButton("Aplicar Cambios");
-		if (inicioApp.rol==1||inicioApp.rol==3) {
-			btnAplicarCambios.setEnabled(false);
-		}
+		
 		btnAplicarCambios.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				lblTextoCambios.setText("INFO : Cambios aplicados");
@@ -360,15 +349,7 @@ public class clasificacionApp extends JFrame {
 			
 			lblEquipoVis1 = new JLabel("");
 			panel_7.add(lblEquipoVis1);
-		
-		if (inicioApp.rol==1 || inicioApp.rol==3) {
-			EquipoLocGol1.setEditable(false);
-			EquipoLocGol1.setEnabled(false);
-		}
-		if (inicioApp.rol==1 ||inicioApp.rol==3) {
-			EquipoVisGol1.setEditable(false);
-			EquipoVisGol1.setEnabled(false);
-		}
+	
 		panel_9 = new JPanel();
 		panel_8.add(panel_9, BorderLayout.CENTER);
 		panel_9.setLayout(new BorderLayout(0, 0));
@@ -404,15 +385,6 @@ public class clasificacionApp extends JFrame {
 							panel_10.add(lblEquipoVis2);
 							EquipoVisGol2.addKeyListener(golesfilter);
 			EquipoLocGol2.addKeyListener(golesfilter);
-			if (inicioApp.rol==1 || inicioApp.rol==3) {
-				EquipoLocGol2.setEditable(false);
-				EquipoLocGol2.setEnabled(false);
-			}
-			if (inicioApp.rol==1 || inicioApp.rol==3) {
-				EquipoVisGol2.setEditable(false);
-				EquipoVisGol2.setEnabled(false);
-			}
-		
 	
 		lblTextoCambios = new JLabel("");
 		lblTextoCambios.setFont(new Font("Calibri", Font.BOLD, 12));
@@ -452,14 +424,7 @@ public class clasificacionApp extends JFrame {
 							panel_14.add(lblEquipoVis3);
 							EquipoVisGol3.addKeyListener(golesfilter);
 			EquipoLocGol3.addKeyListener(golesfilter);
-			if (inicioApp.rol==1 || inicioApp.rol==3) {
-				EquipoLocGol3.setEditable(false);
-				EquipoLocGol3.setEnabled(false);
-			}
-			if (inicioApp.rol==1 || inicioApp.rol==3) {
-				EquipoVisGol3.setEditable(false);
-				EquipoVisGol3.setEnabled(false);
-			}
+			
         // Crear Tabla
 		
 		scrollPane = new JScrollPane();
@@ -482,8 +447,7 @@ public class clasificacionApp extends JFrame {
 		cargarDatosJornada(); // Carga Datos Jornada 1
 		lblTextoCambios.setText("INFO : Mostrando Jornada " + (jornadaSeleccionada + 1));
 		loadShields();
-		
-
+		configurarMenuSegunRol(inicioApp.rolUsuario);
 	}
 	private static void loadData(String temporadaActual) {
 		
@@ -638,7 +602,37 @@ public class clasificacionApp extends JFrame {
             }
         }
     }
-    
+    private void configurarMenuSegunRol(RolApp rolUsuario) {
+        // Configurar acceso a los botones según el rol del usuario
+        switch (rolUsuario) {
+            case Usuario : // Usuario (Rol Usuario)
+            	EquipoLocGol1.setEditable(false); EquipoVisGol1.setEditable(false);
+				EquipoLocGol1.setEnabled(false);  EquipoVisGol1.setEnabled(false);
+            	EquipoLocGol2.setEditable(false); EquipoVisGol2.setEditable(false);
+				EquipoLocGol2.setEnabled(false);  EquipoVisGol2.setEnabled(false);
+				EquipoLocGol3.setEditable(false); EquipoVisGol3.setEditable(false);
+				EquipoLocGol3.setEnabled(false);  EquipoVisGol3.setEnabled(false);	
+				btnAplicarCambios.setEnabled(false);
+				setTitle("Menú usuario");
+				
+				break;
+
+            case Entrenador: // Admin (Rol Entrenador)
+            	EquipoLocGol1.setEditable(false); EquipoVisGol1.setEditable(false);
+				EquipoLocGol1.setEnabled(false);  EquipoVisGol1.setEnabled(false);
+            	EquipoLocGol2.setEditable(false); EquipoVisGol2.setEditable(false);
+				EquipoLocGol2.setEnabled(false);  EquipoVisGol2.setEnabled(false);
+				EquipoLocGol3.setEditable(false); EquipoVisGol3.setEditable(false);
+				EquipoLocGol3.setEnabled(false);  EquipoVisGol3.setEnabled(false);	
+				btnAplicarCambios.setEnabled(false);
+				setTitle("Menú entrenador");
+                break;
+
+            default:
+                // Si no se reconoce el rol, deshabilitar todo
+              
+        }
+    }
     public void loadShields() {
     	lblEquipoLoc1.setIcon(new ImageIcon(clasificacionApp.class.getResource("/images/logos/"+EquipoLoc1.getText()+"Mini.png")));
     	lblEquipoLoc2.setIcon(new ImageIcon(clasificacionApp.class.getResource("/images/logos/"+EquipoLoc2.getText()+"Mini.png")));

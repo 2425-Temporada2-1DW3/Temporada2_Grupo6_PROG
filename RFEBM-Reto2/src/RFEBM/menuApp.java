@@ -118,20 +118,8 @@ public class menuApp extends JFrame implements ActionListener {
 
         btnClasificacion = new JButton("Clasificación");
         panel_4.add(btnClasificacion);
-        btnClasificacion.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                int respuesta = JOptionPane.showConfirmDialog(null, "¿Está seguro que desea ir a clasificaciones?", "Clasificación", JOptionPane.YES_NO_OPTION, JOptionPane.INFORMATION_MESSAGE);
-                if (respuesta == JOptionPane.YES_OPTION) {
-                    try {
-                        new clasificacionApp().setVisible(true);
-                    } catch (IOException e1) {
-                        e1.printStackTrace();
-                    }
-                    dispose();
-                }
-            }
-        });
-
+        btnClasificacion.addActionListener(this);
+        
         btnEquipos = new JButton("Plantillas");
         btnEquipos.addActionListener(this);
         panel_4.add(btnEquipos);
@@ -152,7 +140,17 @@ public class menuApp extends JFrame implements ActionListener {
             dispose();
         }
         if (o == btnGestion) {
-            // Aquí puedes agregar lo que quieres que haga el botón de gestión
+        	new GestionApp().setVisible(true);
+            dispose();
+        }
+        if (o == btnClasificacion) {
+			try {
+				new clasificacionApp().setVisible(true);
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+            dispose();
         }
     }
 
@@ -164,6 +162,7 @@ public class menuApp extends JFrame implements ActionListener {
                 btnClasificacion.setEnabled(true);  // El usuario puede ver la clasificación
                 btnEquipos.setEnabled(true);  // El usuario puede ver los equipos
                 btnGestion.setEnabled(false);  // El usuario no puede gestionar usuarios
+                btnGestion.setVisible(false);
                 break;
 
             case Entrenador: // Admin (Rol Entrenador)

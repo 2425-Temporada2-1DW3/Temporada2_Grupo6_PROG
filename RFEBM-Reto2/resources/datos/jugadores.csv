@@ -1,21 +1,10 @@
-Lamin,Jamal,12345678A,,Delantero,Barcelona,images/jugadores/Barcelona/Jugador1.1.png
-Lionel,Pepsi,87654321B,,Defensa,Barcelona,gengar.png
-Karim,Abad,11223344C,,Mediocampista,Barcelona,sevilla id=4.png
-Malek,Salomon,22334455D,,Portero,Barcelona,murcia id=5.png
-Daim,Benitez,33445566E,25,Defensa,Barcelona,""
-Vadhir,Granadino,44556677F,,Delantero,Barcelona,gengar.png
-Jalel,Alaoui,55667788G,31,Delantero,Barcelona,""
 Paco,Rabales,66778899H,28,Mediocampista,Barcelona,""
 Mohammed,Arduino,77889900I,26,Defensa,Barcelona,""
-Hermenegildo,Augusto,88990011J,30,Portero,Barcelona,""
 Jacinto,Rodriguez,99001122K,25,Portero,Cáceres,""
-Jose Manuel,Gonzalez,00112233L,24,Extremo izquierdo,Cáceres,""
 Marcelino,Perez,11223344M,26,Lateral izquierdo,Cáceres,""
-Gumesindo,Padilla,22334455N,29,Central,Cáceres,""
 Anselmo,García,56789012E,37,Lateral derecho,Cáceres,""
 Fulgencio,Martínez,67890123F,29,Extremo derecho,Cáceres,""
 Isidoro,López,78901234G,31,Pivote,Cáceres,""
-Tadeo,Jonás,89012345H,25,Suplente lateral izquierdo,Cáceres,""
 Francisco,Frasco,90123456J,24,Suplente extremo izquierdo,Cáceres,""
 Adolfo,Domínguez,11234567K,31,Suplente central,Cáceres,""
 Ramiro,Franco,22345678L,27,Suplente pivote,Cáceres,""
@@ -62,3 +51,14 @@ Mikel,Reta,12389045H,30,Extremo derecho,Bilbao,""
 Iñaki,Willy,23490156I,28,Pivote,Bilbao,""
 Aimar,Rivero,34501267J,27,Extremo izquierdo,Bilbao,""
 Ekaitz,Olabeaga,45612378K,30,Lateral derecho,Bilbao,""
+Lionel,Pepsi,87654321B,,Defensa,Barcelona,gengar.png
+Malek,Salomon,22334455D,,Portero,Barcelona,murcia id=5.png
+Vadhir,Granadino,44556677F,,Delantero,Barcelona,gengar.png
+Hermenegildo,Augusto,88990011J,30,Portero,Barcelona,""
+Jose Manuel,Gonzalez,00112233L,24,Extremo izquierdo,Cáceres,""
+Gumesindo,Padilla,22334455N,29,Central,Cáceres,""
+Karim,Abad,11223344C,,Mediocampista,Barcelona,images/jugadores/Barcelona/Jugador2.2.png
+Lamin,Jamal,12345678A,,Delantero,Barcelona,images/jugadores/Barcelona/Jugador1.1.png
+Daim,Benitez,33445566E,25,Defensa,Barcelona,""
+Jalel,Alaoui,55667788G,31,Delantero,Barcelona,""
+Tadeo,Jonás,89012345H,25,Suplente lateral izquierdo,Cáceres,""
