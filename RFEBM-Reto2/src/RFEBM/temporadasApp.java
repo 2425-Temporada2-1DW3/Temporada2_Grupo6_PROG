@@ -1,6 +1,7 @@
 package RFEBM;
 
 import Classes.añoTemporadaApp;
+import log.log;
 import Classes.EstadoTemporada;
 import Classes.TemporadaApp;
 import javax.swing.JFrame;
@@ -13,6 +14,8 @@ import java.awt.EventQueue;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.SwingConstants;
+
+import org.apache.log4j.Logger;
 
 import java.awt.Font;
 import java.awt.event.ActionEvent;
@@ -60,6 +63,7 @@ public class temporadasApp extends JFrame implements ActionListener,WindowListen
 	boolean cambiodatos = false;
 	static temporadasApp frame;
 	private JButton btnVolver;
+	Logger LOG = log.getLogger(temporadasApp.class);
 	
 	
 	public static void main(String[] args) {
@@ -326,6 +330,7 @@ public class temporadasApp extends JFrame implements ActionListener,WindowListen
 		     añoTemporadaApp añoTemporada = new añoTemporadaApp(añoInicio, añoFin);
 	         TemporadaApp temporada = new TemporadaApp(nombre, añoTemporada);
 	         dlm.addElement(temporada);
+	         LOG.info("Info: Una temporada ha sido añadido.");
 	         cambiodatos = true;
 		    JOptionPane.showMessageDialog(this, "La temporada ha sido añadida correctamente.", "Éxito", JOptionPane.INFORMATION_MESSAGE);
 		}
@@ -336,6 +341,7 @@ public class temporadasApp extends JFrame implements ActionListener,WindowListen
 			dlm.removeElementAt(Seleccionados[i]);
 			ElementoBorrado = true;
 			cambiodatos = true;
+			LOG.warn("Warn: Una temporada ha sido eliminada.");
 	}
 	if (ElementoBorrado == false) {
 		JOptionPane.showMessageDialog(this, "No se esta borrando nada .", "Error", JOptionPane.ERROR_MESSAGE);
@@ -376,6 +382,7 @@ public class temporadasApp extends JFrame implements ActionListener,WindowListen
 
 		        // Actualizar la lista
 		        dlm.set(seleccion, temporadaSeleccionada);
+		        LOG.info("Info: Una temporada ha sido modificada.");
 
 		        JOptionPane.showMessageDialog(this, "Temporada modificada correctamente.", "Éxito", JOptionPane.INFORMATION_MESSAGE);
 		    } catch (NumberFormatException ex) {

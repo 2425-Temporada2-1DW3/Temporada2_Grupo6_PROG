@@ -8,8 +8,11 @@ import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableModel;
 
+import org.apache.log4j.Logger;
+
 import Classes.RolApp;
 import Classes.TemporadaApp;
+import log.log;
 
 import javax.swing.JLabel;
 
@@ -117,8 +120,9 @@ public class clasificacionApp extends JFrame {
 	private static JTextField EquipoLocGol1; static JTextField EquipoLocGol2; static JTextField EquipoLocGol3;
 	private static JTextField EquipoVisGol1; static JTextField EquipoVisGol2; static JTextField EquipoVisGol3;
 	private JLabel VS1; JLabel VS2; JLabel VS3;
- private JPanel panel_15;
- JComboBox<String> comboTemporada;
+	private JPanel panel_15;
+ 	JComboBox<String> comboTemporada;
+ 	Logger LOG = log.getLogger(clasificacionApp.class);
 
 	
 	

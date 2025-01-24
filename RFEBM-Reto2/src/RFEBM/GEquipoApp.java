@@ -4,7 +4,10 @@ import javax.swing.*;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 
+import org.apache.log4j.Logger;
+
 import Classes.TemporadaApp;
+import log.log;
 
 import java.awt.*;
 import java.io.*;
@@ -12,6 +15,7 @@ import java.time.LocalDate;
 import java.time.Period;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
@@ -23,6 +27,7 @@ public class GEquipoApp extends JFrame {
     private JTable jugadoresTable;
     private DefaultTableModel tableModel;
     JComboBox<String> comboTemporada;
+    Logger LOG = log.getLogger(GEquipoApp.class);
 
     private static final String[] EQUIPOS = {"Barcelona", "Cáceres", "Madrid", "Sevilla", "Murcia", "Bilbao"};
 
@@ -42,7 +47,7 @@ public class GEquipoApp extends JFrame {
     public GEquipoApp() {
         setTitle("Gestión de Equipos y Jugadores");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setSize(800, 600);
+        setSize(901, 600);
 
         JPanel panel = new JPanel(new BorderLayout());
         getContentPane().add(panel);
@@ -52,6 +57,7 @@ public class GEquipoApp extends JFrame {
         }, 0);
         jugadoresTable = new JTable(tableModel);
         jugadoresTable.getColumnModel().getColumn(6).setCellRenderer(new ImageRenderer());
+        jugadoresTable.setRowHeight(40);
         JScrollPane scrollPane = new JScrollPane(jugadoresTable);
         panel.add(scrollPane, BorderLayout.CENTER);
 
@@ -79,6 +85,13 @@ public class GEquipoApp extends JFrame {
         panel_2.add(panel_3, BorderLayout.CENTER);
         
         comboTemporada = new JComboBox<>();
+        comboTemporada.addActionListener(new ActionListener() {
+        	public void actionPerformed(ActionEvent e) {
+        		
+        		 actualizarRutasFotos();
+        		 ordenarPorEquipo();
+        	}
+        });
         panel_3.add(comboTemporada);
         cargarTemporadasDesdeArchivo();
         
@@ -111,6 +124,8 @@ public class GEquipoApp extends JFrame {
                 
         
         cargarJugadores();
+        ordenarPorEquipo();
+     
 
     }
     
@@ -333,7 +348,7 @@ private void cargarJugadores() {
                 File imageFile = new File(fullPath);
                 if (imageFile.exists()) {
                     ImageIcon imageIcon = new ImageIcon(fullPath);
-                    Image image = imageIcon.getImage().getScaledInstance(50, 50, Image.SCALE_SMOOTH);
+                    Image image = imageIcon.getImage().getScaledInstance(130, 50, Image.SCALE_SMOOTH);
                     setIcon(new ImageIcon(image));
                 } else {
                    
@@ -343,9 +358,6 @@ private void cargarJugadores() {
             return this;
         }
     }
-    
-    
-    // wawawawawa
     
  // Método para mostrar la ventana de jugadores eliminados
     private void mostrarVentanaEliminados() {
@@ -449,4 +461,64 @@ private void cargarJugadores() {
             e.printStackTrace();
         }
     }
-}
+    private void ordenarPorEquipo() {
+        List<String[]> jugadores = new ArrayList<>();
+
+        // Obtener todos los datos de la tabla actual
+        for (int i = 0; i < tableModel.getRowCount(); i++) {
+            String[] jugador = new String[tableModel.getColumnCount()];
+            for (int j = 0; j < tableModel.getColumnCount(); j++) {
+                jugador[j] = (String) tableModel.getValueAt(i, j);
+            }
+            jugadores.add(jugador);
+        }
+
+        // Ordenar la lista de jugadores por la columna "Equipo" (índice 5)
+        jugadores.sort((j1, j2) -> j1[5].compareToIgnoreCase(j2[5]));
+
+        // Vaciar el modelo de la tabla y volver a llenarlo con los datos ordenados
+        tableModel.setRowCount(0);
+        for (String[] jugador : jugadores) {
+            tableModel.addRow(jugador);
+        }
+    }
+    private String generarRutaFoto(String nombre, String apellido, String equipo) {
+        // Obtener el número de temporada seleccionado
+        int temporadaSeleccionada = comboTemporada.getSelectedIndex() + 1;
+        
+        // Formatear la ruta según el estándar requerido
+        return "images/jugadores/" + equipo + "/" 
+                + nombre + apellido + "." + temporadaSeleccionada + ".png";
+    }
+    private void actualizarRutasFotos() {
+        try {
+            List<String[]> jugadores = leerJugadores(); // Cargar jugadores desde el archivo
+            
+            for (String[] jugador : jugadores) {
+                if (jugador.length >= 6) {
+                    String nombre = jugador[0].trim();
+                    String apellido = jugador[1].trim();
+                    String equipo = jugador[5].trim();
+                    
+                    // Generar la ruta de la foto según el formato
+                    String fotoActualizada = generarRutaFoto(nombre, apellido, equipo);
+                    
+                    // Actualizar la ruta de la foto en los datos del jugador
+                    if (jugador.length == 6) { 
+                        // Si originalmente no tiene el campo de foto, añadirlo
+                        jugador = Arrays.copyOf(jugador, 7);
+                    }
+                    jugador[6] = fotoActualizada;
+                }
+            }
+
+            // Guardar las modificaciones en el archivo
+            escribirJugadores(jugadores);
+            cargarJugadores(); // Recargar la tabla para reflejar los cambios
+
+            
+        } catch (IOException e) {
+            JOptionPane.showMessageDialog(this, "Error al actualizar las rutas de las fotos: " + e.getMessage());
+        }
+    }
+   }
