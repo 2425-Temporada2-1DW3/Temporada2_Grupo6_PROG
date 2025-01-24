@@ -11,7 +11,10 @@ import java.io.IOException;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 
+import org.apache.log4j.Logger;
+
 import Classes.RolApp;
+import log.log;
 
 public class menuApp extends JFrame implements ActionListener {
 
@@ -30,6 +33,7 @@ public class menuApp extends JFrame implements ActionListener {
     private JLabel lblNewLabel_1;
     private JButton btnLogout;
     private JButton btnGestion;
+    Logger LOG = log.getLogger(menuApp.class);
 
 
     /**
@@ -140,6 +144,7 @@ public class menuApp extends JFrame implements ActionListener {
             dispose();
         }
         if (o == btnGestion) {
+        	LOG.info("Info: El usuario "+inicioApp.usuario +" ha entrado a gestion.");
         	new GestionApp().setVisible(true);
             dispose();
         }

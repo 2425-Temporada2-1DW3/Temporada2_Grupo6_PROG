@@ -4,6 +4,9 @@ import java.awt.EventQueue;
 
 
 
+import log.log;
+import org.apache.log4j.Logger;
+
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
@@ -37,6 +40,8 @@ public class inicioApp extends JFrame implements ActionListener {
 	private JLabel lblLogo, lblUsuario, lblTexto, lblContrasena;
 	private JButton btnAceptar;
 	static RolApp rolUsuario = RolApp.Usuario;
+	Logger LOG = log.getLogger(inicioApp.class);
+	static String usuario;
 	
 	
 	public static void main(String[] args) {
@@ -119,10 +124,11 @@ public class inicioApp extends JFrame implements ActionListener {
 		lblTexto = new JLabel("");
 		lblTexto.setHorizontalAlignment(SwingConstants.CENTER);
 		panel_5.add(lblTexto, BorderLayout.SOUTH);
+		
 	}
 	
 	public void actionPerformed(ActionEvent e) {
-	    String usuario = leerUsuario.getText();
+	    usuario = leerUsuario.getText();
 	    String contrasena = new String(leerContra.getPassword());
 
 	    // Cargar los usuarios desde el archivo .ser uno por uno
@@ -138,9 +144,11 @@ public class inicioApp extends JFrame implements ActionListener {
 	                    usuarioValido = true;
 	                    rolUsuario = u.getRol(); // Establecer el rol basado en el índice del enum
 	                    JOptionPane.showMessageDialog(null, "Bienvenido " + u.getRol(), "Bienvenido a la aplicación", JOptionPane.INFORMATION_MESSAGE);
+	                    LOG.info("Info: Un usuario con rol "+ rolUsuario+" ha accedido a la aplicación.");
 	                    new menuApp().setVisible(true);
 	                    dispose();
 	                    break;
+	                  
 	                }
 	            } catch (EOFException e1) {
 	                // Fin del archivo
@@ -154,6 +162,7 @@ public class inicioApp extends JFrame implements ActionListener {
 	    // Si el usuario no es válido, mostrar un mensaje
 	    if (!usuarioValido) {
 	        lblTexto.setText("Usuario o contraseña incorrectos");
+	        LOG.warn("Warn: Alguien ha intentado acceder a la aplicación sin exito.");
 	    }
 	}
 	

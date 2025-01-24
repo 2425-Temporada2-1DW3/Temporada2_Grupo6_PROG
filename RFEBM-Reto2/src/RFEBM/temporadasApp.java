@@ -1,6 +1,7 @@
 package RFEBM;
 
 import Classes.añoTemporadaApp;
+import log.log;
 import Classes.EstadoTemporada;
 import Classes.TemporadaApp;
 import javax.swing.JFrame;
@@ -14,16 +15,23 @@ import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.SwingConstants;
 
+import org.apache.log4j.Logger;
+
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
+import java.io.BufferedWriter;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 import javax.swing.DefaultListModel;
 import javax.swing.ImageIcon;
@@ -60,6 +68,8 @@ public class temporadasApp extends JFrame implements ActionListener,WindowListen
 	boolean cambiodatos = false;
 	static temporadasApp frame;
 	private JButton btnVolver;
+	Logger LOG = log.getLogger(temporadasApp.class);
+	String nombre;
 	
 	
 	public static void main(String[] args) {
@@ -297,7 +307,7 @@ public class temporadasApp extends JFrame implements ActionListener,WindowListen
 	Object o = e.getSource();
 
 	if (o == btnGuardar){
-		 String nombre = txtNombre.getText();
+		 	nombre = txtNombre.getText();
 		    // Obtén los valores de año de inicio y fin de los campos de texto
 		    int añoInicio = Integer.parseInt(txtAñoinicio.getText());
 		    int añoFin = Integer.parseInt(txtAñofinal.getText());
@@ -307,6 +317,13 @@ public class temporadasApp extends JFrame implements ActionListener,WindowListen
 		    	
 		    }
 		    añoTemporadaApp nuevaTemporada = new añoTemporadaApp(añoInicio, añoFin);
+		    
+		    GenPartidos generador = new GenPartidos();
+	        List<List<String[]>> partidos = generador.generarPartidos();
+	        
+	        // Guardar los partidos en CSV
+	        String archivo = "resources/datos/Jornada" + nombre + ".csv";
+	        guardarPartidosEnCSV(partidos, archivo);
 
 		    // Verificar si ya existe una temporada con los mismos años
 		    for (int i = 0; i < dlm.size(); i++) {
@@ -326,6 +343,7 @@ public class temporadasApp extends JFrame implements ActionListener,WindowListen
 		     añoTemporadaApp añoTemporada = new añoTemporadaApp(añoInicio, añoFin);
 	         TemporadaApp temporada = new TemporadaApp(nombre, añoTemporada);
 	         dlm.addElement(temporada);
+	         LOG.info("Info: Una temporada ha sido añadido.");
 	         cambiodatos = true;
 		    JOptionPane.showMessageDialog(this, "La temporada ha sido añadida correctamente.", "Éxito", JOptionPane.INFORMATION_MESSAGE);
 		}
@@ -336,6 +354,7 @@ public class temporadasApp extends JFrame implements ActionListener,WindowListen
 			dlm.removeElementAt(Seleccionados[i]);
 			ElementoBorrado = true;
 			cambiodatos = true;
+			LOG.warn("Warn: Una temporada ha sido eliminada.");
 	}
 	if (ElementoBorrado == false) {
 		JOptionPane.showMessageDialog(this, "No se esta borrando nada .", "Error", JOptionPane.ERROR_MESSAGE);
@@ -376,6 +395,7 @@ public class temporadasApp extends JFrame implements ActionListener,WindowListen
 
 		        // Actualizar la lista
 		        dlm.set(seleccion, temporadaSeleccionada);
+		        LOG.info("Info: Una temporada ha sido modificada.");
 
 		        JOptionPane.showMessageDialog(this, "Temporada modificada correctamente.", "Éxito", JOptionPane.INFORMATION_MESSAGE);
 		    } catch (NumberFormatException ex) {
@@ -586,17 +606,19 @@ public class temporadasApp extends JFrame implements ActionListener,WindowListen
 	
 	//CARGAR LISTA POR ELEMENTOS //
 	private void guardarDatos() {
-		 try (FileOutputStream fos = new FileOutputStream("resources/datos/temporadas.ser");
-			  ObjectOutputStream oos = new ObjectOutputStream(fos)) {
-			 
-			 for(int i = 0; i < dlm.size(); i++) {
-				 TemporadaApp r = dlm.get(i);
-				 oos.writeObject(r); 
-			 }
-				     JOptionPane.showMessageDialog(this, "Temporadas guardadas en " + "temporadas.ser", "Finalizado", JOptionPane.INFORMATION_MESSAGE);
-				 } catch (IOException ae) {
-				     JOptionPane.showMessageDialog(this, "Error en el guardado de datos:" + ae.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-				 }
+	    try (FileOutputStream fos = new FileOutputStream("resources/datos/temporadas.ser");
+	         ObjectOutputStream oos = new ObjectOutputStream(fos)) {
+
+	        // Guardar todas las temporadas completas (el objeto completo)
+	        for (int i = 0; i < dlm.size(); i++) {
+	            TemporadaApp t = dlm.get(i);
+	            oos.writeObject(t); // Guardamos el objeto completo
+	        }
+
+	        JOptionPane.showMessageDialog(this, "Temporadas guardadas en " + "temporadas.ser", "Finalizado", JOptionPane.INFORMATION_MESSAGE);
+	    } catch (IOException ae) {
+	        JOptionPane.showMessageDialog(this, "Error en el guardado de datos:" + ae.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+	    }
 	}
 
 	
@@ -616,5 +638,87 @@ public class temporadasApp extends JFrame implements ActionListener,WindowListen
 		        System.err.println("Error cargando datos: " + e.getMessage());
 		    }
 		}
+	public class GenPartidos {
+
+	    public List<List<String[]>> generarPartidos() {
+	        // Definimos las jornadas predeterminadas (cada jornada con 3 partidos)
+	        List<String[]> jornada1 = new ArrayList<>();
+	        jornada1.add(new String[]{"Barcelona", "Bilbao"});
+	        jornada1.add(new String[]{"Madrid", "Murcia"});
+	        jornada1.add(new String[]{"Sevilla", "Cáceres"});
+
+	        List<String[]> jornada2 = new ArrayList<>();
+	        jornada2.add(new String[]{"Barcelona", "Madrid"});
+	        jornada2.add(new String[]{"Bilbao", "Sevilla"});
+	        jornada2.add(new String[]{"Murcia", "Cáceres"});
+
+	        List<String[]> jornada3 = new ArrayList<>();
+	        jornada3.add(new String[]{"Barcelona", "Murcia"});
+	        jornada3.add(new String[]{"Bilbao", "Cáceres"});
+	        jornada3.add(new String[]{"Madrid", "Sevilla"});
+
+	        List<String[]> jornada4 = new ArrayList<>();
+	        jornada4.add(new String[]{"Barcelona", "Sevilla"});
+	        jornada4.add(new String[]{"Bilbao", "Murcia"});
+	        jornada4.add(new String[]{"Madrid", "Cáceres"});
+
+	        List<String[]> jornada5 = new ArrayList<>();
+	        jornada5.add(new String[]{"Barcelona", "Cáceres"});
+	        jornada5.add(new String[]{"Bilbao", "Madrid"});
+	        jornada5.add(new String[]{"Murcia", "Sevilla"});
+
+	        // Creamos una lista con todas las jornadas
+	        List<List<String[]>> jornadas = new ArrayList<>();
+	        jornadas.add(jornada1);
+	        jornadas.add(jornada2);
+	        jornadas.add(jornada3);
+	        jornadas.add(jornada4);
+	        jornadas.add(jornada5);
+
+	        // Desordenamos el orden de las jornadas (pero no los partidos dentro de cada jornada)
+	        Collections.shuffle(jornadas);
+
+	        // Crear las jornadas de vuelta (invertir los partidos de cada jornada)
+	        List<List<String[]>> todasLasJornadas = new ArrayList<>();
+
+	        // Añadir las jornadas de ida
+	        todasLasJornadas.addAll(jornadas);
+
+	        // Crear las jornadas de vuelta invirtiendo los partidos de ida
+	        List<List<String[]>> jornadasVuelta = new ArrayList<>();
+	        for (List<String[]> jornada : jornadas) {
+	            List<String[]> jornadaVuelta = new ArrayList<>();
+	            for (String[] partido : jornada) {
+	                jornadaVuelta.add(new String[]{partido[1], partido[0]}); // Invertir el enfrentamiento
+	            }
+	            jornadasVuelta.add(jornadaVuelta);
+	        }
+
+	        // Añadir las jornadas de vuelta
+	        todasLasJornadas.addAll(jornadasVuelta);
+
+	        return todasLasJornadas; // Retornamos todas las jornadas (ida y vuelta)
+	    } 
+	}
 	
+	String archivo = "resources/datos/Jornada"+nombre+".csv";
+	public static void guardarPartidosEnCSV(List<List<String[]>> partidos, String archivo) {
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(archivo))) {
+            for (List<String[]> jornada : partidos) {
+                for (String[] partido : jornada) {
+                   
+                    int golesEquipo1 = 0;  
+                    int golesEquipo2 = 0;  
+                    
+                    // Escribir los partidos en el formato "Equipo1,Equipo2,GolesEquipo1,GolesEquipo2"
+                    writer.write(partido[0] + "," + partido[1] + "," + golesEquipo1 + "," + golesEquipo2);
+                    writer.newLine();  // Nueva línea después de cada partido
+                }
+            }
+            System.out.println("Los partidos se han guardado correctamente en el archivo CSV.");
+        } catch (IOException e) {
+            System.err.println("Error al guardar los partidos en el archivo CSV: " + e.getMessage());
+        }
+    }
 }
+	

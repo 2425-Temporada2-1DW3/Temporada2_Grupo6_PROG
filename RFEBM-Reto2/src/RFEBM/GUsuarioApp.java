@@ -2,12 +2,17 @@ package RFEBM;
 
 import java.awt.EventQueue;
 
+
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
+import org.apache.log4j.Logger;
+
 import Classes.RolApp;
 import Classes.UsuarioApp;
+import log.log;
+
 import java.awt.BorderLayout;
 import javax.swing.JLabel;
 import javax.swing.DefaultListModel;
@@ -24,7 +29,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
+
 
 import javax.swing.JTextField;
 import javax.swing.JComboBox;
@@ -46,6 +51,7 @@ public class GUsuarioApp extends JFrame implements ActionListener,WindowListener
     boolean cambiodatos;
     static temporadasApp frame;
     private JPanel panel_35;
+    Logger LOG = log.getLogger(GUsuarioApp.class);
 
     /**
      * Launch the application.
@@ -287,6 +293,7 @@ public class GUsuarioApp extends JFrame implements ActionListener,WindowListener
 
             // Añadir el usuario al modelo y limpiar los campos
             userModel.addElement(nuevoUsuario);
+            LOG.info("Info: El usuario "+ nombre +" ha sido añadido con el rol "+ rolSeleccionado );
             JOptionPane.showMessageDialog(this, "Usuario añadido correctamente.", "Éxito", JOptionPane.INFORMATION_MESSAGE);
 
             txtNombre.setText("");
@@ -299,17 +306,19 @@ public class GUsuarioApp extends JFrame implements ActionListener,WindowListener
     		UsuarioApp usuarioSeleccionado = lstUsuarios.getSelectedValue();
     		if (usuarioSeleccionado.getRol() == RolApp.SuperAdmin) {
     	        JOptionPane.showMessageDialog(this, "No se puede eliminar a un usuario con rol de SuperAdmin.", "Error", JOptionPane.ERROR_MESSAGE);
+    	        LOG.warn("Warn: Se ha intentado borrar un super admin.");
     	        return;
     	    }
     		boolean ElementoBorrado = false;
     		int[]Seleccionados = lstUsuarios.getSelectedIndices();
     		for(int i = Seleccionados.length - 1;i>=0; i--) {
     			userModel.removeElementAt(Seleccionados[i]);
+    			LOG.warn("Warn: Un usuario ha sido eliminado.");
     			ElementoBorrado = true;
     			cambiodatos = true;
     	}
     	if (ElementoBorrado == false) {
-    		JOptionPane.showMessageDialog(this, "No se esta borrando nada .", "Error", JOptionPane.ERROR_MESSAGE);
+    		JOptionPane.showMessageDialog(this, "No se esta borrando nada.", "Error", JOptionPane.ERROR_MESSAGE);
     		return;
     		}
     	ordenarUsuariosPorRol();
