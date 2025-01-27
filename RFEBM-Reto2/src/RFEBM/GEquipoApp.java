@@ -19,6 +19,10 @@ import java.util.Arrays;
 import java.util.List;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.List;
 
 public class GEquipoApp extends JFrame {
     private static final long serialVersionUID = 1L;
@@ -519,6 +523,47 @@ private void cargarJugadores() {
             
         } catch (IOException e) {
             JOptionPane.showMessageDialog(this, "Error al actualizar las rutas de las fotos: " + e.getMessage());
+        }
+    }
+    
+    public static void guardarPartidosEnCSV(List<List<String[]>> partidos, String nombre) {
+        // Definir el archivo CSV donde se guardarán los datos
+        String archivo = "resources/datos/jugadores" + nombre + ".csv";
+
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(archivo))) {
+            // Escribir el encabezado del archivo CSV
+            writer.write("JugadorEquipo1,JugadorEquipo2,GolesJugador1,GolesJugador2");
+            writer.newLine(); // Salto de línea después del encabezado
+
+            // Iterar sobre todas las jornadas de partidos
+            for (List<String[]> jornada : partidos) {
+                // Iterar sobre cada partido de la jornada
+                for (String[] partido : jornada) {
+                    // Suposición: partido[0] contiene los jugadores del Equipo1 como una cadena separada por comas
+                    // partido[1] contiene los jugadores del Equipo2 de manera similar.
+                    String[] jugadoresEquipo1 = partido[0].split(",");  // Separar los jugadores del Equipo1
+                    String[] jugadoresEquipo2 = partido[1].split(",");  // Separar los jugadores del Equipo2
+                    
+                    // Goles de los jugadores (por ahora asignados a 0)
+                    int golesEquipo1 = 0;
+                    int golesEquipo2 = 0;
+
+                    // Para cada jugador del Equipo1 y cada jugador del Equipo2, escribir una combinación en el CSV
+                    for (String jugador1 : jugadoresEquipo1) {
+                        for (String jugador2 : jugadoresEquipo2) {
+                            // Escribir la línea del CSV con los jugadores y goles de cada enfrentamiento
+                            writer.write(jugador1 + "," + jugador2 + "," + golesEquipo1 + "," + golesEquipo2);
+                            writer.newLine();  // Salto de línea después de cada combinación
+                        }
+                    }
+                }
+            }
+
+            // Mensaje de éxito cuando todo se ha guardado correctamente
+            System.out.println("Los partidos con jugadores se han guardado correctamente en el archivo CSV.");
+        } catch (IOException e) {
+            // Si ocurre algún error, mostrarlo en la consola
+            System.err.println("Error al guardar los partidos en el archivo CSV: " + e.getMessage());
         }
     }
    }

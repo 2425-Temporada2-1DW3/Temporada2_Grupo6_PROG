@@ -57,16 +57,16 @@ public class clasificacionApp extends JFrame {
     };
 
     public static String[][] jornadasGolLoc = {
-        {"0", "0", "0"},
-        {"20", "15", "31"},
-        {"20", "10", "28"},
-        {"18", "24", "20"},
-        {"22", "14", "30"},
-        {"28", "24", "31"},
-        {"12", "35", "17"},
-        {"24", "10", "31"},
-        {"12", "19", "30"},
-        {"14", "6", "20"}
+            {"0", "0", "0"},
+            {"0", "0", "0"},
+            {"0", "0", "0"},
+            {"0", "0", "0"},
+            {"0", "0", "0"},
+            {"0", "0", "0"},
+            {"0", "0", "0"},
+            {"0", "0", "0"},
+            {"0", "0", "0"},
+            {"0", "0", "0"},
     };
 
     public static String[][] jornadasVis = {
@@ -84,15 +84,15 @@ public class clasificacionApp extends JFrame {
 
     public static String[][] jornadasGolVis = {
         {"0", "0", "0"},
-        {"19", "12", "33"},
-        {"35", "8", "29"},
-        {"16", "24", "22"},
-        {"21", "39", "35"},
-        {"32", "20", "30"},
-        {"10", "37", "15"},
-        {"25", "6", "34"},
-        {"11", "18", "31"},
-        {"13", "4", "23"}
+        {"0", "0", "0"},
+        {"0", "0", "0"},
+        {"0", "0", "0"},
+        {"0", "0", "0"},
+        {"0", "0", "0"},
+        {"0", "0", "0"},
+        {"0", "0", "0"},
+        {"0", "0", "0"},
+        {"0", "0", "0"},
     };
 
     // Agregar datos de la tabla
@@ -106,8 +106,7 @@ public class clasificacionApp extends JFrame {
         {"Sevilla", "0", "0", "0", "0", "0", "0", "0", "0"}
     };
 
-    // Temporada actual
-    final static String TEMPORADA_ACTUAL = "Temporada2024-2025";
+    static Object TEMPORADA_ACTUAL = new Object();
 	static int jornadaSeleccionada = 0;
 	private JPanel contentPane;
 	private JLabel txtClasif; 
@@ -121,8 +120,9 @@ public class clasificacionApp extends JFrame {
 	private static JTextField EquipoVisGol1; static JTextField EquipoVisGol2; static JTextField EquipoVisGol3;
 	private JLabel VS1; JLabel VS2; JLabel VS3;
 	private JPanel panel_15;
- 	JComboBox<String> comboTemporada;
+ 	static JComboBox<String> comboTemporada;
  	Logger LOG = log.getLogger(clasificacionApp.class);
+ 	
 
 	
 	
@@ -156,7 +156,8 @@ public class clasificacionApp extends JFrame {
 		setContentPane(contentPane);
 		contentPane.setLayout(new BorderLayout(0, 0));
 		
-		clasificacionApp.loadData(TEMPORADA_ACTUAL);
+		
+	
 	
 		panel = new JPanel();
 		contentPane.add(panel, BorderLayout.NORTH);
@@ -189,10 +190,8 @@ public class clasificacionApp extends JFrame {
 			panel_16 = new JPanel();
 			panel_15.add(panel_16, BorderLayout.SOUTH);
 			
-			 comboTemporada = new JComboBox<>();
-			  panel_16.add(comboTemporada);
-		        cargarTemporadasDesdeArchivo();
-		
+			 
+
 		
 	
 		panel1 = new JPanel();
@@ -448,19 +447,43 @@ public class clasificacionApp extends JFrame {
 		scrollPane.setViewportView(table);
 		table.setRowHeight(30);
 		
-		try {
-			clasificacionApp.loadData(jornadasLoc, jornadasVis, jornadasGolLoc, jornadasGolVis, tableData);
-	    } catch (IOException ex) {
-	        System.out.println("INFO: No se encontraron datos previos, iniciando con valores predeterminados.");
-	    }
+		
+		comboTemporada = new JComboBox<>();
+		 comboTemporada.addActionListener(new ActionListener() {
+		 	public void actionPerformed(ActionEvent e) {
+				  TEMPORADA_ACTUAL = comboTemporada.getSelectedItem();
+				  loadData(TEMPORADA_ACTUAL);
+				  String archivo = (String) comboTemporada.getSelectedItem();
+				    Temporada = "resources/datos/Jornada"+archivo+".csv";
+				    cargarPartidosDesdeCSV(Temporada);
+				    cargarDatosJornada();
+				    loadShields();
+					  
+				
+		 	}
+		 });
+		  panel_16.add(comboTemporada);
+		  cargarTemporadasDesdeArchivo();
+		  TEMPORADA_ACTUAL = comboTemporada.getSelectedItem();
+		  loadData(TEMPORADA_ACTUAL);
+		  String archivo = (String) comboTemporada.getSelectedItem();
+		  
+	    Temporada = "resources/datos/Jornada"+archivo+".csv";
+		  
+	    cargarPartidosDesdeCSV(Temporada);
+		
+
 		// Datos Por Defecto
 		updateTable(); // Calcula Tabla Al iniciar
 		cargarDatosJornada(); // Carga Datos Jornada 1
 		lblTextoCambios.setText("INFO : Mostrando Jornada " + (jornadaSeleccionada + 1));
 		loadShields();
 		configurarMenuSegunRol(inicioApp.rolUsuario);
+		
 	}
-	private static void loadData(String temporadaActual) {
+
+	
+private static void loadData(Object temporadaActual) {
 		
 		
 	}
@@ -595,7 +618,8 @@ public class clasificacionApp extends JFrame {
         catch (NumberFormatException e)  { return false;}
     }
   
-	final static String Temporada = "resources/datos/clasificacion.csv";
+ 
+	static String Temporada = "resources/datos/JornadaTemporada 2023-2024.csv";
 	private JLabel lblEquipoLoc1;
 	private JLabel lblEquipoVis1;
 	private JLabel lblEquipoLoc2;
@@ -653,47 +677,47 @@ public class clasificacionApp extends JFrame {
     	lblEquipoVis2.setIcon(new ImageIcon(clasificacionApp.class.getResource("/images/logos/"+EquipoVis2.getText()+"Mini.png")));
     	lblEquipoVis3.setIcon(new ImageIcon(clasificacionApp.class.getResource("/images/logos/"+EquipoVis3.getText()+"Mini.png")));
     }
-    public static void loadData(String[][] jornadasLoc, String[][] jornadasVis, 
-    							String[][] jornadasGolLoc, String[][] jornadasGolVis, 
-    							String[][] tableData) throws IOException {
+    
+    final int NUM_JORNADAS = 10; // Número de jornadas (esto depende de tu torneo)
+    final int NUM_PARTIDOS = 3;  // Número de partidos por jornada (ajusta según sea necesario)
+    
+    public void cargarPartidosDesdeCSV(String archivo) {
+    	
+    	
     	try (BufferedReader reader = new BufferedReader(new FileReader(Temporada))) {
-    		String line;
-    		int i = 0, j = 0;
+            String line;
+            int jornadaIndex = 0;
+            int partidoIndex = 0;
 
-			while ((line = reader.readLine()) != null) {
-				String[] parts = line.split(",");
+            // Leer cada línea del archivo CSV
+            while ((line = reader.readLine()) != null) {
+                // Separar la línea en los valores correspondientes
+                String[] parts = line.split(",");
 
-				// Validación del tamaño de parts para asegurarse de que contiene al menos 4 elementos
-				if (parts.length >= 4) {
-					// Cargar datos en las matrices correspondientes
-					jornadasLoc[i][j] = parts[0];
-					jornadasVis[i][j] = parts[1];
-					jornadasGolLoc[i][j] = parts[2];
-					jornadasGolVis[i][j] = parts[3];
+                // Asegurarse de que la línea tiene los datos correctos
+                if (parts.length == 4) {
+                    // Asignar los valores a las matrices correspondientes
+                    jornadasLoc[jornadaIndex][partidoIndex] = parts[0];  // Equipo Local
+                    jornadasVis[jornadaIndex][partidoIndex] = parts[1];  // Equipo Visitante
+                    jornadasGolLoc[jornadaIndex][partidoIndex] = parts[2];  // Goles Equipo Local
+                    jornadasGolVis[jornadaIndex][partidoIndex] = parts[3];  // Goles Equipo Visitante
 
-					// Si hay más de 4 columnas en el archivo, intenta almacenar en tableData
-					if (parts.length > 4 && j < tableData[i].length) {
-					    tableData[i][j] = parts[4]; // Asumir que el CSV tiene información adicional para la tabla
-					}
-				} else {
-					// Si la línea no tiene suficientes datos, se ignora
-					System.out.println("Línea incompleta en archivo CSV, omitiendo: " + line);
-				}
-				j++;
-				if (j == jornadasLoc[i].length) {
-					i++;
-					j = 0;
-				}
-				if (i >= jornadasLoc.length) {
-					break; // Evitar acceder fuera de los límites de la matriz
-				}
-			}
-		} catch (IOException e) {
-			// Manejo de excepciones si ocurre un error al leer el archivo
-			System.err.println("Error al leer el archivo de datos: " + e.getMessage());
-			throw e; // Vuelve a lanzar la excepción para manejarla más arriba si es necesario
-		}
+                    // Aumentar el índice del partido
+                    partidoIndex++;
+
+                    // Si llegamos al final de los partidos de la jornada, pasamos a la siguiente jornada
+                    if (partidoIndex == NUM_PARTIDOS) {
+                        partidoIndex = 0;
+                        jornadaIndex++;
+                    }
+                }
+            }
+        } catch (IOException e) {
+            System.err.println("Error al cargar los partidos desde el archivo CSV: " + e.getMessage());
+        }
     }
+    
+    
     private void cargarTemporadasDesdeArchivo() {
         try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream("resources/datos/temporadas.ser"))) {
 
