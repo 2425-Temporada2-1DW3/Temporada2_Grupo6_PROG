@@ -204,6 +204,8 @@ public class clasificacionApp extends JFrame {
 			
 			public void actionPerformed(ActionEvent e) {
 				jornadaSeleccionada = 0;
+				comboTemporada.setSelectedIndex(0);
+				guardarClasificacion();
 				new menuApp().setVisible(true);
 				dispose();
 				}
@@ -455,9 +457,15 @@ public class clasificacionApp extends JFrame {
 				  loadData(TEMPORADA_ACTUAL);
 				  String archivo = (String) comboTemporada.getSelectedItem();
 				    Temporada = "resources/datos/Jornada"+archivo+".csv";
-				    cargarPartidosDesdeCSV(Temporada);
+				    try {
+						cargarPartidosDesdeCSV(Temporada);
+					} catch (IOException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
 				    cargarDatosJornada();
 				    loadShields();
+				    updateTable();
 					  
 				
 		 	}
@@ -467,6 +475,7 @@ public class clasificacionApp extends JFrame {
 		  TEMPORADA_ACTUAL = comboTemporada.getSelectedItem();
 		  loadData(TEMPORADA_ACTUAL);
 		  String archivo = (String) comboTemporada.getSelectedItem();
+		  updateTable();
 		  
 	    Temporada = "resources/datos/Jornada"+archivo+".csv";
 		  
@@ -479,6 +488,8 @@ public class clasificacionApp extends JFrame {
 		lblTextoCambios.setText("INFO : Mostrando Jornada " + (jornadaSeleccionada + 1));
 		loadShields();
 		configurarMenuSegunRol(inicioApp.rolUsuario);
+		guardarClasificacion();
+		comboTemporada.setSelectedIndex(0);
 		
 	}
 
@@ -681,7 +692,7 @@ private static void loadData(Object temporadaActual) {
     final int NUM_JORNADAS = 10; // Número de jornadas (esto depende de tu torneo)
     final int NUM_PARTIDOS = 3;  // Número de partidos por jornada (ajusta según sea necesario)
     
-    public void cargarPartidosDesdeCSV(String archivo) {
+    public void cargarPartidosDesdeCSV(String archivo) throws IOException {
     	
     	
     	try (BufferedReader reader = new BufferedReader(new FileReader(Temporada))) {
@@ -712,27 +723,63 @@ private static void loadData(Object temporadaActual) {
                     }
                 }
             }
-        } catch (IOException e) {
-            System.err.println("Error al cargar los partidos desde el archivo CSV: " + e.getMessage());
-        }
-    }
-    
-    
-    private void cargarTemporadasDesdeArchivo() {
-        try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream("resources/datos/temporadas.ser"))) {
+    	}
+       } private void cargarTemporadasDesdeArchivo() {
+            try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream("resources/datos/temporadas.ser"))) {
 
-            comboTemporada.removeAllItems();
-            
-            TemporadaApp temporada;
-            
-            while ((temporada = (TemporadaApp) ois.readObject()) != null) {
-                // Agregamos solo el nombre al ComboBox
-                comboTemporada.addItem(temporada.getNombre());
+                comboTemporada.removeAllItems();
+                
+                TemporadaApp temporada;
+                
+                while ((temporada = (TemporadaApp) ois.readObject()) != null) {
+                    // Agregamos solo el nombre al ComboBox
+                    comboTemporada.addItem(temporada.getNombre());
+                }
+            } catch (EOFException e) {
+                return;
+            } catch (IOException | ClassNotFoundException e) {
+                e.printStackTrace();
             }
-        } catch (EOFException e) {
-            return;
-        } catch (IOException | ClassNotFoundException e) {
-            e.printStackTrace();
         }
-    }
+       private void guardarClasificacion() {
+    	   try {
+    	       
+    	        int numTemporadas = comboTemporada.getItemCount();
+    	       
+    	        for (int i = 0; i < numTemporadas; i++) {
+    	          
+    	            String temporadaActual = comboTemporada.getItemAt(i).toString();
+    	            comboTemporada.setSelectedIndex(i);
+    	            updateTable();
+    	            String rutaArchivo = "resources/datos/Clasificacion" + temporadaActual + ".csv";
+    	            guardarClasificacion(rutaArchivo, tableData);
+    	          
+    	        }
+
+    	    } catch (Exception e) {
+    	        e.printStackTrace();
+    	    }
+    	}
+
+    	    public static void guardarClasificacion(String rutaArchivo, String[][] data) throws IOException {
+    	        try (FileWriter writer = new FileWriter(rutaArchivo)) {
+    	            for (int i = 0; i < columnNames.length; i++) {
+    	                writer.append(columnNames[i]);
+    	                if (i < columnNames.length - 1) {
+    	                    writer.append(",");
+    	                }
+    	            }
+    	            writer.append("\n");
+
+    	            for (String[] row : data) {
+    	                for (int i = 0; i < row.length; i++) {
+    	                    writer.append(row[i]);
+    	                    if (i < row.length - 1) {
+    	                        writer.append(",");
+    	                    }
+    	                }
+    	                writer.append("\n");
+    	            }
+    	        }
+    	    }
 }
