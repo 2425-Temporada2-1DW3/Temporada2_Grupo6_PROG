@@ -48,13 +48,27 @@ public class GeneradorXML {
                 temporadaElement.setAttribute("id", "Temporada_" + (i + 1));
                 rootElement.appendChild(temporadaElement);
 
-                // Añadir las jornadas
-                Element jornadasElement = doc.createElement("Jornadas");
-                temporadaElement.appendChild(jornadasElement);
-                for (String jornada : jornadas) {
-                    Element jornadaElement = doc.createElement("Jornada");
-                    jornadaElement.appendChild(doc.createTextNode(jornada));
-                    jornadasElement.appendChild(jornadaElement);
+             // Añadir las jornadas
+                for (int j = 0; j < jornadas.size(); j += 3) { // Incrementar de 3 en 3
+                    Element jornadaElement = doc.createElement("Jornada_" + ((j / 3) + 1)); // Crear un nuevo elemento Jornada
+                    temporadaElement.appendChild(jornadaElement);
+
+                    // Procesar hasta 3 partidos por jornada
+                    for (int k = 0; k < 3 && (j + k) < jornadas.size(); k++) {
+                        String[] partidoInfo = jornadas.get(j + k).split(","); // Suponiendo que el formato es "EquipoLocal,EquipoVisitante,GolesLocal,GolesVisitante"
+                        String equipoLocal = partidoInfo[0];
+                        String equipoVisitante = partidoInfo[1];
+                        String golesLocal = partidoInfo[2];
+                        String golesVisitante = partidoInfo[3];
+
+                        Element partidoElement = doc.createElement("Partido");
+                        partidoElement.appendChild(doc.createTextNode(equipoLocal + "," + equipoVisitante));
+                        jornadaElement.appendChild(partidoElement);
+
+                        Element resultadoElement = doc.createElement("Resultado");
+                        resultadoElement.appendChild(doc.createTextNode(golesLocal + "," + golesVisitante));
+                        jornadaElement.appendChild(resultadoElement);
+                    }
                 }
 
                 // Añadir la plantilla
@@ -76,10 +90,15 @@ public class GeneradorXML {
                 }
             }
 
-            // Guardar el contenido en un único archivo XML
-            String fileName = "liga_balonmano.xml";
+         // Guardar el contenido en un único archivo XML
+            String fileName = "resources/datos/liga_balonmano.xml";
             TransformerFactory transformerFactory = TransformerFactory.newInstance();
             Transformer transformer = transformerFactory.newTransformer();
+
+            // Establecer propiedades para la indentación
+            transformer.setOutputProperty("indent", "yes");
+            transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "4"); // 4 espacios de indentación
+
             DOMSource source = new DOMSource(doc);
 
             try (FileWriter writer = new FileWriter(fileName)) {
@@ -88,7 +107,6 @@ public class GeneradorXML {
             }
 
             System.out.println("Archivo XML único generado: " + fileName);
-
         } catch (Exception e) {
             e.printStackTrace();
         }
