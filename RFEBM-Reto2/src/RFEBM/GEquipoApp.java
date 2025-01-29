@@ -3,6 +3,7 @@ package RFEBM;
 import javax.swing.*;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableModel;
 
 import org.apache.log4j.Logger;
 
@@ -19,10 +20,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
-import java.io.BufferedWriter;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.util.List;
+
 
 public class GEquipoApp extends JFrame {
     private static final long serialVersionUID = 1L;
@@ -32,9 +30,11 @@ public class GEquipoApp extends JFrame {
     private DefaultTableModel tableModel;
     JComboBox<String> comboTemporada;
     Logger LOG = log.getLogger(GEquipoApp.class);
-
+  
     private static final String[] EQUIPOS = {"Barcelona", "Cáceres", "Madrid", "Sevilla", "Murcia", "Bilbao"};
 
+
+    
     public static void main(String[] args) {
         EventQueue.invokeLater(() -> {
             try {
@@ -47,6 +47,8 @@ public class GEquipoApp extends JFrame {
     }
 
     private List<String[]> jugadoresEliminados = new ArrayList<>();
+   
+    
     
     public GEquipoApp() {
         setTitle("Gestión de Equipos y Jugadores");
@@ -98,15 +100,15 @@ public class GEquipoApp extends JFrame {
         });
         panel_3.add(comboTemporada);
         cargarTemporadasDesdeArchivo();
-        
+        cargarPlantilla();
+       
         
         JButton freeAgentsButton = new JButton("Agentes Libres");
         panel_3.add(freeAgentsButton);
         
         freeAgentsButton.addActionListener(e -> mostrarVentanaEliminados());
         JButton editButton = new JButton("Editar Jugador");
-        panel_3.add(editButton);
-        JButton deleteButton = new JButton("Eliminar Jugador");
+        panel_3.add(editButton);        JButton deleteButton = new JButton("Eliminar Jugador");
         panel_3.add(deleteButton);
         
         JPanel panel_4 = new JPanel();
@@ -129,6 +131,13 @@ public class GEquipoApp extends JFrame {
         
         cargarJugadores();
         ordenarPorEquipo();
+   // Código de inicialización...
+        
+           // Llamar a cargarPlanificacion para cargar los datos desde los archivos CSV
+        // Continuar con el resto del código de inicialización...
+        // Llamar a guardarPlanificacion automáticamente al iniciar
+        guardarPlantilla();  // Guarda los datos de la planificación al iniciar la aplicación
+
      
 
     }
@@ -222,7 +231,8 @@ private void cargarJugadores() {
         }
         return jugadores;
     }
-
+    
+    
     private void escribirJugadores(List<String[]> jugadores) throws IOException {
         try (BufferedWriter bw = new BufferedWriter(new FileWriter(INFO_JUGADOR))) {
             for (String[] jugador : jugadores) {
@@ -525,45 +535,96 @@ private void cargarJugadores() {
             JOptionPane.showMessageDialog(this, "Error al actualizar las rutas de las fotos: " + e.getMessage());
         }
     }
+
     
-    public static void guardarPartidosEnCSV(List<List<String[]>> partidos, String nombre) {
-        // Definir el archivo CSV donde se guardarán los datos
-        String archivo = "resources/datos/jugadores" + nombre + ".csv";
+    private void guardarPlantilla() {
+        // Ruta donde se guardará el archivo CSV
+        String temporada = comboTemporada.getSelectedItem().toString();
+        String rutaArchivo = "resources/datos/Plantilla" + temporada + ".csv";
 
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter(archivo))) {
-            // Escribir el encabezado del archivo CSV
-            writer.write("JugadorEquipo1,JugadorEquipo2,GolesJugador1,GolesJugador2");
-            writer.newLine(); // Salto de línea después del encabezado
+        try (BufferedWriter bw = new BufferedWriter(new FileWriter(rutaArchivo))) {
+            // Escribir los encabezados de la tabla (nombres de las columnas)
+            bw.write("Nombre,Apellido,DNI,Edad,Posición,Equipo,Foto");
+            bw.newLine();  // Nueva línea después de los encabezados
 
-            // Iterar sobre todas las jornadas de partidos
-            for (List<String[]> jornada : partidos) {
-                // Iterar sobre cada partido de la jornada
-                for (String[] partido : jornada) {
-                    // Suposición: partido[0] contiene los jugadores del Equipo1 como una cadena separada por comas
-                    // partido[1] contiene los jugadores del Equipo2 de manera similar.
-                    String[] jugadoresEquipo1 = partido[0].split(",");  // Separar los jugadores del Equipo1
-                    String[] jugadoresEquipo2 = partido[1].split(",");  // Separar los jugadores del Equipo2
-                    
-                    // Goles de los jugadores (por ahora asignados a 0)
-                    int golesEquipo1 = 0;
-                    int golesEquipo2 = 0;
+            // Obtener el modelo de la tabla (para acceder a los datos)
+            TableModel modelo = jugadoresTable.getModel();
+            int rowCount = modelo.getRowCount();
+            int columnCount = modelo.getColumnCount();
 
-                    // Para cada jugador del Equipo1 y cada jugador del Equipo2, escribir una combinación en el CSV
-                    for (String jugador1 : jugadoresEquipo1) {
-                        for (String jugador2 : jugadoresEquipo2) {
-                            // Escribir la línea del CSV con los jugadores y goles de cada enfrentamiento
-                            writer.write(jugador1 + "," + jugador2 + "," + golesEquipo1 + "," + golesEquipo2);
-                            writer.newLine();  // Salto de línea después de cada combinación
-                        }
+            // Recorrer las filas y columnas de la tabla para obtener los datos
+            for (int i = 0; i < rowCount; i++) {
+                StringBuilder row = new StringBuilder();
+                for (int j = 0; j < columnCount; j++) {
+                    Object value = modelo.getValueAt(i, j);
+                    // Si el valor es null, reemplazarlo por una cadena vacía
+                    if (value == null) {
+                        value = "";
+                    }
+                    // Agregar el valor de la celda a la fila (separado por coma)
+                    row.append(value.toString());
+
+                    // Si no es la última columna, agregar una coma
+                    if (j < columnCount - 1) {
+                        row.append(",");
                     }
                 }
+                // Escribir la fila completa en el archivo
+                bw.write(row.toString());
+                bw.newLine();  // Nueva línea después de cada fila
             }
 
-            // Mensaje de éxito cuando todo se ha guardado correctamente
-            System.out.println("Los partidos con jugadores se han guardado correctamente en el archivo CSV.");
+            System.out.println("Plantilla guardada correctamente en " + rutaArchivo);
         } catch (IOException e) {
-            // Si ocurre algún error, mostrarlo en la consola
-            System.err.println("Error al guardar los partidos en el archivo CSV: " + e.getMessage());
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(this, "Error al guardar la plantilla: " + e.getMessage());
         }
     }
-   }
+
+    private void cargarPlantilla() {
+        try {
+            int numTemporadas = comboTemporada.getItemCount();
+            for (int i = 0; i < numTemporadas; i++) {
+                String temporadaActual = comboTemporada.getItemAt(i).toString();
+                comboTemporada.setSelectedIndex(i);
+
+                String rutaArchivo = "resources/datos/Plantilla" + temporadaActual + ".csv";
+                cargarDatosDesdeArchivo(rutaArchivo);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(this, "Error al cargar la plantilla: " + e.getMessage());
+        }
+    }
+
+    private void cargarDatosDesdeArchivo(String rutaArchivo) {
+        try (BufferedReader br = new BufferedReader(new FileReader(rutaArchivo))) {
+            String linea;
+            while ((linea = br.readLine()) != null) {
+                // Omite la primera línea, ya que son los encabezados
+                if (linea.startsWith("Nombre")) continue;
+
+                // Procesar cada línea de datos y agregarla a la tabla
+                String[] datos = linea.split(",");
+                if (datos.length == 7) { // Verifica que la línea tenga 7 columnas
+                    String nombre = datos[0].trim();
+                    String apellido = datos[1].trim();
+                    String dni = datos[2].trim();
+                    String edad = datos[3].trim();
+                    String posicion = datos[4].trim();
+                    String equipo = datos[5].trim();
+                    String foto = datos[6].trim();
+
+                    // Añadir los datos a la tabla
+                    tableModel.addRow(new Object[]{nombre, apellido, dni, edad, posicion, equipo, foto});
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(this, "Error al leer el archivo: " + e.getMessage());
+        }
+    }
+
+ 
+    
+}
