@@ -1,6 +1,7 @@
 package RFEBM;
 
 import javax.swing.*;
+import javax.swing.event.TableModelEvent;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableModel;
@@ -24,17 +25,16 @@ import java.awt.event.ActionEvent;
 
 public class GEquipoApp extends JFrame {
     private static final long serialVersionUID = 1L;
-    private static final String INFO_JUGADOR = "resources/datos/jugadores.csv";
+    static Object temporadaActual;
+    private static String INFO_JUGADOR;
     private static final String IMAGE_DIR = "resources/images/jugadores";
     private JTable jugadoresTable;
     private DefaultTableModel tableModel;
     JComboBox<String> comboTemporada;
     Logger LOG = log.getLogger(GEquipoApp.class);
-  
+
     private static final String[] EQUIPOS = {"Barcelona", "Cáceres", "Madrid", "Sevilla", "Murcia", "Bilbao"};
 
-
-    
     public static void main(String[] args) {
         EventQueue.invokeLater(() -> {
             try {
@@ -47,9 +47,7 @@ public class GEquipoApp extends JFrame {
     }
 
     private List<String[]> jugadoresEliminados = new ArrayList<>();
-   
-    
-    
+
     public GEquipoApp() {
         setTitle("Gestión de Equipos y Jugadores");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -66,117 +64,99 @@ public class GEquipoApp extends JFrame {
         jugadoresTable.setRowHeight(40);
         JScrollPane scrollPane = new JScrollPane(jugadoresTable);
         panel.add(scrollPane, BorderLayout.CENTER);
+        
+        tableModel.addTableModelListener(e -> {
+            // Comprobamos que se haya producido una modificación en los datos
+            if (e.getType() == TableModelEvent.UPDATE) {
+                try {
+                    // Guardar los cambios automáticamente cuando los datos cambian
+                    List<String[]> jugadores = obtenerJugadoresDesdeTabla();  // Obtener los jugadores actualizados
+                    escribirJugadores(jugadores);  // Guardar los cambios en el archivo CSV
+                } catch (IOException ex) {
+                    JOptionPane.showMessageDialog(this, "Error al guardar los cambios: " + ex.getMessage());
+                }
+            }
+        });
 
         JPanel buttonPanel = new JPanel();
         buttonPanel.setLayout(new BorderLayout(0, 0));
-        panel.add(buttonPanel, BorderLayout.SOUTH);    
-        
+        panel.add(buttonPanel, BorderLayout.SOUTH);
+
         JPanel panel_1 = new JPanel();
         buttonPanel.add(panel_1, BorderLayout.EAST);
-        
+
         JPanel panel_2 = new JPanel();
         buttonPanel.add(panel_2, BorderLayout.CENTER);
         panel_2.setLayout(new BorderLayout(0, 0));
-        
+
         JButton btnVolver = new JButton("Volver");
         btnVolver.addActionListener(new ActionListener() {
-        	public void actionPerformed(ActionEvent e) {
-        	            new GestionApp().setVisible(true);
-        	            dispose();
-        	}
+            public void actionPerformed(ActionEvent e) {
+                new GestionApp().setVisible(true);
+                dispose();
+            }
         });
         panel_2.add(btnVolver, BorderLayout.EAST);
-        
+
         JPanel panel_3 = new JPanel();
         panel_2.add(panel_3, BorderLayout.CENTER);
-        
+
         comboTemporada = new JComboBox<>();
         comboTemporada.addActionListener(new ActionListener() {
-        	public void actionPerformed(ActionEvent e) {
-        		
-        		 actualizarRutasFotos();
-        		 ordenarPorEquipo();
-        	}
+            public void actionPerformed(ActionEvent e) {
+                actualizarRutasFotos();
+                ordenarPorEquipo();
+            }
         });
         panel_3.add(comboTemporada);
         cargarTemporadasDesdeArchivo();
-        cargarPlantilla();
-       
-        
+
         JButton freeAgentsButton = new JButton("Agentes Libres");
         panel_3.add(freeAgentsButton);
-        
+
         freeAgentsButton.addActionListener(e -> mostrarVentanaEliminados());
         JButton editButton = new JButton("Editar Jugador");
-        panel_3.add(editButton);        JButton deleteButton = new JButton("Eliminar Jugador");
+        panel_3.add(editButton);
+        JButton deleteButton = new JButton("Eliminar Jugador");
         panel_3.add(deleteButton);
-        
+
         JPanel panel_4 = new JPanel();
         panel_2.add(panel_4, BorderLayout.SOUTH);
-        
+
         JPanel panel_5 = new JPanel();
         panel_2.add(panel_5, BorderLayout.NORTH);
-        
-                deleteButton.addActionListener(e -> eliminarJugador());
-        
-                editButton.addActionListener(e -> {
-                    int selectedRow = jugadoresTable.getSelectedRow();
-                    if (selectedRow >= 0) {
-                        abrirFormularioJugador(selectedRow);
-                    } else {
-                        JOptionPane.showMessageDialog(this, "Por favor, selecciona un jugador para editar.");
-                    }
-                });
-                
-        
-        cargarJugadores();
-        ordenarPorEquipo();
-   // Código de inicialización...
-        
-           // Llamar a cargarPlanificacion para cargar los datos desde los archivos CSV
-        // Continuar con el resto del código de inicialización...
-        // Llamar a guardarPlanificacion automáticamente al iniciar
-        guardarPlantilla();  // Guarda los datos de la planificación al iniciar la aplicación
 
-     
+        deleteButton.addActionListener(e -> {
+            eliminarJugador();  // Eliminar jugador
+            try {
+                List<String[]> jugadores = obtenerJugadoresDesdeTabla();  // Obtiene jugadores actualizados de la tabla
+                escribirJugadores(jugadores);  // Guardar cambios
+            } catch (IOException ex) {
+                JOptionPane.showMessageDialog(this, "Error al guardar los cambios: " + ex.getMessage());
+            }
+        });
 
+        editButton.addActionListener(e -> {
+            int selectedRow = jugadoresTable.getSelectedRow();
+            if (selectedRow >= 0) {
+                abrirFormularioJugador(selectedRow);  // Editar jugador
+                try {
+                    List<String[]> jugadores = obtenerJugadoresDesdeTabla();  // Obtener jugadores actualizados
+                    escribirJugadores(jugadores);  // Guardar cambios
+                } catch (IOException ex) {
+                    JOptionPane.showMessageDialog(this, "Error al guardar los cambios: " + ex.getMessage());
+                }
+            } else {
+                JOptionPane.showMessageDialog(this, "Por favor, selecciona un jugador para editar.");
+            }
+        });
+
+        cargarJugadores();  // Llamada a cargar los jugadores en la tabla al iniciar la aplicación
+        ordenarPorEquipo();  // Llamada para ordenar por equipo si es necesario
     }
-    
     	
 
 
-private void cargarJugadores() {
-    tableModel.setRowCount(0);
-    try {
-        // Usamos el método leerJugadores para obtener la lista de jugadores
-        List<String[]> jugadores = leerJugadores();
-        for (String[] datos : jugadores) {
-            if (datos.length >= 6) {
-                String nombre = datos[0].trim();
-                String apellido = datos[1].trim();
-                String dni = datos[2].trim();
-                String edadOFecha = datos[3].trim();
-                String posicion = datos[4].trim();
-                String equipo = datos[5].trim();
-                String foto = datos.length >= 7 ? datos[6].trim() : "";
-
-                String edad;
-                if (esNumero(edadOFecha)) {
-                    edad = edadOFecha;
-                } else {
-                    edad = calcularEdad(edadOFecha);
-                }
-
-                // Añadimos la fila al tableModel
-                tableModel.addRow(new Object[]{nombre, apellido, dni, edad, posicion, equipo, foto});
-            } else {
-                System.err.println("Línea ignorada por formato incorrecto: " + String.join(",", datos));
-            }
-        }
-    } catch (IOException e) {
-        JOptionPane.showMessageDialog(this, "Error al cargar los jugadores: " + e.getMessage());
-    }
-}
 
     private void eliminarJugador() {
     	int[] selectedRows = jugadoresTable.getSelectedRows(); // Obtener todas las filas seleccionadas
@@ -217,28 +197,6 @@ private void cargarJugadores() {
             return true;
         } catch (NumberFormatException e) {
             return false;
-        }
-    }
-
-    private List<String[]> leerJugadores() throws IOException {
-        List<String[]> jugadores = new ArrayList<>();
-        File file = new File("resources/datos/jugadores.csv"); // Ruta relativa desde el directorio base del proyecto
-        try (BufferedReader br = new BufferedReader(new FileReader(file))) {
-            String linea;
-            while ((linea = br.readLine()) != null) {
-                jugadores.add(linea.split(","));
-            }
-        }
-        return jugadores;
-    }
-    
-    
-    private void escribirJugadores(List<String[]> jugadores) throws IOException {
-        try (BufferedWriter bw = new BufferedWriter(new FileWriter(INFO_JUGADOR))) {
-            for (String[] jugador : jugadores) {
-                bw.write(String.join(",", jugador));
-                bw.newLine();
-            }
         }
     }
 
@@ -536,95 +494,67 @@ private void cargarJugadores() {
         }
     }
 
-    
-    private void guardarPlantilla() {
-        // Ruta donde se guardará el archivo CSV
-        String temporada = comboTemporada.getSelectedItem().toString();
-        String rutaArchivo = "resources/datos/Plantilla" + temporada + ".csv";
+    private List<String[]> leerJugadores() throws IOException {
+        List<String[]> jugadores = new ArrayList<>();
+        temporadaActual = (String) comboTemporada.getSelectedItem();
+        INFO_JUGADOR = "resources/datos/Plantilla" + temporadaActual + ".csv";
+        File file = new File(INFO_JUGADOR);
 
-        try (BufferedWriter bw = new BufferedWriter(new FileWriter(rutaArchivo))) {
-            // Escribir los encabezados de la tabla (nombres de las columnas)
-            bw.write("Nombre,Apellido,DNI,Edad,Posición,Equipo,Foto");
-            bw.newLine();  // Nueva línea después de los encabezados
-
-            // Obtener el modelo de la tabla (para acceder a los datos)
-            TableModel modelo = jugadoresTable.getModel();
-            int rowCount = modelo.getRowCount();
-            int columnCount = modelo.getColumnCount();
-
-            // Recorrer las filas y columnas de la tabla para obtener los datos
-            for (int i = 0; i < rowCount; i++) {
-                StringBuilder row = new StringBuilder();
-                for (int j = 0; j < columnCount; j++) {
-                    Object value = modelo.getValueAt(i, j);
-                    // Si el valor es null, reemplazarlo por una cadena vacía
-                    if (value == null) {
-                        value = "";
-                    }
-                    // Agregar el valor de la celda a la fila (separado por coma)
-                    row.append(value.toString());
-
-                    // Si no es la última columna, agregar una coma
-                    if (j < columnCount - 1) {
-                        row.append(",");
-                    }
-                }
-                // Escribir la fila completa en el archivo
-                bw.write(row.toString());
-                bw.newLine();  // Nueva línea después de cada fila
-            }
-
-            System.out.println("Plantilla guardada correctamente en " + rutaArchivo);
-        } catch (IOException e) {
-            e.printStackTrace();
-            JOptionPane.showMessageDialog(this, "Error al guardar la plantilla: " + e.getMessage());
-        }
-    }
-
-    private void cargarPlantilla() {
-        try {
-            int numTemporadas = comboTemporada.getItemCount();
-            for (int i = 0; i < numTemporadas; i++) {
-                String temporadaActual = comboTemporada.getItemAt(i).toString();
-                comboTemporada.setSelectedIndex(i);
-
-                String rutaArchivo = "resources/datos/Plantilla" + temporadaActual + ".csv";
-                cargarDatosDesdeArchivo(rutaArchivo);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-            JOptionPane.showMessageDialog(this, "Error al cargar la plantilla: " + e.getMessage());
-        }
-    }
-
-    private void cargarDatosDesdeArchivo(String rutaArchivo) {
-        try (BufferedReader br = new BufferedReader(new FileReader(rutaArchivo))) {
+        try (BufferedReader br = new BufferedReader(new FileReader(file))) {
             String linea;
             while ((linea = br.readLine()) != null) {
-                // Omite la primera línea, ya que son los encabezados
-                if (linea.startsWith("Nombre")) continue;
-
-                // Procesar cada línea de datos y agregarla a la tabla
-                String[] datos = linea.split(",");
-                if (datos.length == 7) { // Verifica que la línea tenga 7 columnas
-                    String nombre = datos[0].trim();
-                    String apellido = datos[1].trim();
-                    String dni = datos[2].trim();
-                    String edad = datos[3].trim();
-                    String posicion = datos[4].trim();
-                    String equipo = datos[5].trim();
-                    String foto = datos[6].trim();
-
-                    // Añadir los datos a la tabla
-                    tableModel.addRow(new Object[]{nombre, apellido, dni, edad, posicion, equipo, foto});
-                }
+                jugadores.add(linea.split(",")); 
             }
-        } catch (IOException e) {
-            e.printStackTrace();
-            JOptionPane.showMessageDialog(this, "Error al leer el archivo: " + e.getMessage());
+        }
+        return jugadores;
+    }
+
+    private void escribirJugadores(List<String[]> jugadores) throws IOException {
+        try (BufferedWriter bw = new BufferedWriter(new FileWriter(INFO_JUGADOR))) {
+            for (String[] jugador : jugadores) {
+                bw.write(String.join(",", jugador));
+                bw.newLine();
+            }
         }
     }
 
- 
-    
+    // Método para actualizar la tabla después de cargar los datos
+    private void cargarJugadores() {
+        tableModel.setRowCount(0);
+        try {
+            List<String[]> jugadores = leerJugadores();
+            for (String[] datos : jugadores) {
+                if (datos.length >= 6) {
+                    tableModel.addRow(datos);
+                } else {
+                    System.err.println("Línea ignorada por formato incorrecto: " + String.join(",", datos));
+                }
+            }
+        } catch (IOException e) {
+            JOptionPane.showMessageDialog(this, "Error al cargar los jugadores: " + e.getMessage());
+        }
+    }
+    private List<String[]> obtenerJugadoresDesdeTabla() {
+        List<String[]> jugadores = new ArrayList<>();
+        
+        for (int row = 0; row < tableModel.getRowCount(); row++) {
+            String[] jugador = new String[tableModel.getColumnCount()];
+            
+            for (int col = 0; col < tableModel.getColumnCount(); col++) {
+                // Obtener el valor de la celda
+                Object value = tableModel.getValueAt(row, col);
+
+                // Validar y convertir el valor a cadena
+                if (value == null) {
+                    jugador[col] = "";  // Asignar una cadena vacía si el valor es null
+                } else {
+                    jugador[col] = value.toString();  // Convertir el valor a cadena
+                }
+            }
+            
+            jugadores.add(jugador);
+        }
+        
+        return jugadores;
+    }
 }

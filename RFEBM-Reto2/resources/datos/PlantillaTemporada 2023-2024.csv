@@ -1,65 +1,72 @@
-Nombre,Apellido,DNI,Edad,Posición,Equipo,Foto
-Lamin,Jamal,12345678A,23,Delantero,Barcelona,
-Lionel,Pepsi,87654321B,28,Defensa,Barcelona,images/jugadores/Barcelona/LionelPepsi.3.png
-Karim,Abad,11223344C,28,Mediocampista,Barcelona,images/jugadores/Barcelona/KarimAbad.3.png
-Malek,Salomon,22334455D,26,Portero,Barcelona,images/jugadores/Barcelona/MalekSalomon.3.png
-Daim,Benitez,33445566E,25,Defensa,Barcelona,images/jugadores/Barcelona/DaimBenitez.3.png
-Vadhir,Granadino,44556677F,29,Delantero,Barcelona,images/jugadores/Barcelona/VadhirGranadino.3.png
-Jalel,Alaoui,55667788G,31,Delantero,Barcelona,images/jugadores/Barcelona/JalelAlaoui.3.png
-Paco,Rabales,66778899H,28,Mediocampista,Barcelona,images/jugadores/Barcelona/PacoRabales.3.png
-Mohammed,Arduino,77889900I,26,Defensa,Barcelona,images/jugadores/Barcelona/MohammedArduino.3.png
-Hermenegildo,Augusto,88990011J,30,Portero,Barcelona,images/jugadores/Barcelona/HermenegildoAugusto.3.png
-Karlos,Ardillano,45612378A,30,Central,Bilbao,images/jugadores/Bilbao/KarlosArdillano.3.png
-Fito,Cabritos,67834590C,27,Extremo izquierdo,Bilbao,images/jugadores/Bilbao/FitoCabritos.3.png
-Juan,Alberdi,78945601D,29,Pivote,Bilbao,images/jugadores/Bilbao/JuanAlberdi.3.png
-Patxi,Alonso,89056712E,34,Portero,Bilbao,images/jugadores/Bilbao/PatxiAlonso.3.png
-Andoni,Azpilikueta,90167823F,31,Lateral izquierdo,Bilbao,images/jugadores/Bilbao/AndoniAzpilikueta.3.png
-Xabier,Garrogerrikaetxebarria,01278934G,26,Central,Bilbao,images/jugadores/Bilbao/XabierGarrogerrikaetxebarria.3.png
-Mikel,Reta,12389045H,30,Extremo derecho,Bilbao,images/jugadores/Bilbao/MikelReta.3.png
-Iñaki,Willy,23490156I,28,Pivote,Bilbao,images/jugadores/Bilbao/IñakiWilly.3.png
-Aimar,Rivero,34501267J,27,Extremo izquierdo,Bilbao,images/jugadores/Bilbao/AimarRivero.3.png
-Ekaitz,Olabeaga,45612378K,30,Lateral derecho,Bilbao,images/jugadores/Bilbao/EkaitzOlabeaga.3.png
-Jacinto,Rodriguez,99001122K,25,Portero,Cáceres,images/jugadores/Cáceres/JacintoRodriguez.3.png
-Jose Manuel,Gonzalez,00112233L,24,Extremo izquierdo,Cáceres,images/jugadores/Cáceres/Jose ManuelGonzalez.3.png
-Marcelino,Perez,11223344M,26,Lateral izquierdo,Cáceres,images/jugadores/Cáceres/MarcelinoPerez.3.png
-Gumesindo,Padilla,22334455N,29,Central,Cáceres,images/jugadores/Cáceres/GumesindoPadilla.3.png
-Anselmo,García,56789012E,37,Lateral derecho,Cáceres,images/jugadores/Cáceres/AnselmoGarcía.3.png
-Fulgencio,Martínez,67890123F,29,Extremo derecho,Cáceres,images/jugadores/Cáceres/FulgencioMartínez.3.png
-Isidoro,López,78901234G,31,Pivote,Cáceres,images/jugadores/Cáceres/IsidoroLópez.3.png
-Tadeo,Jonás,89012345H,25,Suplente lateral izquierdo,Cáceres,images/jugadores/Cáceres/TadeoJonás.3.png
-Francisco,Frasco,90123456J,24,Suplente extremo izquierdo,Cáceres,images/jugadores/Cáceres/FranciscoFrasco.3.png
-Adolfo,Domínguez,11234567K,31,Suplente central,Cáceres,images/jugadores/Cáceres/AdolfoDomínguez.3.png
-Ramiro,Franco,22345678L,27,Suplente pivote,Cáceres,images/jugadores/Cáceres/RamiroFranco.3.png
-Cristiano,Gonaldo,33456789M,32,Portero,Madrid,images/jugadores/Madrid/CristianoGonaldo.3.png
-Sergio,Mamos,44567890N,31,Extremo izquierdo,Madrid,images/jugadores/Madrid/SergioMamos.3.png
-Karim,Benzemá,55678901O,28,Lateral izquierdo,Madrid,images/jugadores/Madrid/KarimBenzemá.3.png
-Lucas,Mhodrić,66789012P,27,Central,Madrid,images/jugadores/Madrid/LucasMhodrić.3.png
-Iker,Jiménez,77890123Q,28,Lateral derecho,Madrid,images/jugadores/Madrid/IkerJiménez.3.png
-Fernando,Alfonso,88901234R,30,Extremo derecho,Madrid,images/jugadores/Madrid/FernandoAlfonso.3.png
-Benjamín,Ruiz,99012345S,31,Pivote,Madrid,images/jugadores/Madrid/BenjamínRuiz.3.png
-Patricio,Galiciano,10123456T,25,Suplente lateral izquierdo,Madrid,images/jugadores/Madrid/PatricioGaliciano.3.png
-Paco,Fiestas,21234567U,24,Suplente extremo izquierdo,Madrid,images/jugadores/Madrid/PacoFiestas.3.png
-Damián,Muñoz,32345678V,31,Suplente central,Madrid,images/jugadores/Madrid/DamiánMuñoz.3.png
-Isaac,Nuevo,43456789W,27,Suplente pivote,Madrid,images/jugadores/Madrid/IsaacNuevo.3.png
-Anastasio,Jiménez,23456780A,30,Lateral izquierdo,Murcia,images/jugadores/Murcia/AnastasioJiménez.3.png
-Energuido,Alonso,34567891B,27,Central,Murcia,images/jugadores/Murcia/EnerguidoAlonso.3.png
-Martín,Rodríguez,45678902C,27,Extremo derecho,Murcia,images/jugadores/Murcia/MartínRodríguez.3.png
-Gonzalo,Méndez,56789013D,29,Portero,Murcia,images/jugadores/Murcia/GonzaloMéndez.3.png
-Sebastián,Vargas,67890124E,25,Pivote,Murcia,images/jugadores/Murcia/SebastiánVargas.3.png
-Ignacio,Torres,78901235F,31,Lateral derecho,Murcia,images/jugadores/Murcia/IgnacioTorres.3.png
-Álvaro,Morales,89012346G,30,Extremo izquierdo,Murcia,images/jugadores/Murcia/ÁlvaroMorales.3.png
-Nicolás,Rivera,90123457H,24,Central,Murcia,images/jugadores/Murcia/NicolásRivera.3.png
-Adrián,Castillo,01234568I,29,Lateral izquierdo,Murcia,images/jugadores/Murcia/AdriánCastillo.3.png
-Manuel,Pérez,12345679J,31,Pivote,Murcia,images/jugadores/Murcia/ManuelPérez.3.png
-Felipe,Guerrero,23456789K,27,Extremo derecho,Murcia,images/jugadores/Murcia/FelipeGuerrero.3.png
-Cayetano,García,12345678A,30,Central,Sevilla,images/jugadores/Sevilla/CayetanoGarcía.3.png
-Alberto,Romero,23456789B,30,Lateral derecho,Sevilla,images/jugadores/Sevilla/AlbertoRomero.3.png
-Jacobo,Ruiz,34567890C,27,Extremo izquierdo,Sevilla,images/jugadores/Sevilla/JacoboRuiz.3.png
-Víctor,de la Fuente,45678901D,32,Pivote,Sevilla,images/jugadores/Sevilla/Víctorde la Fuente.3.png
-José,de Espronceda,56789012E,29,Portero,Sevilla,images/jugadores/Sevilla/Joséde Espronceda.3.png
-Óscar,Higares,67890123F,34,Lateral izquierdo,Sevilla,images/jugadores/Sevilla/ÓscarHigares.3.png
-Lucas,Fernández,78901234G,26,Central,Sevilla,images/jugadores/Sevilla/LucasFernández.3.png
-Daniel,Martínez,89012345H,29,Extremo derecho,Sevilla,images/jugadores/Sevilla/DanielMartínez.3.png
-Rodrigo,Sánchez,90123456I,26,Lateral derecho,Sevilla,images/jugadores/Sevilla/RodrigoSánchez.3.png
-Javier,López,01234567J,27,Pivote,Sevilla,images/jugadores/Sevilla/JavierLópez.3.png
-Miguel,Torres,12345679K,29,Portero,Sevilla,images/jugadores/Sevilla/MiguelTorres.3.png
+Lamin,Jamal,12345678A,20,Delantero,Barcelona
+Lionel,Pepsi,87654321B,28,Defensa,Barcelona,images/jugadores/Barcelona/LionelPepsi.1.png
+Karim,Abad,11223344C,28,Mediocampista,Barcelona,images/jugadores/Barcelona/KarimAbad.1.png
+Malek,Salomon,22334455D,26,Portero,Barcelona,images/jugadores/Barcelona/MalekSalomon.1.png
+Daim,Benitez,33445566E,25,Defensa,Barcelona,images/jugadores/Barcelona/DaimBenitez.1.png
+Vadhir,Granadino,44556677F,29,Delantero,Barcelona,images/jugadores/Barcelona/VadhirGranadino.1.png
+Jalel,Alaoui,55667788G,31,Delantero,Barcelona,images/jugadores/Barcelona/JalelAlaoui.1.png
+Paco,Rabales,66778899H,28,Mediocampista,Barcelona,images/jugadores/Barcelona/PacoRabales.1.png
+Mohammed,Arduino,77889900I,26,Defensa,Barcelona,images/jugadores/Barcelona/MohammedArduino.1.png
+Hermenegildo,Augusto,88990011J,30,Portero,Barcelona,images/jugadores/Barcelona/HermenegildoAugusto.1.png
+Karlos,Ardillano,45612378A,30,Central,Bilbao,images/jugadores/Bilbao/KarlosArdillano.1.png
+Fito,Cabritos,67834590C,27,Extremo izquierdo,Bilbao,images/jugadores/Bilbao/FitoCabritos.1.png
+Juan,Alberdi,78945601D,29,Pivote,Bilbao,images/jugadores/Bilbao/JuanAlberdi.1.png
+Patxi,Alonso,89056712E,34,Portero,Bilbao,images/jugadores/Bilbao/PatxiAlonso.1.png
+Andoni,Azpilikueta,90167823F,31,Lateral izquierdo,Bilbao,images/jugadores/Bilbao/AndoniAzpilikueta.1.png
+Xabier,Garrogerrikaetxebarria,01278934G,26,Central,Bilbao,images/jugadores/Bilbao/XabierGarrogerrikaetxebarria.1.png
+Mikel,Reta,12389045H,30,Extremo derecho,Bilbao,images/jugadores/Bilbao/MikelReta.1.png
+Iñaki,Willy,23490156I,28,Pivote,Bilbao,images/jugadores/Bilbao/IñakiWilly.1.png
+Aimar,Rivero,34501267J,27,Extremo izquierdo,Bilbao,images/jugadores/Bilbao/AimarRivero.1.png
+Ekaitz,Olabeaga,45612378K,30,Lateral derecho,Bilbao,images/jugadores/Bilbao/EkaitzOlabeaga.1.png
+Jacinto,Rodriguez,99001122K,25,Portero,Cáceres,images/jugadores/Cáceres/JacintoRodriguez.1.png
+Jose Manuel,Gonzalez,00112233L,24,Extremo izquierdo,Cáceres,images/jugadores/Cáceres/Jose ManuelGonzalez.1.png
+Marcelino,Perez,11223344M,26,Lateral izquierdo,Cáceres,images/jugadores/Cáceres/MarcelinoPerez.1.png
+Gumesindo,Padilla,22334455N,29,Central,Cáceres,images/jugadores/Cáceres/GumesindoPadilla.1.png
+Anselmo,García,56789012E,37,Lateral derecho,Cáceres,images/jugadores/Cáceres/AnselmoGarcía.1.png
+Fulgencio,Martínez,67890123F,29,Extremo derecho,Cáceres,images/jugadores/Cáceres/FulgencioMartínez.1.png
+Isidoro,López,78901234G,31,Pivote,Cáceres,images/jugadores/Cáceres/IsidoroLópez.1.png
+Tadeo,Jonás,89012345H,25,Suplente lateral izquierdo,Cáceres,images/jugadores/Cáceres/TadeoJonás.1.png
+Francisco,Frasco,90123456J,24,Suplente extremo izquierdo,Cáceres,images/jugadores/Cáceres/FranciscoFrasco.1.png
+Adolfo,Domínguez,11234567K,31,Suplente central,Cáceres,images/jugadores/Cáceres/AdolfoDomínguez.1.png
+Ramiro,Franco,22345678L,27,Suplente pivote,Cáceres,images/jugadores/Cáceres/RamiroFranco.1.png
+Nombre,Apellido,DNI,Edad,Posición,Equipo,images/jugadores/Equipo/NombreApellido.1.png
+Nombre,Apellido,DNI,Desconocida,Posición,Equipo,images/jugadores/Equipo/NombreApellido.1.png
+Nombre,Apellido,DNI,Desconocida,Posición,Equipo,images/jugadores/Equipo/NombreApellido.1.png
+Nombre,Apellido,DNI,Desconocida,Posición,Equipo,images/jugadores/Equipo/NombreApellido.1.png
+Nombre,Apellido,DNI,Desconocida,Posición,Equipo,images/jugadores/Equipo/NombreApellido.1.png
+Nombre,Apellido,DNI,Desconocida,Posición,Equipo,images/jugadores/Equipo/NombreApellido.1.png
+Nombre,Apellido,DNI,Desconocida,Posición,Equipo,images/jugadores/Equipo/NombreApellido.1.png
+Nombre,Apellido,DNI,Desconocida,Posición,Equipo,images/jugadores/Equipo/NombreApellido.1.png
+Cristiano,Gonaldo,33456789M,32,Portero,Madrid,images/jugadores/Madrid/CristianoGonaldo.1.png
+Sergio,Mamos,44567890N,31,Extremo izquierdo,Madrid,images/jugadores/Madrid/SergioMamos.1.png
+Karim,Benzemá,55678901O,28,Lateral izquierdo,Madrid,images/jugadores/Madrid/KarimBenzemá.1.png
+Lucas,Mhodrić,66789012P,27,Central,Madrid,images/jugadores/Madrid/LucasMhodrić.1.png
+Iker,Jiménez,77890123Q,28,Lateral derecho,Madrid,images/jugadores/Madrid/IkerJiménez.1.png
+Fernando,Alfonso,88901234R,30,Extremo derecho,Madrid,images/jugadores/Madrid/FernandoAlfonso.1.png
+Benjamín,Ruiz,99012345S,31,Pivote,Madrid,images/jugadores/Madrid/BenjamínRuiz.1.png
+Patricio,Galiciano,10123456T,25,Suplente lateral izquierdo,Madrid,images/jugadores/Madrid/PatricioGaliciano.1.png
+Paco,Fiestas,21234567U,24,Suplente extremo izquierdo,Madrid,images/jugadores/Madrid/PacoFiestas.1.png
+Damián,Muñoz,32345678V,31,Suplente central,Madrid,images/jugadores/Madrid/DamiánMuñoz.1.png
+Isaac,Nuevo,43456789W,27,Suplente pivote,Madrid,images/jugadores/Madrid/IsaacNuevo.1.png
+Anastasio,Jiménez,23456780A,30,Lateral izquierdo,Murcia,images/jugadores/Murcia/AnastasioJiménez.1.png
+Energuido,Alonso,34567891B,27,Central,Murcia,images/jugadores/Murcia/EnerguidoAlonso.1.png
+Martín,Rodríguez,45678902C,27,Extremo derecho,Murcia,images/jugadores/Murcia/MartínRodríguez.1.png
+Gonzalo,Méndez,56789013D,29,Portero,Murcia,images/jugadores/Murcia/GonzaloMéndez.1.png
+Sebastián,Vargas,67890124E,25,Pivote,Murcia,images/jugadores/Murcia/SebastiánVargas.1.png
+Ignacio,Torres,78901235F,31,Lateral derecho,Murcia,images/jugadores/Murcia/IgnacioTorres.1.png
+Álvaro,Morales,89012346G,30,Extremo izquierdo,Murcia,images/jugadores/Murcia/ÁlvaroMorales.1.png
+Nicolás,Rivera,90123457H,24,Central,Murcia,images/jugadores/Murcia/NicolásRivera.1.png
+Adrián,Castillo,01234568I,29,Lateral izquierdo,Murcia,images/jugadores/Murcia/AdriánCastillo.1.png
+Manuel,Pérez,12345679J,31,Pivote,Murcia,images/jugadores/Murcia/ManuelPérez.1.png
+Felipe,Guerrero,23456789K,27,Extremo derecho,Murcia,images/jugadores/Murcia/FelipeGuerrero.1.png
+Cayetano,García,12345678A,30,Central,Sevilla,images/jugadores/Sevilla/CayetanoGarcía.1.png
+Alberto,Romero,23456789B,30,Lateral derecho,Sevilla,images/jugadores/Sevilla/AlbertoRomero.1.png
+Jacobo,Ruiz,34567890C,27,Extremo izquierdo,Sevilla,images/jugadores/Sevilla/JacoboRuiz.1.png
+Víctor,de la Fuente,45678901D,32,Pivote,Sevilla,images/jugadores/Sevilla/Víctorde la Fuente.1.png
+José,de Espronceda,56789012E,29,Portero,Sevilla,images/jugadores/Sevilla/Joséde Espronceda.1.png
+Óscar,Higares,67890123F,34,Lateral izquierdo,Sevilla,images/jugadores/Sevilla/ÓscarHigares.1.png
+Lucas,Fernández,78901234G,26,Central,Sevilla,images/jugadores/Sevilla/LucasFernández.1.png
+Daniel,Martínez,89012345H,29,Extremo derecho,Sevilla,images/jugadores/Sevilla/DanielMartínez.1.png
+Rodrigo,Sánchez,90123456I,26,Lateral derecho,Sevilla,images/jugadores/Sevilla/RodrigoSánchez.1.png
+Javier,López,01234567J,27,Pivote,Sevilla,images/jugadores/Sevilla/JavierLópez.1.png
+Miguel,Torres,12345679K,29,Portero,Sevilla,images/jugadores/Sevilla/MiguelTorres.1.png

@@ -1,5 +1,5 @@
-Nombre,Apellido,DNI,Edad,Posición,Equipo,Foto
-Lamin,Jamal,12345678A,22,Delantero,Barcelona,
+Nombre,Apellido,DNI,Edad,Posición,Equipo,images/jugadores/Equipo/NombreApellido.3.png
+Lamin,Jamal,12345678A,22,Delantero,Barcelona
 Lionel,Pepsi,87654321B,28,Defensa,Barcelona,images/jugadores/Barcelona/LionelPepsi.3.png
 Karim,Abad,11223344C,29,Mediocampista,Barcelona,images/jugadores/Barcelona/KarimAbad.3.png
 Malek,Salomon,22334455D,26,Portero,Barcelona,images/jugadores/Barcelona/MalekSalomon.3.png
@@ -30,6 +30,13 @@ Tadeo,Jonás,89012345H,25,Suplente lateral izquierdo,Cáceres,images/jugadores/C
 Francisco,Frasco,90123456J,24,Suplente extremo izquierdo,Cáceres,images/jugadores/Cáceres/FranciscoFrasco.3.png
 Adolfo,Domínguez,11234567K,31,Suplente central,Cáceres,images/jugadores/Cáceres/AdolfoDomínguez.3.png
 Ramiro,Franco,22345678L,27,Suplente pivote,Cáceres,images/jugadores/Cáceres/RamiroFranco.3.png
+Nombre,Apellido,DNI,Desconocida,Posición,Equipo,images/jugadores/Equipo/NombreApellido.3.png
+Nombre,Apellido,DNI,Desconocida,Posición,Equipo,images/jugadores/Equipo/NombreApellido.3.png
+Nombre,Apellido,DNI,Desconocida,Posición,Equipo,images/jugadores/Equipo/NombreApellido.3.png
+Nombre,Apellido,DNI,Desconocida,Posición,Equipo,images/jugadores/Equipo/NombreApellido.3.png
+Nombre,Apellido,DNI,Desconocida,Posición,Equipo,images/jugadores/Equipo/NombreApellido.3.png
+Nombre,Apellido,DNI,Desconocida,Posición,Equipo,images/jugadores/Equipo/NombreApellido.3.png
+Nombre,Apellido,DNI,Desconocida,Posición,Equipo,images/jugadores/Equipo/NombreApellido.3.png
 Cristiano,Gonaldo,33456789M,32,Portero,Madrid,images/jugadores/Madrid/CristianoGonaldo.3.png
 Sergio,Mamos,44567890N,31,Extremo izquierdo,Madrid,images/jugadores/Madrid/SergioMamos.3.png
 Karim,Benzemá,55678901O,28,Lateral izquierdo,Madrid,images/jugadores/Madrid/KarimBenzemá.3.png
