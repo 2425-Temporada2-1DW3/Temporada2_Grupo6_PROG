@@ -43,9 +43,13 @@ public class GeneradorXML {
                 List<String> jornadas = leerArchivo(archivos[0]);
                 List<String> plantilla = leerArchivo(archivos[1]);
                 List<String> clasificacion = leerArchivo(archivos[2]);
+                
+                String nombreArchivo = new File(archivos[0]).getName(); // Extrae solo el nombre del archivo
+                String nombreTemporada = nombreArchivo.replace("JornadaTemporada ", "").replace(".csv", ""); // "2023-2024"
 
                 Element temporadaElement = doc.createElement("Temporada");
                 temporadaElement.setAttribute("id", "Temporada_" + (i + 1));
+                temporadaElement.setAttribute("nombre", "Temporada_" + nombreTemporada);
                 rootElement.appendChild(temporadaElement);
 
              // Añadir las jornadas
