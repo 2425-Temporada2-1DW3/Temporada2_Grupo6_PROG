@@ -1,12 +1,11 @@
 package RFEBM;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.util.ArrayList;
+import Classes.TemporadaApp;
+import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.List;
+import java.util.ArrayList;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.transform.Transformer;
@@ -18,62 +17,106 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 public class GeneradorXML {
-
     public static void main(String[] args) {
         try {
-            // Rutas a los archivos (3 por cada temporada: Jornadas, Plantilla, Clasificación)
-            String[][] archivosTemporadas = {
-                {"resources/datos/JornadaTemporada 2023-2024.csv", "resources/datos/PlantillaTemporada 2023-2024.csv", "resources/datos/ClasificacionTemporada 2023-2024.csv"},
-                {"resources/datos/JornadaTemporada 2024-2025.csv", "resources/datos/PlantillaTemporada 2024-2025.csv", "resources/datos/ClasificacionTemporada 2024-2025.csv"},
-                {"resources/datos/JornadaTemporada 2025-2026.csv", "resources/datos/PlantillaTemporada 2025-2026.csv", "resources/datos/ClasificacionTemporada 2025-2026.csv"}
-            };
+            // Leer las temporadas desde el archivo serializado
+            String archivoTemporadas = "resources/datos/temporadas.ser";
+            List<String> temporadas = TemporadaApp.leerTemporadasDesdeArchivo(archivoTemporadas);
 
-            // Crear un documento XML único
+            if (temporadas == null || temporadas.isEmpty()) {
+                System.out.println("No se encontraron temporadas en " + archivoTemporadas);
+                return;
+            }
+
+            // Crear documento XML
             DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
             DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
             Document doc = docBuilder.newDocument();
-
-            // Crear el elemento raíz
+            
+            // Elemento raíz
             Element rootElement = doc.createElement("LigaBalonmano");
             doc.appendChild(rootElement);
 
-            // Procesar cada temporada y añadirla al XML
-            for (int i = 0; i < archivosTemporadas.length; i++) {
-                String[] archivos = archivosTemporadas[i];
-                List<String> jornadas = leerArchivo(archivos[0]);
-                List<String> plantilla = leerArchivo(archivos[1]);
-                List<String> clasificacion = leerArchivo(archivos[2]);
-                
-                String nombreArchivo = new File(archivos[0]).getName(); // Extrae solo el nombre del archivo
-                String nombreTemporada = nombreArchivo.replace("JornadaTemporada ", "").replace(".csv", ""); // "2023-2024"
+            // Procesar cada temporada
+            for (String temporada : temporadas) {
+                String jornadaPath = "resources/datos/Jornada" + temporada + ".csv";
+                String plantillaPath = "resources/datos/Plantilla" + temporada + ".csv";
+                String clasificacionPath = "resources/datos/Clasificacion" + temporada + ".csv";
 
+                // Verificar si existen archivos
+                if (!Files.exists(Paths.get(jornadaPath)) || 
+                    !Files.exists(Paths.get(plantillaPath)) || 
+                    !Files.exists(Paths.get(clasificacionPath))) {
+                    System.out.println("Faltan archivos para la temporada: " + temporada);
+                    continue;
+                }
+
+                List<String> jornadas = leerArchivo(jornadaPath);
+                List<String> plantilla = leerArchivo(plantillaPath);
+                List<String> clasificacion = leerArchivo(clasificacionPath);
+
+             // Crear nodo de la temporada
                 Element temporadaElement = doc.createElement("Temporada");
-                temporadaElement.setAttribute("id", "Temporada_" + (i + 1));
-                temporadaElement.setAttribute("nombre", "Temporada_" + nombreTemporada);
+
+                // Asumimos que `temporada` es algo como "Temporada 2023-2024"
+                String temporadaNombre = temporada.split(" ")[1];  // Esto extrae el rango de la temporada, como "2023-2024"
+
+                temporadaElement.setAttribute("id", "Temporada_" + temporada);
+                temporadaElement.setAttribute("nombre", temporada);
+                temporadaElement.setAttribute("fecha", temporadaNombre);  // Aquí asignamos "2023-2024" a 'fecha'
+
                 rootElement.appendChild(temporadaElement);
 
              // Añadir las jornadas
-                for (int j = 0; j < jornadas.size(); j += 3) { // Incrementar de 3 en 3
-                    Element jornadaElement = doc.createElement("Jornada_" + ((j / 3) + 1)); // Crear un nuevo elemento Jornada
-                    temporadaElement.appendChild(jornadaElement);
+                Element jornadasElement = doc.createElement("Jornadas");
+                temporadaElement.appendChild(jornadasElement);
 
-                    // Procesar hasta 3 partidos por jornada
-                    for (int k = 0; k < 3 && (j + k) < jornadas.size(); k++) {
-                        String[] partidoInfo = jornadas.get(j + k).split(","); // Suponiendo que el formato es "EquipoLocal,EquipoVisitante,GolesLocal,GolesVisitante"
-                        String equipoLocal = partidoInfo[0];
-                        String equipoVisitante = partidoInfo[1];
-                        String golesLocal = partidoInfo[2];
-                        String golesVisitante = partidoInfo[3];
+                // Contador para las jornadas
+                int jornadaCounter = 1; // Para controlar el número de jornada
 
-                        Element partidoElement = doc.createElement("Partido");
-                        partidoElement.appendChild(doc.createTextNode(equipoLocal + "," + equipoVisitante));
-                        jornadaElement.appendChild(partidoElement);
+                // Iteramos sobre las jornadas
+                for (int i = 0; i < jornadas.size(); i++) {
+                    String[] datos = jornadas.get(i).split(",");
+                    
+                    // Asegurarse de que hay suficientes datos para procesar
+                    if (datos.length < 4) continue;
 
-                        Element resultadoElement = doc.createElement("Resultado");
-                        resultadoElement.appendChild(doc.createTextNode(golesLocal + "," + golesVisitante));
-                        jornadaElement.appendChild(resultadoElement);
+                    // Crear el elemento de la jornada (Jornada_X)
+                    Element jornadaElement = doc.createElement("Jornada_" + jornadaCounter);
+                    
+                    // Crear 3 partidos por jornada (hay que asegurarse de que se usan datos diferentes)
+                    for (int z = 0; z < 3; z++) {
+                        // Si hay más de 3 partidos por jornada en el archivo, debemos extraerlos adecuadamente
+                        int partidoIndex = i * 3 + z; // Esto asegura que se extraen partidos diferentes
+                        
+                        // Asegurarse de que hay suficientes partidos
+                        if (partidoIndex < jornadas.size()) {
+                            String[] partidoDatos = jornadas.get(partidoIndex).split(",");
+                            
+                            // Crear el nodo de cada partido
+                            Element partidoElement = doc.createElement("Partido");
+                            partidoElement.appendChild(doc.createTextNode(partidoDatos[0] + "," + partidoDatos[1]));
+
+                            // Crear el nodo de resultado
+                            Element resultadoElement = doc.createElement("Resultado");
+                            resultadoElement.appendChild(doc.createTextNode(partidoDatos[2] + "," + partidoDatos[3]));
+
+                            // Agregar el partido y el resultado a la jornada
+                            jornadaElement.appendChild(partidoElement);
+                            jornadaElement.appendChild(resultadoElement);
+                        }
                     }
+
+                    // Agregar la jornada completa a las jornadas de la temporada
+                    jornadasElement.appendChild(jornadaElement);
+
+                    // Incrementar el contador de jornadas
+                    jornadaCounter++;
+
+                    // Si llegamos a la jornada 10, terminamos de procesar las jornadas
+                    if (jornadaCounter > 10) break;
                 }
+
 
                 // Añadir la plantilla
                 Element plantillaElement = doc.createElement("Plantilla");
@@ -94,29 +137,26 @@ public class GeneradorXML {
                 }
             }
 
-         // Guardar el contenido en un único archivo XML
+            // Guardar el archivo XML
             String fileName = "resources/datos/liga_balonmano.xml";
             TransformerFactory transformerFactory = TransformerFactory.newInstance();
             Transformer transformer = transformerFactory.newTransformer();
-
-            // Establecer propiedades para la indentación
             transformer.setOutputProperty("indent", "yes");
-            transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "4"); // 4 espacios de indentación
+            transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "4");
 
             DOMSource source = new DOMSource(doc);
-
             try (FileWriter writer = new FileWriter(fileName)) {
                 StreamResult result = new StreamResult(writer);
                 transformer.transform(source, result);
             }
 
-            System.out.println("Archivo XML único generado: " + fileName);
+            System.out.println("Archivo XML generado: " + fileName);
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    // Método para leer archivos CSV y devolver las líneas como una lista
+    // Método para leer un archivo CSV
     public static List<String> leerArchivo(String rutaArchivo) throws IOException {
         List<String> lineas = new ArrayList<>();
         File archivo = new File(rutaArchivo);
@@ -127,7 +167,6 @@ public class GeneradorXML {
                 lineas.add(linea);
             }
         }
-
         return lineas;
     }
 }

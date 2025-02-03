@@ -1,8 +1,10 @@
 package Classes;
 
 import java.io.BufferedWriter;
+import java.io.FileInputStream;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.ObjectInputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -141,6 +143,29 @@ public class TemporadaApp implements Serializable {
     public static void agregarTemporada(TemporadaApp t) {
         if (!temporadas.contains(t)) {
             temporadas.add(t);
+        }
+    }
+    
+    @SuppressWarnings("unchecked")
+	public static List<String> leerTemporadasDesdeArchivo(String ruta) {
+        try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(ruta))) {
+            Object objeto = ois.readObject();
+            
+            if (objeto instanceof List<?>) {
+                List<TemporadaApp> listaTemporadas = (List<TemporadaApp>) objeto;
+                List<String> nombresTemporadas = new ArrayList<>();
+                // Recorrer la lista de TemporadaApp y obtener los nombres
+                for (TemporadaApp temporada : listaTemporadas) {
+                    nombresTemporadas.add(temporada.getNombre());
+                }
+                return nombresTemporadas;
+            } else {
+                System.err.println("El archivo serializado no contiene una lista válida de temporadas.");
+                return null;
+            }
+        } catch (IOException | ClassNotFoundException e) {
+            System.err.println("Error al leer el archivo de temporadas: " + e.getMessage());
+            return null;
         }
     }
 }

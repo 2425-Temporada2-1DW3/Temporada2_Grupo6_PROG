@@ -35,6 +35,7 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.ObjectInputStream;
+import java.util.List;
 
 import javax.swing.JTable;
 import javax.swing.JScrollPane;
@@ -725,22 +726,24 @@ private static void loadData(Object temporadaActual) {
             }
     	}
        } private void cargarTemporadasDesdeArchivo() {
-            try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream("resources/datos/temporadas.ser"))) {
-
-                comboTemporada.removeAllItems();
-                
-                TemporadaApp temporada;
-                
-                while ((temporada = (TemporadaApp) ois.readObject()) != null) {
-                    // Agregamos solo el nombre al ComboBox
-                    comboTemporada.addItem(temporada.getNombre());
-                }
-            } catch (EOFException e) {
-                return;
-            } catch (IOException | ClassNotFoundException e) {
-                e.printStackTrace();
-            }
-        }
+    	    try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream("resources/datos/temporadas.ser"))) {
+    	        
+    	        // Leer toda la lista de temporadas
+    	        @SuppressWarnings("unchecked")
+				List<TemporadaApp> temporadas = (List<TemporadaApp>) ois.readObject();
+    	        
+    	        // Limpiar los elementos previos del combo
+    	        comboTemporada.removeAllItems();
+    	        
+    	        // Agregar solo el nombre de cada temporada al ComboBox
+    	        for (TemporadaApp temporada : temporadas) {
+    	            comboTemporada.addItem(temporada.getNombre());
+    	        }
+    	        
+    	    } catch (IOException | ClassNotFoundException e) {
+    	        e.printStackTrace();
+    	    }
+    	}
        private void guardarClasificacion() {
     	   try {
     	       

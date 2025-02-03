@@ -38,6 +38,8 @@ import javax.swing.ImageIcon;
 import javax.swing.JTextField;
 import javax.swing.JList;
 import javax.swing.JOptionPane;
+import javax.swing.JCheckBox;
+import java.awt.FlowLayout;
 
 public class temporadasApp extends JFrame implements ActionListener,WindowListener{
 	/**
@@ -215,6 +217,13 @@ public class temporadasApp extends JFrame implements ActionListener,WindowListen
 		
 		panel_13 = new JPanel();
 		panel_11.add(panel_13, BorderLayout.WEST);
+		panel_13.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
+		
+		chckbxNewCheckBox = new JCheckBox("New check box");
+		panel_13.add(chckbxNewCheckBox);
+		
+		chckbxNewCheckBox_1 = new JCheckBox("New check box");
+		panel_13.add(chckbxNewCheckBox_1);
 		
 		panel_14 = new JPanel();
 		panel_11.add(panel_14, BorderLayout.EAST);
@@ -407,7 +416,7 @@ public class temporadasApp extends JFrame implements ActionListener,WindowListen
 	if (o == btnVolver){
 		int respuesta = JOptionPane.showConfirmDialog(
                 frame, 
-                "Seguro que quieres salir?", 
+                "Desea guardar los cambios realizados?", 
                 "Salida", 
                 JOptionPane.YES_NO_CANCEL_OPTION);
 		if (respuesta == JOptionPane.YES_OPTION) {
@@ -541,14 +550,10 @@ public class temporadasApp extends JFrame implements ActionListener,WindowListen
 
 	@Override
 	public void windowOpened(WindowEvent e) {
-		try {
-			cargarDatos();
-			
-			if (dlm.size() > 0) {
-				cambiodatos = true;
-				
-			}
-		} catch (IOException e1) {
+		cargarDatos();
+		
+		if (dlm.size() > 0) {
+			cambiodatos = true;
 			
 		}
 	}
@@ -559,7 +564,7 @@ public class temporadasApp extends JFrame implements ActionListener,WindowListen
 		if (cambiodatos) {
 			int respuesta = JOptionPane.showConfirmDialog(
                     frame, 
-                    "Seguro que quieres salir?", 
+                    "Desea guardar los cambios realizados?", 
                     "Salida", 
                     JOptionPane.YES_NO_CANCEL_OPTION);
 			if (respuesta == JOptionPane.YES_OPTION) {
@@ -604,16 +609,20 @@ public class temporadasApp extends JFrame implements ActionListener,WindowListen
 	}
 
 	
-	//CARGAR LISTA POR ELEMENTOS //
+	//CARGAR LISTA COMPLETA //
 	private void guardarDatos() {
 	    try (FileOutputStream fos = new FileOutputStream("resources/datos/temporadas.ser");
 	         ObjectOutputStream oos = new ObjectOutputStream(fos)) {
 
-	        // Guardar todas las temporadas completas (el objeto completo)
+	        // Guardar todas las temporadas completas en una lista
+	        List<TemporadaApp> temporadas = new ArrayList<>();
 	        for (int i = 0; i < dlm.size(); i++) {
 	            TemporadaApp t = dlm.get(i);
-	            oos.writeObject(t); // Guardamos el objeto completo
+	            temporadas.add(t);  // Añadimos la temporada a la lista
 	        }
+	        
+	        // Serializar toda la lista de temporadas de una vez
+	        oos.writeObject(temporadas);  // Guardamos la lista completa
 
 	        JOptionPane.showMessageDialog(this, "Temporadas guardadas en " + "temporadas.ser", "Finalizado", JOptionPane.INFORMATION_MESSAGE);
 	    } catch (IOException ae) {
@@ -622,22 +631,27 @@ public class temporadasApp extends JFrame implements ActionListener,WindowListen
 	}
 
 	
-	private void cargarDatos() throws IOException {
-		 try (FileInputStream fis = new FileInputStream("resources/datos/temporadas.ser");
-				  ObjectInputStream ois = new ObjectInputStream(fis)) {
-			 TemporadaApp valor = null;
-			 while (fis.available() > 0) {
-			 valor = (TemporadaApp)ois.readObject();
-					 this.dlm.addElement(valor);
-		    } 
-			 lblTotalElementosValor.setText("" + calcularTotalTemporadas());
-			 JOptionPane.showMessageDialog(this, "Temporadas cargadas correctamente", "Carga completada", JOptionPane.INFORMATION_MESSAGE);
-			 fis.close();
-			 ois.close();
-		 }catch (IOException | ClassNotFoundException e) {
-		        System.err.println("Error cargando datos: " + e.getMessage());
-		    }
-		}
+	private void cargarDatos() {
+	    try (FileInputStream fis = new FileInputStream("resources/datos/temporadas.ser");
+	         ObjectInputStream ois = new ObjectInputStream(fis)) {
+
+	        // Leer toda la lista de temporadas
+	        @SuppressWarnings("unchecked")
+			List<TemporadaApp> temporadas = (List<TemporadaApp>) ois.readObject();
+
+	        // Añadir todas las temporadas a la lista de elementos (dlm)
+	        for (TemporadaApp t : temporadas) {
+	            this.dlm.addElement(t);
+	        }
+
+	        lblTotalElementosValor.setText("" + calcularTotalTemporadas());
+	        JOptionPane.showMessageDialog(this, "Temporadas cargadas correctamente", "Carga completada", JOptionPane.INFORMATION_MESSAGE);
+	        
+	    } catch (IOException | ClassNotFoundException e) {
+	        System.err.println("Error cargando datos: " + e.getMessage());
+	    }
+	}
+
 	public class GenPartidos {
 
 	    public List<List<String[]>> generarPartidos() {
@@ -702,6 +716,8 @@ public class temporadasApp extends JFrame implements ActionListener,WindowListen
 	}
 	
 	String archivo = "resources/datos/Jornada"+nombre+".csv";
+	private JCheckBox chckbxNewCheckBox;
+	private JCheckBox chckbxNewCheckBox_1;
 	public static void guardarPartidosEnCSV(List<List<String[]>> partidos, String archivo) {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(archivo))) {
             for (List<String[]> jornada : partidos) {

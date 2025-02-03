@@ -140,7 +140,12 @@ public class menuApp extends JFrame implements ActionListener {
     public void actionPerformed(ActionEvent ae) {
         Object o = ae.getSource();
         if (o == btnEquipos) {
-            new equipoApp().setVisible(true);
+            try {
+				new equipoApp().setVisible(true);
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
             dispose();
         }
         if (o == btnGestion) {

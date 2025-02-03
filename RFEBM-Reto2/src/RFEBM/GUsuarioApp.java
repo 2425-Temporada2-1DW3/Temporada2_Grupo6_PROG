@@ -367,7 +367,7 @@ public class GUsuarioApp extends JFrame implements ActionListener,WindowListener
     	if (o == btnVolver){
     		int respuesta = JOptionPane.showConfirmDialog(
     				this, 
-                    "Seguro que quieres salir?", 
+                    "Desea guardar los cambios realizados?", 
                     "Salida", 
                     JOptionPane.YES_NO_CANCEL_OPTION);
     		if (respuesta == JOptionPane.YES_OPTION) {
@@ -400,7 +400,7 @@ public class GUsuarioApp extends JFrame implements ActionListener,WindowListener
 		if (cambiodatos) {
 			int respuesta = JOptionPane.showConfirmDialog(
                     this, 
-                    "Seguro que quieres salir?", 
+                    "Desea guardar los cambios realizados?", 
                     "Salida", 
                     JOptionPane.YES_NO_CANCEL_OPTION);
 			if (respuesta == JOptionPane.YES_OPTION) {

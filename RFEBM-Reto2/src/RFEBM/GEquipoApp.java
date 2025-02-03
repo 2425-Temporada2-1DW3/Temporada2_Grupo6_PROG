@@ -447,20 +447,22 @@ private void cargarJugadores() {
     private void cargarTemporadasDesdeArchivo() {
         try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream("resources/datos/temporadas.ser"))) {
 
+            // Leer toda la lista de temporadas
+            @SuppressWarnings("unchecked")
+			List<TemporadaApp> temporadas = (List<TemporadaApp>) ois.readObject();
+
+            // Limpiar los elementos previos del combo
             comboTemporada.removeAllItems();
-            
-            TemporadaApp temporada;
-            
-            while ((temporada = (TemporadaApp) ois.readObject()) != null) {
-                // Agregamos solo el nombre al ComboBox
+
+            // Agregar solo el nombre de cada temporada al ComboBox
+            for (TemporadaApp temporada : temporadas) {
                 comboTemporada.addItem(temporada.getNombre());
             }
-        } catch (EOFException e) {
-            return;
         } catch (IOException | ClassNotFoundException e) {
             e.printStackTrace();
         }
     }
+
     private void ordenarPorEquipo() {
         List<String[]> jugadores = new ArrayList<>();
 
