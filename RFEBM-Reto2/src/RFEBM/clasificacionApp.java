@@ -2,11 +2,19 @@ package RFEBM;
 
 import java.awt.BorderLayout;
 
+
 import java.awt.EventQueue;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableModel;
+
+import com.itextpdf.text.Document;
+import com.itextpdf.text.pdf.PdfPTable;
+import com.itextpdf.text.pdf.PdfWriter;
+import com.itextpdf.text.pdf.PdfPCell;
+import com.itextpdf.text.Phrase;
+import com.itextpdf.text.BaseColor;
 
 import org.apache.log4j.Logger;
 
@@ -15,6 +23,7 @@ import Classes.TemporadaApp;
 import log.log;
 
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 
 import java.awt.Font;
 import javax.swing.JButton;
@@ -22,6 +31,7 @@ import javax.swing.ImageIcon;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import javax.swing.JComboBox;
+import javax.swing.JFileChooser;
 import javax.swing.SwingConstants;
 import java.awt.FlowLayout;
 import javax.swing.JTextField;
@@ -30,17 +40,20 @@ import java.awt.event.KeyEvent;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.EOFException;
+import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.util.List;
 
+
 import javax.swing.JTable;
 import javax.swing.JScrollPane;
 
-public class clasificacionApp extends JFrame {
+public class clasificacionApp extends JFrame implements ActionListener{
     private static final long serialVersionUID = -4093081654081064634L;
 
     // Declarar arrays para las jornadas y los goles
@@ -242,7 +255,15 @@ public class clasificacionApp extends JFrame {
 			}
 		});
 		panel1.add(btnAplicarCambios, BorderLayout.WEST);
-	
+		
+		panel_17 = new JPanel();
+		panel1.add(panel_17, BorderLayout.CENTER);
+		panel_17.setLayout(new BorderLayout(0, 0));
+		
+		btnPDF = new JButton("Exportar a PDF");
+		panel_17.add(btnPDF, BorderLayout.EAST);
+		btnPDF.addActionListener(this);	
+		
 		panel_1 = new JPanel();
 		contentPane.add(panel_1, BorderLayout.WEST);
 		panel_1.setLayout(new BorderLayout(0, 0));
@@ -692,6 +713,8 @@ private static void loadData(Object temporadaActual) {
     
     final int NUM_JORNADAS = 10; // Número de jornadas (esto depende de tu torneo)
     final int NUM_PARTIDOS = 3;  // Número de partidos por jornada (ajusta según sea necesario)
+    private JPanel panel_17;
+    private JButton btnPDF;
     
     public void cargarPartidosDesdeCSV(String archivo) throws IOException {
     	
@@ -785,4 +808,66 @@ private static void loadData(Object temporadaActual) {
     	            }
     	        }
     	    }
-}
+    	    public static void exportarTablaAPdf(JTable table, String filePath) {
+    	        try {
+    	            // Crear el documento PDF
+    	            Document document = new Document();
+    	            PdfWriter.getInstance(document, new FileOutputStream(filePath));
+    	            document.open();
+
+    	            // Crear una tabla PDF que tenga el mismo número de columnas que la JTable
+    	            PdfPTable pdfTable = new PdfPTable(table.getColumnCount());
+    	            pdfTable.setWidthPercentage(100); // Para que ocupe todo el ancho de la página
+
+    	            // Agregar las cabeceras de la tabla
+    	            for (int i = 0; i < table.getColumnCount(); i++) {
+    	                PdfPCell cell = new PdfPCell(new Phrase(table.getColumnName(i)));
+    	                cell.setBackgroundColor(BaseColor.LIGHT_GRAY); // Color de fondo para las cabeceras
+    	                pdfTable.addCell(cell);
+    	            }
+
+    	            // Agregar las filas de la tabla
+    	            for (int row = 0; row < table.getRowCount(); row++) {
+    	                for (int col = 0; col < table.getColumnCount(); col++) {
+    	                    Object value = table.getValueAt(row, col);
+    	                    String cellValue = value != null ? value.toString() : "";
+    	                    pdfTable.addCell(cellValue);
+    	                }
+    	            }
+
+    	            // Añadir la tabla al documento
+    	            document.add(pdfTable);
+    	            document.close();
+
+    	            // Mostrar mensaje de éxito
+    	            JOptionPane.showMessageDialog(null, "¡El PDF se ha creado correctamente!", "Éxito", JOptionPane.INFORMATION_MESSAGE);
+    	        } catch (Exception e) {
+    	            e.printStackTrace();
+    	            JOptionPane.showMessageDialog(null, "Error al exportar la tabla a PDF: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+    	        }
+    	    }
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				Object o = e.getSource();
+				
+				if (o == btnPDF) {
+					// Mostrar un diálogo para elegir la ubicación y el nombre del archivo PDF
+			        JFileChooser fileChooser = new JFileChooser();
+			        fileChooser.setDialogTitle("Guardar PDF");
+			        fileChooser.setSelectedFile(new File("clasificacion.pdf")); // Nombre por defecto
+
+			        int userSelection = fileChooser.showSaveDialog(this);
+			        if (userSelection == JFileChooser.APPROVE_OPTION) {
+			            File fileToSave = fileChooser.getSelectedFile();
+			            String filePath = fileToSave.getAbsolutePath();
+			            if (!filePath.endsWith(".pdf")) {
+			                filePath += ".pdf"; // Asegurarse de que el archivo tenga la extensión .pdf
+			            }
+			            // Llamar a la función para exportar la tabla a PDF
+			            exportarTablaAPdf(table, filePath);
+			        }
+			    }	
+				}
+				
+			}
