@@ -219,12 +219,6 @@ public class temporadasApp extends JFrame implements ActionListener,WindowListen
 		panel_11.add(panel_13, BorderLayout.WEST);
 		panel_13.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
 		
-		chckbxNewCheckBox = new JCheckBox("New check box");
-		panel_13.add(chckbxNewCheckBox);
-		
-		chckbxNewCheckBox_1 = new JCheckBox("New check box");
-		panel_13.add(chckbxNewCheckBox_1);
-		
 		panel_14 = new JPanel();
 		panel_11.add(panel_14, BorderLayout.EAST);
 		
@@ -444,7 +438,7 @@ public class temporadasApp extends JFrame implements ActionListener,WindowListen
 	        if (dlm.get(i).getEstado() == EstadoTemporada.Iniciada) {
 	            JOptionPane.showMessageDialog(this, "Ya existe una temporada iniciada. Finaliza la temporada actual antes de iniciar una nueva.", "Error", JOptionPane.ERROR_MESSAGE);
 	            return;
-	        }else if (dlm.get(i).getEstado() == EstadoTemporada.Finalizada) {
+	        }else if (estadoActual == EstadoTemporada.Finalizada) {
 	        	JOptionPane.showMessageDialog(this, "La temporada se encuentra finalizada.", "Error", JOptionPane.ERROR_MESSAGE);
 	            return;
 	        }
@@ -716,8 +710,6 @@ public class temporadasApp extends JFrame implements ActionListener,WindowListen
 	}
 	
 	String archivo = "resources/datos/Jornada"+nombre+".csv";
-	private JCheckBox chckbxNewCheckBox;
-	private JCheckBox chckbxNewCheckBox_1;
 	public static void guardarPartidosEnCSV(List<List<String[]>> partidos, String archivo) {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(archivo))) {
             for (List<String[]> jornada : partidos) {

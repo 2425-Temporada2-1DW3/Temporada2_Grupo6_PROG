@@ -3,6 +3,7 @@ package RFEBM;
 import java.awt.BorderLayout;
 
 
+
 import java.awt.EventQueue;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -18,6 +19,7 @@ import com.itextpdf.text.BaseColor;
 
 import org.apache.log4j.Logger;
 
+import Classes.EstadoTemporada;
 import Classes.RolApp;
 import Classes.TemporadaApp;
 import log.log;
@@ -39,7 +41,6 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
-import java.io.EOFException;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -47,8 +48,9 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.ObjectInputStream;
+import java.util.HashMap;
 import java.util.List;
-
+import java.util.Map;
 
 import javax.swing.JTable;
 import javax.swing.JScrollPane;
@@ -71,16 +73,16 @@ public class clasificacionApp extends JFrame implements ActionListener{
     };
 
     public static String[][] jornadasGolLoc = {
-            {"0", "0", "0"},
-            {"0", "0", "0"},
-            {"0", "0", "0"},
-            {"0", "0", "0"},
-            {"0", "0", "0"},
-            {"0", "0", "0"},
-            {"0", "0", "0"},
-            {"0", "0", "0"},
-            {"0", "0", "0"},
-            {"0", "0", "0"},
+            {"", "", ""},
+            {"", "", ""},
+            {"", "", ""},
+            {"", "", ""},
+            {"", "", ""},
+            {"", "", ""},
+            {"", "", ""},
+            {"", "", ""},
+            {"", "", ""},
+            {"", "", ""},
     };
 
     public static String[][] jornadasVis = {
@@ -97,16 +99,16 @@ public class clasificacionApp extends JFrame implements ActionListener{
     };
 
     public static String[][] jornadasGolVis = {
-        {"0", "0", "0"},
-        {"0", "0", "0"},
-        {"0", "0", "0"},
-        {"0", "0", "0"},
-        {"0", "0", "0"},
-        {"0", "0", "0"},
-        {"0", "0", "0"},
-        {"0", "0", "0"},
-        {"0", "0", "0"},
-        {"0", "0", "0"},
+    	    {"", "", ""},
+            {"", "", ""},
+            {"", "", ""},
+            {"", "", ""},
+            {"", "", ""},
+            {"", "", ""},
+            {"", "", ""},
+            {"", "", ""},
+            {"", "", ""},
+            {"", "", ""},
     };
 
     // Agregar datos de la tabla
@@ -136,6 +138,7 @@ public class clasificacionApp extends JFrame implements ActionListener{
 	private JPanel panel_15;
  	static JComboBox<String> comboTemporada;
  	Logger LOG = log.getLogger(clasificacionApp.class);
+ 	List<TemporadaApp> temporadas; // Variable de clase para almacenar las temporadas
  	
 
 	
@@ -473,25 +476,66 @@ public class clasificacionApp extends JFrame implements ActionListener{
 		
 		
 		comboTemporada = new JComboBox<>();
-		 comboTemporada.addActionListener(new ActionListener() {
-		 	public void actionPerformed(ActionEvent e) {
-				  TEMPORADA_ACTUAL = comboTemporada.getSelectedItem();
-				  loadData(TEMPORADA_ACTUAL);
-				  String archivo = (String) comboTemporada.getSelectedItem();
-				    Temporada = "resources/datos/Jornada"+archivo+".csv";
-				    try {
-						cargarPartidosDesdeCSV(Temporada);
-					} catch (IOException e1) {
-						// TODO Auto-generated catch block
-						e1.printStackTrace();
-					}
-				    cargarDatosJornada();
-				    loadShields();
-				    updateTable();
-					  
-				
-		 	}
-		 });
+		comboTemporada.addActionListener(new ActionListener() {
+		    public void actionPerformed(ActionEvent e) {
+		        String temporadaSeleccionada = (String) comboTemporada.getSelectedItem();
+
+		        // Buscar el estado de la temporada seleccionada
+		        EstadoTemporada estadoTemporadaActual = null;
+		        for (TemporadaApp temporada : temporadas) {
+		            if (temporada.getNombre().equals(temporadaSeleccionada)) {
+		                estadoTemporadaActual = temporada.getEstado();
+		                break; // Salir del bucle una vez que se encuentra la temporada
+		            }
+		        }
+
+		        // Habilitar o deshabilitar botones según el estado
+		       
+
+		        // Cargar datos de la temporada
+		        loadData(temporadaSeleccionada);
+		        String archivo = "resources/datos/Jornada" + temporadaSeleccionada + ".csv";
+		        try {
+		            cargarPartidosDesdeCSV(archivo);
+		        } catch (IOException e1) {
+		            e1.printStackTrace(); 
+		        }
+		        cargarDatosJornada();
+		        loadShields();
+		        updateTable();
+		        if (inicioApp.rolUsuario == RolApp.Usuario) {
+		            // Si el rol es Usuario, no se revisa el estado de la temporada
+		            return; // Salir del método sin hacer nada
+		        }
+		        if (estadoTemporadaActual == EstadoTemporada.Sin_Iniciar) {
+		        	EquipoLocGol1.setEditable(false); EquipoVisGol1.setEditable(false);
+					EquipoLocGol1.setEnabled(false);  EquipoVisGol1.setEnabled(false);
+	            	EquipoLocGol2.setEditable(false); EquipoVisGol2.setEditable(false);
+					EquipoLocGol2.setEnabled(false);  EquipoVisGol2.setEnabled(false);
+					EquipoLocGol3.setEditable(false); EquipoVisGol3.setEditable(false);
+					EquipoLocGol3.setEnabled(false);  EquipoVisGol3.setEnabled(false);	
+					btnAplicarCambios.setEnabled(false);
+		        } else if (estadoTemporadaActual == EstadoTemporada.Iniciada) {
+		        	EquipoLocGol1.setEditable(true); EquipoVisGol1.setEditable(true);
+					EquipoLocGol1.setEnabled(true);  EquipoVisGol1.setEnabled(true);
+	            	EquipoLocGol2.setEditable(true); EquipoVisGol2.setEditable(true);
+					EquipoLocGol2.setEnabled(true);  EquipoVisGol2.setEnabled(true);
+					EquipoLocGol3.setEditable(true); EquipoVisGol3.setEditable(true);
+					EquipoLocGol3.setEnabled(true);  EquipoVisGol3.setEnabled(true);	
+		            btnAplicarCambios.setEnabled(true);
+		        } else if (estadoTemporadaActual == EstadoTemporada.Finalizada) {
+		        	EquipoLocGol1.setEditable(false); EquipoVisGol1.setEditable(false);
+					EquipoLocGol1.setEnabled(false);  EquipoVisGol1.setEnabled(false);
+	            	EquipoLocGol2.setEditable(false); EquipoVisGol2.setEditable(false);
+					EquipoLocGol2.setEnabled(false);  EquipoVisGol2.setEnabled(false);
+					EquipoLocGol3.setEditable(false); EquipoVisGol3.setEditable(false);
+					EquipoLocGol3.setEnabled(false);  EquipoVisGol3.setEnabled(false);	
+					btnAplicarCambios.setEnabled(false);
+		        }
+		    }
+		    
+		    
+		});
 		  panel_16.add(comboTemporada);
 		  cargarTemporadasDesdeArchivo();
 		  TEMPORADA_ACTUAL = comboTemporada.getSelectedItem();
@@ -717,9 +761,17 @@ private static void loadData(Object temporadaActual) {
     private JButton btnPDF;
     
     public void cargarPartidosDesdeCSV(String archivo) throws IOException {
-    	
-    	
-    	try (BufferedReader reader = new BufferedReader(new FileReader(Temporada))) {
+        // Inicializar las jornadas y goles a valores vacíos
+        for (int i = 0; i < jornadasLoc.length; i++) {
+            for (int j = 0; j < jornadasLoc[i].length; j++) {
+                jornadasLoc[i][j] = "";
+                jornadasVis[i][j] = "";
+                jornadasGolLoc[i][j] = "";
+                jornadasGolVis[i][j] = "";
+            }
+        }
+
+        try (BufferedReader reader = new BufferedReader(new FileReader(archivo))) {
             String line;
             int jornadaIndex = 0;
             int partidoIndex = 0;
@@ -730,12 +782,20 @@ private static void loadData(Object temporadaActual) {
                 String[] parts = line.split(",");
 
                 // Asegurarse de que la línea tiene los datos correctos
-                if (parts.length == 4) {
-                    // Asignar los valores a las matrices correspondientes
+                if (parts.length >= 2) { // Asegúrate de que hay al menos dos partes (local y visitante)
+                    // Asignar los nombres de los equipos
                     jornadasLoc[jornadaIndex][partidoIndex] = parts[0];  // Equipo Local
                     jornadasVis[jornadaIndex][partidoIndex] = parts[1];  // Equipo Visitante
-                    jornadasGolLoc[jornadaIndex][partidoIndex] = parts[2];  // Goles Equipo Local
-                    jornadasGolVis[jornadaIndex][partidoIndex] = parts[3];  // Goles Equipo Visitante
+
+                    // Asignar los goles si están disponibles
+                    if (parts.length >= 4) {
+                        jornadasGolLoc[jornadaIndex][partidoIndex] = parts[2];  // Goles Equipo Local
+                        jornadasGolVis[jornadaIndex][partidoIndex] = parts[3];  // Goles Equipo Visitante
+                    } else {
+                        // Si no hay goles, asignar valores vacíos
+                        jornadasGolLoc[jornadaIndex][partidoIndex] = "";
+                        jornadasGolVis[jornadaIndex][partidoIndex] = "";
+                    }
 
                     // Aumentar el índice del partido
                     partidoIndex++;
@@ -747,26 +807,36 @@ private static void loadData(Object temporadaActual) {
                     }
                 }
             }
-    	}
-       } private void cargarTemporadasDesdeArchivo() {
-    	    try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream("resources/datos/temporadas.ser"))) {
-    	        
-    	        // Leer toda la lista de temporadas
-    	        @SuppressWarnings("unchecked")
-				List<TemporadaApp> temporadas = (List<TemporadaApp>) ois.readObject();
-    	        
-    	        // Limpiar los elementos previos del combo
-    	        comboTemporada.removeAllItems();
-    	        
-    	        // Agregar solo el nombre de cada temporada al ComboBox
-    	        for (TemporadaApp temporada : temporadas) {
-    	            comboTemporada.addItem(temporada.getNombre());
-    	        }
-    	        
-    	    } catch (IOException | ClassNotFoundException e) {
-    	        e.printStackTrace();
-    	    }
-    	}
+        } catch (IOException e) {
+            // Manejo de excepciones para errores de lectura
+            System.err.println("Error al leer el archivo: " + e.getMessage());
+        }
+
+        // Llamar a updateTable para actualizar la tabla después de cargar los datos
+        updateTable();
+    }
+  
+
+    @SuppressWarnings("unchecked")
+	private void cargarTemporadasDesdeArchivo() {
+        try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream("resources/datos/temporadas.ser"))) {
+            // Leer toda la lista de temporadas
+        
+            temporadas = (List<TemporadaApp>) ois.readObject();
+            
+            // Limpiar los elementos previos del combo
+            comboTemporada.removeAllItems();
+            
+            // Agregar solo el nombre de cada temporada al ComboBox
+            for (TemporadaApp temporada : temporadas) { // Cambiado de 'temporadas' a 'temporadas1'
+                comboTemporada.addItem(temporada.getNombre());
+            }
+            
+        } catch (IOException | ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+    }
+       
        private void guardarClasificacion() {
     	   try {
     	       
@@ -870,4 +940,4 @@ private static void loadData(Object temporadaActual) {
 			    }	
 				}
 				
-			}
+	}
