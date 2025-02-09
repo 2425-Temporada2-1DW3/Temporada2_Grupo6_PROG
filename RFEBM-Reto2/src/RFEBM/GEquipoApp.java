@@ -6,6 +6,8 @@ import javax.swing.table.DefaultTableModel;
 
 import org.apache.log4j.Logger;
 
+import Classes.EstadoTemporada;
+import Classes.RolApp;
 import Classes.TemporadaApp;
 import log.log;
 
@@ -28,6 +30,7 @@ public class GEquipoApp extends JFrame {
     private DefaultTableModel tableModel;
     JComboBox<String> comboTemporada;
     Logger LOG = log.getLogger(GEquipoApp.class);
+    List<TemporadaApp> temporadas; // Variable de clase para almacenar las temporadas
 
     private static final String[] EQUIPOS = {"Barcelona", "Cáceres", "Madrid", "Sevilla", "Murcia", "Bilbao"};
 
@@ -43,7 +46,7 @@ public class GEquipoApp extends JFrame {
     }
 
     private List<String[]> jugadoresEliminados = new ArrayList<>();
-    
+
     public GEquipoApp() {
         setTitle("Gestión de Equipos y Jugadores");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -63,47 +66,92 @@ public class GEquipoApp extends JFrame {
 
         JPanel buttonPanel = new JPanel();
         buttonPanel.setLayout(new BorderLayout(0, 0));
-        panel.add(buttonPanel, BorderLayout.SOUTH);    
-        
+        panel.add(buttonPanel, BorderLayout.SOUTH);
+
         JPanel panel_1 = new JPanel();
         buttonPanel.add(panel_1, BorderLayout.EAST);
-        
+
         JPanel panel_2 = new JPanel();
         buttonPanel.add(panel_2, BorderLayout.CENTER);
         panel_2.setLayout(new BorderLayout(0, 0));
-        
+
         JButton btnVolver = new JButton("Volver");
         btnVolver.addActionListener(new ActionListener() {
-        	public void actionPerformed(ActionEvent e) {
-        	            new GestionApp().setVisible(true);
-        	            dispose();
-        	}
+            public void actionPerformed(ActionEvent e) {
+                new GestionApp().setVisible(true);
+                dispose();
+            }
         });
         panel_2.add(btnVolver, BorderLayout.EAST);
-        
+
         JPanel panel_3 = new JPanel();
         panel_2.add(panel_3, BorderLayout.CENTER);
-        
-        comboTemporada = new JComboBox<>();
-        comboTemporada.addActionListener(new ActionListener() {
-        	public void actionPerformed(ActionEvent e) {
-        		
-        		 actualizarRutasFotos();
-        		 ordenarPorEquipo();
-        	}
-        });
-        panel_3.add(comboTemporada);
-        cargarTemporadasDesdeArchivo();
-        
-        
+
         JButton freeAgentsButton = new JButton("Agentes Libres");
         panel_3.add(freeAgentsButton);
-        
         freeAgentsButton.addActionListener(e -> mostrarVentanaEliminados());
+
         JButton editButton = new JButton("Editar Jugador");
         panel_3.add(editButton);
         JButton deleteButton = new JButton("Eliminar Jugador");
         panel_3.add(deleteButton);
+
+        // Inicializa comboTemporada aquí
+        comboTemporada = new JComboBox<>();
+        panel_3.add(comboTemporada); // Asegúrate de agregarlo al panel
+
+        // Llama a cargarTemporadasDesdeArchivo después de inicializar comboTemporada
+        
+        cargarJugadores();
+        ordenarPorEquipo();
+
+        comboTemporada.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                String temporadaSeleccionada = (String) comboTemporada.getSelectedItem();
+
+                // Verifica que temporadas no sea null
+                if (temporadas == null) {
+                    JOptionPane.showMessageDialog(GEquipoApp.this, "Error: No se han cargado las temporadas.");
+                    return;
+                }
+
+                // Buscar el estado de la temporada seleccionada
+                EstadoTemporada estadoTemporadaActual = null;
+                for (TemporadaApp temporada : temporadas) {
+                    if (temporada.getNombre().equals(temporadaSeleccionada)) {
+                        estadoTemporadaActual = temporada.getEstado();
+                        break; // Salir del bucle una vez que se encuentra la temporada
+                    }
+                }
+                actualizarRutasFotos();
+                cargarJugadores();
+                // Habilitar o deshabilitar botones según el estado
+                if (estadoTemporadaActual == EstadoTemporada.Sin_Iniciar) {
+                    freeAgentsButton.setEnabled(false);
+                    editButton.setEnabled(false);
+                    deleteButton.setEnabled(false);
+                    btnVolver.setEnabled(true);
+                    jugadoresTable.setEnabled(false);
+                } else if (estadoTemporadaActual == EstadoTemporada.Iniciada) {
+                    freeAgentsButton.setEnabled(true);
+                    editButton.setEnabled(true);
+                    deleteButton.setEnabled(true);
+                    btnVolver.setEnabled(true);
+                    jugadoresTable.setEnabled(true);
+                } else if (estadoTemporadaActual == EstadoTemporada.Finalizada) {
+                    freeAgentsButton.setEnabled(false);
+	            	editButton.setEnabled(false);;
+	            	deleteButton.setEnabled(false);
+	            	btnVolver.setEnabled(true);
+	            	jugadoresTable.setEnabled(false);
+		        }
+		        
+      
+        	}
+        });
+        cargarTemporadasDesdeArchivo();
+        panel_3.add(comboTemporada);
+     
         
         JPanel panel_4 = new JPanel();
         panel_2.add(panel_4, BorderLayout.SOUTH);
@@ -123,8 +171,7 @@ public class GEquipoApp extends JFrame {
                 });
                 
         
-        cargarJugadores();
-        ordenarPorEquipo();
+       
      
 
     }
@@ -444,12 +491,11 @@ private void cargarJugadores() {
     
         
     }
+    @SuppressWarnings("unchecked")
     private void cargarTemporadasDesdeArchivo() {
         try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream("resources/datos/temporadas.ser"))) {
-
             // Leer toda la lista de temporadas
-            @SuppressWarnings("unchecked")
-			List<TemporadaApp> temporadas = (List<TemporadaApp>) ois.readObject();
+            temporadas = (List<TemporadaApp>) ois.readObject(); // Asignar a la variable de clase
 
             // Limpiar los elementos previos del combo
             comboTemporada.removeAllItems();
@@ -460,6 +506,7 @@ private void cargarJugadores() {
             }
         } catch (IOException | ClassNotFoundException e) {
             e.printStackTrace();
+            JOptionPane.showMessageDialog(this, "Error al cargar las temporadas: " + e.getMessage());
         }
     }
 
@@ -523,4 +570,7 @@ private void cargarJugadores() {
             JOptionPane.showMessageDialog(this, "Error al actualizar las rutas de las fotos: " + e.getMessage());
         }
     }
+    
+    
+    
    }
